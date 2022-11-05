@@ -1,0 +1,85 @@
+<div class="app-wrapper">
+    <div class="app-content pt-3 p-md-3 p-lg-4">
+
+        <div class="container-xl d-flex justify-content-between">
+            <h2 class="mb-4">
+             Products
+            </h2>
+            <a href="/admin/addProduct " class="h6  btn-link text-info fw-normal">
+                Add Product
+            </a>
+        </div>
+        <section>
+            <div class="container">
+                <table class=" mt-4 table table-striped table-bordered" id="example1" style="width:100%">
+                    <thead class="table-dark text-center">
+                        <tr>
+                            <th scope="col">No</th>
+                            <th scope="col">Brand Name</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Gender</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Size</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-center">
+                        <% for( let i=0; i < products.length; i ++ ) { %>
+
+                            <tr>
+
+                                <td>
+                                    <%= i+1 %>
+                                </td>
+                                <td>
+                                    <%= products[i].name %>
+                                </td>
+                                <td>
+                                    <%= products[i].email %>
+                                </td>
+                                <td>
+                                    <%= products[i].mobile %>
+                                </td>
+                                <td>
+                                    <%= products[i].mobile %>
+                                </td>
+                                <td>
+                                    <%= products[i].mobile %>
+                                </td>
+                                <td>
+                                    <%= products[i].mobile %>
+                                </td>
+                                <td>
+                                    <a href="/admin/view-product/<%= products[i]._id %>"class="btn btn-info">View</a>
+
+                                    <a href="/admin/edit-product/<%= products[i]._id %> " class="btn btn-primary"> Edit </a>
+
+                                    <a href="/admin/delete-product/<%= products[i]._id %> "
+                                        onclick="return confirm('Do you want to delete <% products[i].name %> ?')" class="btn btn-danger">Delete</a>
+
+                                </td>
+                            </tr>
+
+                            <% } %>
+
+
+                    </tbody>
+                </table>
+            </div>
+
+
+        </section>
+
+    </div>
+</div>
+<script src=" https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
+<script>
+ $(document).ready(function () {
+        $('#example1').DataTable();
+    });
+</script>
+
+

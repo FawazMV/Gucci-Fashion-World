@@ -1,0 +1,31 @@
+{
+  "name": "gucci_fashion_world",
+  "version": "1.0.0",
+  "description": "First Project / E-commerece website of dresses / Gucci Fashion World",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FawazMV/Gucci-Fashion-World.git"
+  },
+  "author": "Muhammed Fawaz M V",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FawazMV/Gucci-Fashion-World/issues"
+  },
+  "homepage": "https://github.com/FawazMV/Gucci-Fashion-World#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "ejs": "^3.1.8",
+    "express": "^4.18.2",
+    "express-ejs-layouts": "^2.5.1",
+    "mongoose": "^6.7.1"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.3",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.20"
+  }
+}

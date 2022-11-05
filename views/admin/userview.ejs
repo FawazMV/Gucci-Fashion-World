@@ -1,0 +1,78 @@
+<div class="app-wrapper">
+    <div class="app-content pt-3 p-md-3 p-lg-4">
+       
+        <div class="container-xl d-flex justify-content-between">
+            <h2 class="mb-4">
+                <%- locals.texts.heading %>
+            </h2>
+            <a href="/admin/<%-locals.texts.linktext %> " class="h6  btn-link text-info fw-normal">
+                <%- locals.texts.linktext %>
+            </a>
+        </div>
+        <section>
+            <div class="container">
+                <table class="table table-striped table-bordered" id="example" style="width:100%">
+                    <thead class="table-dark text-center">
+                        <tr>
+                            <th scope="col">No</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Mobile Number</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-center">
+                        <% for( let i=0; i < users.length; i ++ ) { %>
+
+                            <tr>
+
+                                <td>
+                                    <%= i+1 %>
+                                </td>
+                                <td>
+                                    <%= users[i].name %>
+                                </td>
+                                <td>
+                                    <%= users[i].email %>
+                                </td>
+                                <td>
+                                    <%= users[i].mobile %>
+                                </td>
+                                <td>
+                                    <a href="/admin/delete-user/<%= users[i]._id %> "
+                                        onclick="return confirm('Do you want to delete <% users[i].name %> ?')"
+                                        class="btn btn-info">View</a>
+
+                                    <a href="/admin/<%-locals.texts.btntext %>-user/<%= users[i]._id %> "
+                                        onclick="return confirm('Do you want to block <% users[i].name %> ?')"
+                                        class="btn btn-danger">
+                                        <%-locals.texts.btntext %>
+                                    </a>
+
+                                </td>
+                            </tr>
+
+                            <% } %>
+
+
+                    </tbody>
+                </table>
+            </div>
+           
+
+
+        </section>
+
+    </div>
+</div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable();
+    });
+</script>
