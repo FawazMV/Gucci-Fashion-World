@@ -1,0 +1,67 @@
+<div class="app-wrapper">
+    <div class="app-content pt-3 p-md-3 p-lg-4">
+
+        <section class="p4-5">
+            <div class="container px-5 table-responsive">
+                <div>
+                    <a href="/admin/addProduct" class="btn btn-warning">Back to add product</a>
+                </div>
+                <div style="width:30%;" class="mb-5 ml-auto">
+                    <form action="/admin/addBrandName" method="post">
+                        <button type="submit" class="btn btn-link float-end">Add</button>
+                        <input type="text" name="brandName" class="form-control" placeholder="Add brand name here">
+                    </form>
+                </div>
+                <table class=" mt-4 table table-striped table-bordered" id="example1" style="width:100%">
+                    <thead class="table-dark text-center">
+                        <tr>
+                            <th scope="col">No</th>
+                            <th scope="col">Brand Name</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-center align-items-middle">
+                        <% for( let i=0; i < brandName.length; i ++ ) { %>
+
+                            <tr>
+
+                                <td>
+                                    <%= i+1 %>
+                                </td>
+                                
+                                <td>
+                                    <%= brandName[i].brandName %>
+                                </td>
+                               
+                                <td>
+                                    <a href="/admin/delete-product/<%= brandName[i]._id %> "
+                                        onclick="return confirm('Do you want to delete <% brandName[i].name %> ?')"
+                                        class="btn btn-danger">Delete</a>
+                                </td>
+                            </tr>
+
+                            <% } %>
+
+
+                    </tbody>
+                </table>
+            </div>
+
+
+        </section>
+
+
+    </div>
+</div>
+
+
+
+<script src=" https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#example1').DataTable();
+    });
+</script>

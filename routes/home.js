@@ -10,12 +10,14 @@ router.post('/login',user.loginPost)
 
 router.get('/signup',user.signup)
 
-router.post('/signup',user.doSignup,(req,res)=>{
-    console.log(req.body);
-})  
+router.post('/signup',user.doSignup)  
 
 router.get('/otp',user.otppage)
 
+router.post('/otpverification',user.otppageverify)
+
+router.get('/OTPResend', user.OTPResend)
+ 
 
 
 

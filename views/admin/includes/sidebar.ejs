@@ -27,7 +27,11 @@
 <body class="app">
     <header class="app-header fixed-top">
         <div class="app-header-inner">
-            <div class="container-fluid py-2">
+
+            <div class="d-flex justify-content-between container-fluid py-2">
+                <h4 class="ms-5 mt-2">
+                    <%- locals.heading %>
+                </h4>
                 <div class="app-header-content">
                     <div class="row justify-content-between align-items-center">
 
@@ -46,7 +50,7 @@
                             <i class="search-mobile-trigger-icon fas fa-search"></i>
                         </div>
                         <!--//col-->
-                        
+
                         <!--//app-search-box-->
 
                         <div class="app-utilities col-auto">
@@ -65,7 +69,7 @@
                                 </a>
                                 <!--//dropdown-toggle-->
 
-                                
+
                                 <!--//dropdown-menu-->
                             </div>
                             <!--//app-utility-item-->
@@ -100,20 +104,16 @@
                         </div>
                         <!--//app-utilities-->
                     </div>
-                    <!--//row-->
                 </div>
-                <!--//app-header-content-->
             </div>
-            <!--//container-fluid-->
         </div>
-        <!--//app-header-inner-->
         <div id="app-sidepanel" class="app-sidepanel">
             <div id="sidepanel-drop" class="sidepanel-drop"></div>
             <div class="sidepanel-inner d-flex flex-column">
                 <a href="#" id="sidepanel-close" class="sidepanel-close d-xl-none">&times;</a>
                 <div class="app-branding">
-                    <a class="app-logo" href="index.html"><img style="width:50%;" class="logo-icon me-2" src="/assets/images/logo.png"
-                            alt="logo"></a>
+                    <a class="app-logo" href="index.html"><img style="width:50%;" class="logo-icon me-2"
+                            src="/assets/images/logo.png" alt="logo"></a>
                 </div>
                 <!--//app-branding-->
 
@@ -180,9 +180,9 @@
                                             d="M4 2h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H4z" />
                                         <path
                                             d="M6 0h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2v-1a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H6a1 1 0 0 0-1 1H4a2 2 0 0 1 2-2z" />
-                                            <circle cx="3.5" cy="5.5" r=".5" />
-                                            <circle cx="3.5" cy="8" r=".5" />
-                                            <circle cx="3.5" cy="10.5" r=".5" />
+                                        <circle cx="3.5" cy="5.5" r=".5" />
+                                        <circle cx="3.5" cy="8" r=".5" />
+                                        <circle cx="3.5" cy="10.5" r=".5" />
                                     </svg>
                                 </span>
                                 <span class="nav-link-text">Products</span>
@@ -282,7 +282,7 @@
                                 <!--//nav-link-->
                             </li>
                             <!--//nav-item-->
-                            
+
                             <!--//nav-item-->
                             <!--//nav-item-->
                         </ul>
@@ -294,11 +294,7 @@
             </div>
             <!--//sidepanel-inner-->
         </div>
-        <!--//app-sidepanel-->
     </header>
-    <!--//app-header-->
-
-
 
     <!-- Javascript -->
     <script src="/assets/plugins/popper.min.js"></script>

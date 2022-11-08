@@ -57,14 +57,15 @@
 
                                     </form>
 
-                                    <!-- {{#if popstatus}}
+                                    <% if (locals.response) { %>
                                     <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                        <strong class="text-danger me-2">Invalid Username or Password ! </strong> Try
+                                        <strong class="text-danger me-2"><%-response  %>  </strong> Try
                                         again.
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                            aria-label="Close"></button>
-                                        {{/if}}
-                                    </div> -->
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                    <% } %>
+                                    
+                                    
                                 </div>
                             </div>
                         </div>

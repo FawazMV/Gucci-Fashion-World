@@ -1,22 +1,22 @@
 <div class="app-wrapper">
     <div class="app-content pt-3 p-md-3 p-lg-4">
 
-        <div class="container-xl d-flex justify-content-between">
-            <h2 class="mb-4">
-             Products
-            </h2>
-            <a href="/admin/addProduct " class="h6  btn-link text-info fw-normal">
+        <div class="container-xl ">
+
+            <a href="/admin/addProduct " class="h6  btn-link text-info fw-normal float-end">
                 Add Product
             </a>
         </div>
+        <br> <br>
 
-        
+
         <section>
-            <div class="container">
+            <div class="container table-responsive">
                 <table class=" mt-4 table table-striped table-bordered" id="example1" style="width:100%">
                     <thead class="table-dark text-center">
                         <tr>
                             <th scope="col">No</th>
+                            <th scope="col">Image</th>
                             <th scope="col">Brand Name</th>
                             <th scope="col">Price</th>
                             <th scope="col">Category</th>
@@ -26,7 +26,7 @@
                             <th scope="col">Action</th>
                         </tr>
                     </thead>
-                    <tbody class="text-center">
+                    <tbody class="text-center align-items-middle">
                         <% for( let i=0; i < products.length; i ++ ) { %>
 
                             <tr>
@@ -34,32 +34,34 @@
                                 <td>
                                     <%= i+1 %>
                                 </td>
+                                <td> <img style="width:30px; height: auto;" src="/product-images/<%= locals.products[i].imagesDetails[0].filename %> "
+                                        alt=""> </td>
                                 <td>
-                                    <%= products[i].name %>
+                                    <%= products[i].brandName.brandName %>
                                 </td>
                                 <td>
-                                    <%= products[i].email %>
+                                    <%= products[i].shopPrice %>
                                 </td>
                                 <td>
-                                    <%= products[i].mobile %>
+                                    <%= products[i].category %>
                                 </td>
                                 <td>
-                                    <%= products[i].mobile %>
+                                    <%= products[i].gender %>
                                 </td>
                                 <td>
-                                    <%= products[i].mobile %>
+                                    <%= products[i].quantity %>
                                 </td>
                                 <td>
-                                    <%= products[i].mobile %>
+                                    <%= products[i].size %>
                                 </td>
                                 <td>
-                                    <a href="/admin/view-product/<%= products[i]._id %>"class="btn btn-info">View</a>
+                                    <a href="/admin/view-product/<%= products[i]._id %>" class="btn btn-info">View</a>
 
-                                    <a href="/admin/edit-product/<%= products[i]._id %> " class="btn btn-primary"> Edit </a>
-
-                                    <a href="/admin/delete-product/<%= products[i]._id %> "
-                                        onclick="return confirm('Do you want to delete <% products[i].name %> ?')" class="btn btn-danger">Delete</a>
-
+                                    <a href="/admin/edit-product/<%= products[i]._id %>" class="btn btn-primary"> Edit
+                                    </a>
+                                    <a href="/admin/deleteProduct/<%= products[i]._id %>"
+                                        onclick="return confirm('Do you want to delete <%= products[i].brandName.brandName %> ?')"
+                                        class="btn btn-danger">Delete</a>
                                 </td>
                             </tr>
 
@@ -72,7 +74,7 @@
 
 
         </section>
-        
+
 
     </div>
 </div>
@@ -84,9 +86,7 @@
 <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
 
 <script>
- $(document).ready(function () {
+    $(document).ready(function () {
         $('#example1').DataTable();
     });
 </script>
-
-
