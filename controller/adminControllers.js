@@ -1,6 +1,8 @@
 const usermodel = require("../models/user-schema")
 const productModel = require('../models/product-schema')
 const brandModel = require('../models/brandName-schema')
+const adminModel = require('../models/admin-schema')
+let response
 module.exports = {
 
     dashboard: (req, res) => {
@@ -8,10 +10,23 @@ module.exports = {
         res.render('admin/dashboard', { admin: true, Overview: "active", heading })
     },
     adminlogin: (req, res) => {
-        res.render('admin/adminlogin')
+        res.render('admin/adminlogin',{includes:true,response})
+        response = false
     },
-    adminloginPost: (req, res) => {
-        res.redirect('/admin')
+    adminloginPost:async (req, res) => {
+        user = await adminModel.findOne({ email: req.body.email })
+        if (user) {
+            bcrypt.compare(req.body.password, user.password).then(status => {
+                if (status) res.redirect('/admin')
+                else {
+                    response = true
+                    res.redirect('/admin/login')
+                }
+            })
+        } else {
+            response = true
+            res.redirect('/admin/login')
+        }
     },
     userview: async (req, res) => {
         let users = await usermodel.find({ isBanned: false })
