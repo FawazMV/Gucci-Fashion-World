@@ -1,16 +1,19 @@
 const bcrypt = require('bcrypt');
 const usermodel = require('../models/user-schema');
-const { accoutnSID, authToken, serviceSID } = require("../config/OTP")
+const accoutnSID = process.env.accoutnSID
+const serviceSID = process.env.serviceSID
+const authToken = process.env.authToken
 const client = require("twilio")(accoutnSID, authToken);
 let response, otpstatus,userNumber, userDetails
 let resend = true
 
 function otpcallin(number) {
+
     client.verify.services(serviceSID).verifications.create({
         to: `+91${number}`,
         channel: "sms",
     })
-}
+}                                               
 
 
 module.exports = {
@@ -49,7 +52,7 @@ module.exports = {
             response = "Email id already exists"
             res.redirect('/signup')
         } else {
-            otpcallin(req.body.mobile)
+            otpcallin(userNumber)
             res.redirect('/otp')
         }
 

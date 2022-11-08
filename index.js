@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
 const expressLayouts = require('express-ejs-layouts')
@@ -7,7 +8,6 @@ const multer = require('multer')
 const homeRouter = require('./routes/home')
 const adminRouter = require('./routes/admin')
 
-require('dotenv').config()
 const connectDB = require('./models/connection')
 const DATABASE_URL = process.env.DATABASE_URL
 connectDB(DATABASE_URL)
@@ -30,3 +30,6 @@ app.use('/admin',adminRouter)
 app.listen(process.env.PORT||4444,()=>{
     console.log('Server connected successfully');
 })
+
+
+
