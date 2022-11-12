@@ -19,14 +19,14 @@
                             <th scope="col">Image</th>
                             <th scope="col">Brand Name</th>
                             <th scope="col">Price</th>
-                            <th scope="col">Category</th>
+                            <th scope="col">Type</th>
                             <th scope="col">Gender</th>
                             <th scope="col">Quantity</th>
                             <th scope="col">Size</th>
                             <th scope="col">Action</th>
-                        </tr>
+                        </tr>  
                     </thead>
-                    <tbody class="text-center align-items-middle">
+                    <tbody class="">
                         <% for( let i=0; i < products.length; i ++ ) { %>
 
                             <tr>
@@ -43,10 +43,10 @@
                                     <%= products[i].shopPrice %>
                                 </td>
                                 <td>
-                                    <%= products[i].category %>
+                                    <%= products[i].type %>
                                 </td>
                                 <td>
-                                    <%= products[i].gender %>
+                                    <%= products[i].gender.gender %>
                                 </td>
                                 <td>
                                     <%= products[i].quantity %>
@@ -54,14 +54,15 @@
                                 <td>
                                     <%= products[i].size %>
                                 </td>
-                                <td>
+                                
+                                <td class="d-flex justify-content-evenly">
                                     <a href="/admin/view-product/<%= products[i]._id %>" class="btn btn-info">View</a>
 
-                                    <a href="/admin/edit-product/<%= products[i]._id %>" class="btn btn-primary"> Edit
+                                    <a href="/admin/editProduct/<%= products[i]._id %>" class="btn btn-primary"> Edit
                                     </a>
-                                    <a href="/admin/deleteProduct/<%= products[i]._id %>"
-                                        onclick="return confirm('Do you want to delete <%= products[i].brandName.brandName %> ?')"
-                                        class="btn btn-danger">Delete</a>
+                                    <form action="/admin/deleteProduct/<%= products[i]._id %>" method="get">
+                                    <button type="submit" onclick="archiveFunction()" class="btn btn-danger">Delete</button>
+                                    </form>
                                 </td>
                             </tr>
 
@@ -89,4 +90,29 @@
     $(document).ready(function () {
         $('#example1').DataTable();
     });
+</script>
+
+
+
+
+<script>
+   function archiveFunction() {
+        event.preventDefault(); // prevent form submit
+        var form = event.target.form; // storing the form
+        swal({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        },
+            function (isConfirm) {
+                if (isConfirm) {
+                    form.submit();  
+                } 
+            });
+    }
+
 </script>

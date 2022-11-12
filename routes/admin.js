@@ -14,22 +14,36 @@ router.get('/Users', admin.userview)
 
 router.get('/Block-user/:id', admin.blockUser)
 
-router.get('/Blockedusers',admin.viewBlockedUsers)
+router.get('/Blockedusers', admin.viewBlockedUsers)
 
 router.get('/Unblock-user/:id', admin.unblockUser)
 
 router.get('/Products', admin.productsView)
 
-router.get('/addProduct',admin.addProduct)
+router.get('/addProduct', admin.addProduct)
 
-router.post('/addProduct', fileUpload.upload.array('image',5))
+router.post('/addProduct', fileUpload.upload.array('image', 5))
 
-router.post('/addProduct',admin.addProductPost)
+router.post('/addProduct', admin.addProductPost)
 
-router.get('/addBrandName',admin.addBrandName) 
+router.get('/addBrandName', admin.addBrandName)
 
-router.post('/addBrandName',admin.BrandNameUpdate)
+router.post('/addBrandName', admin.BrandNameUpdate)
 
-router.get('/deleteProduct/:id',admin.deleteProduct)
+router.get('/deleteBrandName/:id',admin.deleteBrandName)
 
-module.exports = router
+router.get('/deleteProduct/:id', admin.deleteProduct)
+
+router.get('/editProduct/:id', admin.editPage)
+
+router.post('/editProduct', fileUpload.upload.array('image', 5))
+ 
+router.post('/editProduct', admin.updateProduct)
+
+router.get('/genderType',admin.genderType)
+
+router.post('/genderType', fileUpload.upload.array('image'))
+
+router.post('/genderType', admin.genderTypeAdd)
+
+module.exports = router    

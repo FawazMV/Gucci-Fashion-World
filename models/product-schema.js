@@ -19,10 +19,6 @@ const productSchema = new mongoose.Schema(
             type: String,
             required: true
         },
-        // tags:{
-        //     type:[String],
-        //     required:true
-        // },
         color1: {
             type: String,
             required: true
@@ -35,10 +31,11 @@ const productSchema = new mongoose.Schema(
             required: true
         },
         gender: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Gender_Type',
             required: true
         },
-        category: {
+        category: { 
             type: String,
             required: true
         },

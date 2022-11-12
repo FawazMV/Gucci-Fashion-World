@@ -3,15 +3,17 @@
 
         <section class="p4-5">
             <div class="container px-5 table-responsive">
-                <div>
-                    <a href="/admin/addProduct" class="btn btn-warning">Back to add product</a>
-                </div>
-                <div style="width:30%;" class="mb-5 ml-auto">
+
+
+                <div style="width:30%;" class="mb-4 ml-auto">
                     <form action="/admin/addBrandName" method="post">
                         <button type="submit" class="btn btn-link float-end">Add</button>
-                        <input type="text" name="brandName" class="form-control" placeholder="Add brand name here">
+                        <input type="text" name="brandName" class="form-control border border-black border-3"
+                            placeholder="Add brand name here">
                     </form>
                 </div>
+
+
                 <table class=" mt-4 table table-striped table-bordered" id="example1" style="width:100%">
                     <thead class="table-dark text-center">
                         <tr>
@@ -20,23 +22,26 @@
                             <th scope="col">Action</th>
                         </tr>
                     </thead>
-                    <tbody class="text-center align-items-middle">
+                    <tbody class="">
                         <% for( let i=0; i < brandName.length; i ++ ) { %>
 
                             <tr>
 
-                                <td>
+                                <td class="pl-3">
                                     <%= i+1 %>
                                 </td>
-                                
-                                <td>
+
+                                <td class="fw-bold">
                                     <%= brandName[i].brandName %>
                                 </td>
-                               
-                                <td>
-                                    <a href="/admin/delete-product/<%= brandName[i]._id %> "
-                                        onclick="return confirm('Do you want to delete <% brandName[i].name %> ?')"
-                                        class="btn btn-danger">Delete</a>
+
+                                <td class="d-flex">
+                                    <a href="/admin/EditBrandName/ " class="btn btn-primary mx-1 px-4 my-1">Edit</a>
+
+                                    
+                                    <form action="/admin/deleteBrandName/<%= brandName[i]._id %>" method="get">
+                                        <button type="submit" onclick="archiveFunction()" class="btn btn-danger mx-1 my-1">Delete</button>
+                                    </form>
                                 </td>
                             </tr>
 
@@ -54,6 +59,27 @@
     </div>
 </div>
 
+<script>
+    function archiveFunction() {
+        event.preventDefault(); // prevent form submit
+        var form = event.target.form; // storing the form
+        swal({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        },
+            function (isConfirm) {
+                if (isConfirm) {
+                    form.submit();
+                }
+            });
+    }
+
+</script>
 
 
 <script src=" https://code.jquery.com/jquery-3.5.1.js"></script>

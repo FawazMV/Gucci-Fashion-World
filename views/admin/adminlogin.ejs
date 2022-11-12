@@ -15,37 +15,94 @@
 </head>
 
 <body>
-<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<!------ Include the above in your HEAD tag ---------->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!------ Include the above in your HEAD tag ---------->
 
-<div class="wrapper fadeInDown">
-    <div id="formContent">
-        <!-- Tabs Titles -->
+    <div class="wrapper fadeInDown">
+        <div id="formContent">
+            <!-- Tabs Titles -->
 
-        <!-- Icon -->
-        <div class="fadeIn first">
-            <img src="/assets/images/logo.png" style="width:150px;" class="p-3" id="icon" alt="User Icon" />
+            <!-- Icon -->
+            <div class="fadeIn first">
+                <img src="/assets/images/logo.png" style="width:150px;" class="p-3" id="icon" alt="User Icon" />
+            </div>
+            <div class="p-5">
+                <!-- Login Form -->
+                <form action="" method="post" onsubmit="">
+                    <input type="email" id="login" class="fadeIn second px-5 mt-1   py-4 bg-light border-0 form-control"
+                        name="email" placeholder="Email Id">
+                    <p class="text-danger mb-1 fw-light opacity-75" id="emailidwarning"></p>
+                    <input type="password" id="password"
+                        class="fadeIn mt-3  third px-5 py-4 bg-light border-0 form-control" name="password"
+                        placeholder="Password">
+                    <p class="text-danger  mb-1 fw-light opacity-75" id="passwordidwarning"></p>
+                    <input type="submit" onclick="validate()" class="fadeIn fourth " value="Admin Log In">
+
+                    <p class="text-danger" id="errmsg"></p>
+
+                </form>
+            </div>
+            <!-- Remind Passowrd -->
+            <div id="formFooter">
+                <a class="underlineHover" href="#">Forgot Password?</a>
+            </div>
+
         </div>
-
-        <!-- Login Form -->
-        <form action="/admin/login" method="post">
-            <input type="text" id="login" class="fadeIn second" name="login" placeholder="Email Id">
-            <input type="text" id="password" class="fadeIn third" name="login" placeholder="Password">
-            <input type="submit" class="fadeIn fourth" value="Log In">
-            <% if (response) { %>
-            <p class="text-danger">Invalid Credentials</p>
-            <% } %>
-        </form>
-
-        <!-- Remind Passowrd -->
-        <div id="formFooter">
-            <a class="underlineHover" href="#">Forgot Password?</a>
-        </div>
-
     </div>
-</div>
+
+    <script>
+        let email = document.getElementById('login')
+        let password = document.getElementById('password')
+        let emailwarning = document.getElementById('emailidwarning')
+        let passwordwarning = document.getElementById('passwordidwarning')
+
+        function validate() {
+            document.getElementById("errmsg").innerHTML =""
+            event.preventDefault();
+            let form = event.target.form;
+            let validation = true;
+            emailwarning.innerHTML = "";
+            passwordwarning.innerHTML = "";
+            if (email.value === "") {
+                emailwarning.innerHTML = "Please enter your email id"
+                validation = false
+            }
+            if (password.value === "") {
+                passwordwarning.innerHTML = "Please enter your password"
+                validation = false
+            } if (validation) {
+                email = email.value
+                password = password.value
+
+                try {
+                    axios.post('/admin/login', { email: email, password: password }).then((e) => {
+                        if (!e.data.response) {
+                            form.submit();
+                            location.href = '/admin';
+                        } else {
+                            document.getElementById("errmsg").innerHTML = "Invalid credentials";
+                        }
+                    })
+                } catch (error) {
+                    console.log(error)
+                }
+
+
+            }
+            return validation
+        }
+
+
+
+    </script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script>
+
+    </script>
 
     <script src="js/jquery.min.js"></script>
     <script src="js/popper.js"></script>

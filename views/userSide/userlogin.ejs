@@ -2,78 +2,121 @@
 <html lang="en">
 
 <head>
+    <title>Login 08</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap demo</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/adminlogin.css">
+
+
 </head>
 
+<body class="overflow-hidden">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!------ Include the above in your HEAD tag ---------->
+    <%- include('../userSide/includes/navbar') %>
 
-    <section class="vh-100" style="background-color:#40494a;">
+        <div class="wrapper  fadeInDown" style="overflow-y:hidden;">
+            <div id="formContent">
+                <!-- Tabs Titles -->
 
-        <div class="container py-5 h-100">
-            <div class="row d-flex justify-content-center align-items-center h-100">
-                <div class="col col-xl-10">
-                    <div class="card " style="border-radius: 1rem;">
-                        <div class="row g-0 ">
-                            <div class="col-md-6 col-lg-5 d-none d-md-block">
-                                <img src="/images/bg-heading-03.jpg"
-                                    alt="login form" class="img-fluid " style="border-radius: 1rem 0 0 1rem;" />
-                            </div>
-                            <div class=" col-md-6 col-lg-7 d-flex align-items-center">
-                                <div class="ms-3 card-body p-4 py-md-0 px-3 text-black">
-
-                                    <form class="p-4" action="/login" method="post">
-
-                                        <div class="d-flex align-items-center mb-3 pb-1 ">
-                                            <img class="me-3" src="/assets/images/logo.png" style="width:px;" alt="logo">
-                                            <!-- <span class="h1 fw-bold mb-0">GUCCI</span> -->
-                                        </div>
-
-                                        <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;"> Sign into your
-                                            account
-                                        </h5>
-
-                                        <div class="form-outline mb-4">
-                                            <input type="email" name="email" id="form2Example17"
-                                                class="form-control form-control-lg" />
-                                            <label class="form-label" for="form2Example17">Email address</label>
-                                        </div>
-
-                                        <div class="form-outline mb-4">
-                                            <input type="password" name="password" id="form2Example27"
-                                                class="form-control form-control-lg" />
-                                            <label class="form-label" for="form2Example27">Password</label>
-                                        </div>
-
-                                        <div class="d-grid col-12 mx-auto mb-3">
-                                            <button class="btn btn-dark btn-lg " type="submit">Login</button>
-                                        </div>
-                                        <a class="small text-muted " href="#!">Forgot password?</a>
-                                        <p class="pb-0 mt-1" style="color: #393f81;">Don't have an account? <a href="/signup" style="color: #393f81;">Register
-                                                here</a></p>
-                                       
-
-                                    </form>
-
-                                    <% if (locals.response) { %>
-                                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                        <strong class="text-danger me-2"><%-response  %>  </strong> Try
-                                        again.
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                    </div>
-                                    <% } %>
-                                    
-                                    
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Icon -->
+                <div class="fadeIn first">
+                    <img src="/assets/images/logo.png" style="width:160px;" class="p-4" id="icon" alt="User Icon" />
                 </div>
+                <div class="p-5">
+                    <!-- Login Form -->
+                    <form >
+                        <input type="email" id="login"
+                            class="fadeIn second px-5 mt-1   py-4 bg-light border-0 form-control" name="email"
+                            placeholder="Email Id" onkeyup="emailkey()">
+
+                        <p class="float-start text-danger mb-1 fw-light opacity-75" id="emailidwarning"></p>
+
+
+                        <input type="password" id="password"
+                            class="fadeIn mt-3  third px-5 py-4 bg-light border-0 form-control" name="password"
+                            placeholder="Password" onkeyup="passwordkey()">
+
+                        <p class="float-start text-danger  mb-1 fw-light opacity-75" id="passwordidwarning"></p>
+
+
+                        <input type="submit" onclick="validate()" class="fadeIn fourth mt-4  px-5" value="Log In">
+
+                        <p class="text-danger" id="errmsg"></p>
+                    </form>
+
+                </div> <!-- Remind Passowrd -->
+                <div id="formFooter" class="d-flex justify-content-between">
+                    <a class="underlineHover" href="#">Forgot Password?</a>
+                    <a class="underlineHover" href="/signup" style="color: #393f81;">Don't have an account?</a>
+                </div>
+
             </div>
         </div>
-    </section>
+        <script>
+            let email = document.getElementById('login')
+            let password = document.getElementById('password')
+            let emailwarning = document.getElementById('emailidwarning')
+            let passwordwarning = document.getElementById('passwordidwarning')
+            function validate() {
+                event.preventDefault();
+                let form = event.target.form;
+                let validation = true;
+                document.getElementById("errmsg").innerHTML = ""
+                emailwarning.innerHTML = "";
+                passwordwarning.innerHTML = "";
+                if (email.value === "") {
+                    emailwarning.innerHTML = "Please enter your email id"
+                    validation = false
+                }
+                if (password.value === "") {
+                    passwordwarning.innerHTML = "Please enter your password"
+                    validation = false
+                } if (validation) {
+
+                    try {
+                        axios.post('/login', { email: email.value, password: password.value }).then((e) => {
+                            if (!e.data.response) {
+                                form.submit();
+                                location.href = '/';
+                            } else {
+                                document.getElementById("errmsg").innerHTML = e.data.response;
+                            }
+                        })
+                    } catch (error) {
+                        console.log(error)
+                    }
+                }
+            }
+            function emailkey() {
+                emailwarning.innerHTML = ""
+            }
+
+            function passwordkey() {
+                passwordwarning.innerHTML = ""
+            }
+        </script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+        <script>
 
 
-   
+        </script>
+
+        <script src="js/jquery.min.js"></script>
+        <script src="js/popper.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/main.js"></script>
+
+
+
+</body>
+
+</html>

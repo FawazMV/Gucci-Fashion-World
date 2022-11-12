@@ -1,26 +1,137 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/public/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://foliotek.github.io/Croppie/croppie.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+    Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <body>
-<label for="formFileLg">Image <span class="fw-light fs-6 text-black-50"> ( You can
-        choose multiple images)</span></label><br>
-<input type="file" onchange="previewMultiple(event)" name="image" class="form-control" id="formFileLg" multiple>
-<div id="galeria">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <label class="cabinet center-block">
+                    <figure>
+                        <img src="" class="gambar img-responsive img-thumbnail" id="item-img-output" />
+                        <figcaption><i class="fa fa-camera"></i></figcaption>
+                    </figure>
+                    <form action="/" method="get">
+                    <input type="file" class="item-img file center-block" name="file_photo" />
+                    <button class="btn btn-info p-5 mt-5" style="margin-top:100px;padding:50px;" type="submit"></button>
+                </label>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" id="cropImagePop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        <?=multiLanguage( "Edit Foto" , "Edit Photo" )?>
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div id="upload-demo" class="center-block"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" id="cropImageBtn" class="btn btn-primary">Crop</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script src="https://foliotek.github.io/Croppie/croppie.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script>
+        // Start upload preview image
+            $(".gambar").attr("src", "https://user.gadjian.com/static/images/personnel_boy.png");
+            var $uploadCrop,
+                tempFilename,
+                rawImg,
+                imageId;
+            function readFile(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('.upload-demo').addClass('ready');
+                        $('#cropImagePop').modal('show');
+                        rawImg = e.target.result;
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                }
+                else {
+                    swal("Sorry - you're browser doesn't support the FileReader API");
+                }
+            }
 
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+            $uploadCrop = $('#upload-demo').croppie({
+                viewport: {
+                    width: 150,
+                    height: 200,
+                },
+                enforceBoundary: false,
+                enableExif: true
+            });
+            $('#cropImagePop').on('shown.bs.modal', function () {
+                // alert('Shown pop');
+                $uploadCrop.croppie('bind', {
+                    url: rawImg
+                }).then(function () {
+                    console.log('jQuery bind complete');
+                });
+            });
 
-<script>
-    function previewMultiple(event) {
-        var saida = document.getElementById('formFileLg');
-        var quantos = saida.files.length
-        document.getElementById("galeria").innerHTML += '';
-        for (i = 0; i < 5; i++) {
-            var urls = URL.createObjectURL(event.target.files[i]);
-            document.getElementById('galeria').innerHTML += '<img style class="ml-1" src="'+urls+'">'
-        }
-    }
-</script>
-
+            $('.item-img').on('change', function () {
+                imageId = $(this).data('id'); tempFilename = $(this).val();
+                $('#cancelCropBtn').data('id', imageId); readFile(this);
+            });
+            $('#cropImageBtn').on('click', function (ev) {
+                $uploadCrop.croppie('result', {
+                    type: 'base64',
+                    format: 'jpeg',
+                    size: { width: 150, height: 200 }
+                }).then(function (resp) {
+                    $('#item-img-output').attr('src', resp);
+                    $('#cropImagePop').modal('hide');
+                });
+            });
+				// End upload preview image
+    </script>
 </body>
-
 </html>

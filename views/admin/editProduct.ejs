@@ -8,29 +8,33 @@
                 <div class="row">
 
                     <div class="col-md-11 ">
-                        <form action="/admin/addProduct" method="post" enctype="multipart/form-data" class="mt-4"
+                        <form action="/admin/editProduct" method="post" enctype="multipart/form-data" class="mt-4"
                             onsubmit="return validate()">
 
                             <div class="d-flex justify-content-around" style="width:100%;">
                                 <div>
                                     <div class="d-flex">
                                         <div class="me-5" style="width:60%;">
-                                            <label for="brandnameId">Brand Name</label> <a href="/admin/addBrandName"
-                                                class="float-end btn-link text-info fw-light">add Brands</a>
-                                            <select name="brandName" id="brandnameId" required="true"
+                                            <label for="brandnameId">Brand Name</label>
+                                            <select name="brandName" id="brandnameId"
                                                 class="form-select">
-                                                <option value="" disabled selected>Choose...</option>
+                                                <option disabled selected>
+                                                    <%= product.brandName.brandName %>
+                                                </option>
                                                 <% for( let i=0; i < brandName.length; i++ ) { %>
                                                     <option value="<%= brandName[i]._id %>">
                                                         <%= brandName[i].brandName %>
                                                     </option>
                                                     <% } %>
                                             </select>
+
                                         </div>
                                         <div style="width:30%;">
                                             <label for="genderType">Gender Type :</label>
-                                            <select name="gender" id="genderType" required="true" class="form-select">
-                                                <option value="" disabled selected>Choose...</option>
+                                            <select name="gender" id="genderType" class="form-select">
+                                                <option disabled selected>
+                                                    <%= product.gender.gender %>
+                                                </option>
                                                 <% for( let i=0; i < gender.length; i++ ) { %>
                                                     <option value="<%= gender[i]._id %>">
                                                         <%= gender[i].gender %>
@@ -46,8 +50,10 @@
                                     <div class="d-flex">
                                         <div class="me-5" style="width:50%;">
                                             <label for="productType">Product Type :</label>
-                                            <select name="type" id="productType" required="true" class="form-select">
-                                                <option value="" selected>Choose...</option>
+                                            <select name="type" id="productType"   class="form-select">
+                                                <option disabled selected>
+                                                    <%= product.type %>
+                                                </option>
                                                 <option value="Shirt">Shirt</option>
                                                 <option value="T-Shirt">T-Shirt</option>
                                                 <option value="Jeans">Jeans</option>
@@ -61,8 +67,10 @@
                                         </div>
                                         <div style="width:50%;">
                                             <label for="category">Category :</label>
-                                            <select name="category" id="category" required="true" class="form-select">
-                                                <option value="" selected>Choose...</option>
+                                            <select name="category" id="category" class="form-select">
+                                                <option disabled selected>
+                                                    <%= product.category %>
+                                                </option>
                                                 <option value="Formals">Formals</option>
                                                 <option value="Casuals">Casuals</option>
                                                 <option value="Innerwear">Innerwear</option>
@@ -78,20 +86,23 @@
                                         <div class="me-5" style="width:50%;">
                                             <label for="retailPriceId">Retail Price</label>
                                             <input type="phone" maxlength="10" size="10" name="retailPrice"
-                                                class="form-control" id="retailPriceId">
+                                                class="form-control" id="retailPriceId"
+                                                value="<%= product.retailPrice %>">
                                         </div>
                                         <div style="width:50%;">
                                             <label for="shopPriceId">Shop Price</label>
                                             <input type="phone" maxlength="10" size="10" name="shopPrice"
-                                                class="form-control" id="shopPriceId">
+                                                class="form-control" id="shopPriceId" value="<%= product.shopPrice %>">
                                         </div>
                                     </div>
                                     <br>
                                     <div class="d-flex">
                                         <div class="me-4" style="width:45%;">
                                             <label for="sizeId">Size :</label>
-                                            <select name="size" id="sizeId" required="true" class="form-select">
-                                                <option value="" selected>Choose...</option>
+                                            <select name="size" id="sizeId"  class="form-select">
+                                                <option disabled selected>
+                                                    <%= product.size %>
+                                                </option>
                                                 <option value="X-Small">X-Small</option>
                                                 <option value="Small">Small</option>
                                                 <option value="Medium">Medium</option>
@@ -103,8 +114,10 @@
                                         </div>
                                         <div style="width:30%;" class="me-3">
                                             <label for="color1Id">Color 1 :</label>
-                                            <select name="color1" id="color1Id" required="true" class="form-select">
-                                                <option value="" selected>Choose...</option>
+                                            <select name="color1" id="color1Id"  class="form-select">
+                                                <option disabled selected>
+                                                    <%= product.color1 %>
+                                                </option>
                                                 <option value="Black">Black</option>
                                                 <option value="White">White</option>
                                                 <option value="Green">Green</option>
@@ -116,7 +129,9 @@
                                         <div style="width:30%;">
                                             <label for="color2">Color 2 :</label>
                                             <select name="color2" id="color2" class="form-select">
-                                                <option value="" selected>Choose...</option>
+                                                <option disabled selected>
+                                                    <%= product.color2 %>
+                                                </option>
                                                 <option value="Black">Black</option>
                                                 <option value="White">White</option>
                                                 <option value="Green">Green</option>
@@ -127,19 +142,16 @@
                                         </div>
                                     </div>
                                     <br>
-                                    <label for="descriptionId">Description</label>
-                                    <input type="text" name="description" size="5" class="form-control"
-                                        id="descriptionId">
-                                    <br>
 
-                                    <button type="submit" class="btn btn-warning mt-4">Submit</button>
+
+
 
                                 </div>
                                 <div class="">
                                     <div class="me-5" style="width:50%;">
                                         <label for="quantityId"> Quantity</label>
-                                        <input type="number" maxlength="10" size="10" name="quantity"
-                                            class="form-control" id="quantityId">
+                                        <input type="number" value="<%= product.quantity %>" maxlength="10" size="10"
+                                            name="quantity" class="form-control" id="quantityId">
                                         <br>
                                     </div>
 
@@ -147,14 +159,29 @@
                                             choose multiple images)</span></label><br>
                                     <input type="file" onchange="previewMultiple(event)" name="image"
                                         class="form-control" id="formFileLg" multiple>
-
-                                    <div id="galeria" class="mt-2"></div>
+                                    <div id="galeria" class="mt-2">
+                                        <% for( let i=0; i < locals.product.imagesDetails.length; i++ ) { %>
+                                            <img style="width:70px;" class="ml-1"
+                                                src="/product-images/<%= product.imagesDetails[i].filename %>">
+                                            <% } %>
+                                    </div>
                                     <br>
 
 
 
                                 </div>
 
+                            </div>
+                            <div class="d-flex justify-content-between ms-5" style="width:100%;">
+                                <div class="ms-5">
+                                    <label for="descriptionId">Description</label>
+                                    <br>
+                                    <textarea name="description" class="" id="descriptionId" value=""
+                                        rows="4" cols="70"><%= product.description %></textarea>
+                                        <br>
+
+                                    <button type="submit" class="btn btn-warning mt-4">Submit</button>
+                                </div>
                             </div>
 
                         </form>
@@ -176,45 +203,23 @@
             var urls = URL.createObjectURL(event.target.files[i]);
             document.getElementById('galeria').innerHTML += '<img style="width:70px;" class="ml-1" src="' + urls + '">'
 
-        }
-        zz
+        } 
+
 
     }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<% if (locals.msg) { %>
-    <script>
-        Swal.fire({
-            icon: 'success',
-            title: 'Product added successfully',
-            showConfirmButton: false,
-            timer: 3500
-        })
-    </script>
-
-    <% } %>
-
-
-
-
-        <script>
-            function validate() {
-                if (document.getElementById("brandnameId").value === "" || document.getElementById("genderType").value === "" || document.getElementById('productType').value === "" || document.getElementById('category').value === "" || document.getElementById('retailPriceId').value === "" || document.getElementById('color1Id').value === "" || document.getElementById('shopPriceId').value === "" || document.getElementById('sizeId').value === "" || document.getElementById('imageId').value === "" || document.getElementById('descriptionId').value === "" || document.getElementById('quantityId').value === "") {
-                    alert('Fill the essential columns')
-                    return false
-                } else if (isNaN(document.getElementById('shopPriceId').value) || isNaN(document.getElementById('retailPriceId').value)) {
-                    alert("Price should be in number format")
-                    return false
-                } else if (isNaN(document.getElementById('quantityId').value)) {
-                    alert("Quantity should be in number format")
-                    return false
-                } else {
-
-                    return true
-                }
-
-            }
-        </script>
+<script>
+    function validate() {
+        if (document.getElementById("brandnameId").value === "" || document.getElementById("genderType").value === "" || document.getElementById('productType').value === "" || document.getElementById('category').value === "" || document.getElementById('retailPriceId').value === "" || document.getElementById('color1Id').value === "" || document.getElementById('shopPriceId').value === "" || document.getElementById('sizeId').value === "" || document.getElementById('imageId').value === "" || document.getElementById('descriptionId').value === "" || document.getElementById('quantityId').value === "") {
+            alert('Fill the essential columns')
+            return false
+        } else if (isNaN(document.getElementById('shopPriceId').value) || isNaN(document.getElementById('retailPriceId').value)) {
+            alert("Price should be in number format")
+            return false
+        } else if (isNaN(document.getElementById('quantityId').value)) {
+            alert("Quantity should be in number format")
+            return false
+        }
+        return true
+    }
+</script>
