@@ -7,7 +7,7 @@
 
         <section class="px-3">
             <div class="container px-5 table-responsive">
-               
+
                 <div style="width:30%;" class="mb-5 ml-auto">
                     <button type="" data-bs-toggle="modal" data-bs-target="#exampleModal"
                         class="btn btn-primary float-end">Add Category</button>
@@ -21,35 +21,39 @@
                             <th scope="col">Action</th>
                         </tr>
                     </thead>
-                    <tbody >
+                    <tbody>
                         <% for( let i=0; i < gender.length; i ++ ) { %>
-                    
+
                             <tr>
-                    
+
                                 <td class="pt-4 px-3">
                                     <%= i+1 %>
                                 </td>
-                    
+
                                 <td class="fw-bold pt-4">
                                     <%= gender[i].gender %>
                                 </td>
 
-                                <td><img src="/product-images/<%= gender[i].image[0].filename %>" style="height:60px;width:auto" alt=""> </td>
+                                <td><img src="/product-images/<%= gender[i].image[0].filename %>"
+                                        style="height:60px;width:auto" alt=""> </td>
                                 <td class="pt-3">
-                                    <a href="/admin/Edit-gender/ "  class="btn btn-primary px-4 my-1">Edit</a>
-                                    
-                                    <a href="/admin/delete-gender/ "
-                                        onclick="return confirm('Do you want to delete ?')"
-                                        class="btn btn-danger my-1">Delete</a>
+                                    <!-- <a href="/admin/Edit-gender/ " class="btn btn-primary px-4 my-1">Edit</a> -->
+                                    <button type="button" class="btn btn-primary px-4 my-1" data-bs-toggle="modal"
+                                        data-bs-target="#staticBackdrop"
+                                        onclick="editcate('<%= gender[i].gender %>','/product-images/<%= gender[i].image[0].filename %>','<%= gender[i]._id %>')">
+                                        Edit
+                                    </button>
+                                    <button" onclick="archiveFunction('<%= gender[i]._id %>')"
+                                        class="btn btn-danger my-1">Delete</button>
                                 </td>
                             </tr>
-                    
+
                             <% } %>
-                    
-                    
+
+
                     </tbody>
                 </table>
-        
+
                 <section>
 
                 </section>
@@ -59,6 +63,38 @@
 
     </div>
 </div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Category</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body px-4">
+                <form action="/admin/Editgender" method="post" onsubmit="get_action(this)"
+                    enctype="multipart/form-data">
+                    <input type="text" style="display:none;" name="id" id="idhide">
+                    <label for="gender">Category name</label>
+                    <input type="text" class="form-control mb-3" onkeyup="editkey()" name="gender" id="genderEdit">
+                    <label for="gender">Image</label>
+                    <input type="file" class="form-control" aria-label="Upload" name="image"
+                        onchange="loadEditFile(event)" id="image">
+                    <div class="">
+                        <img id="imgedit" style="width: 65%; height:auto; margin-top: 10px;" />
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" id="editbutton" disabled class="btn btn-primary">Update</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -71,11 +107,12 @@
             <div class="modal-body px-4">
                 <form action="/admin/genderType" method="post" enctype="multipart/form-data">
                     <label for="gender">Gender Type</label>
-                    <input type="text" class="form-control" name="gender" id="gender">
+                    <input type="text" class="form-control mb-3" name="gender" id="gender">
+                    <label for="gender">Image</label>
                     <input type="file" class="form-control" aria-label="Upload" name="image" onchange="loadFile(event)"
                         id="image">
-                    <div clas="">
-                        <img id="output" style="width: 100%; height:auto; margin-top: 10px;" />
+                    <div class="">
+                        <img id="output" style="width: 70%; height:auto; margin-top: 10px;" />
                     </div>
 
                     <div class="modal-footer">
@@ -86,6 +123,12 @@
         </div>
     </div>
 </div>
+
+
+
+
+
+
 <script>
     var loadFile = function (event) {
         var output = document.getElementById('output');
@@ -94,5 +137,73 @@
             URL.revokeObjectURL(output.src) // free memory
         }
     };
+</script>
+<script>
+    archiveFunction = async (id) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                try {
+                    axios.delete('/admin/deleteGender', { data: { id: id } }).then((e) => {
+                        if (e.data.response) {
+                            Swal.fire(
+                                {
+                                    icon: 'success',
+                                    title: 'Your file has been deleted.',
+                                    showConfirmButton: false,
+                                    timer: 3500
+                                }
+                            )
+                            location.href = '/admin/genderType';
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'The category is already in use !'
+                            })
+                        }
+                    })
+                } catch (error) {
+                    console.log(error)
+                }
+
+            }
+        })
+
+    }
+</script>
+
+<script>
+    let editIdg
+    editcate = (name, src,id) => {
+        document.getElementById('idhide').value = id
+        document.getElementById('genderEdit').value = name
+        document.getElementById('imgedit').src = src
+    }
+    // function get_action(form) {
+    //     alert('abc')
+    //     form.action = `/admin/Editgender${editIdg}`;
+    // }
+</script>
+<script>
+    var loadEditFile = function (event) {
+        document.querySelector('#editbutton').disabled = false;
+        var output = document.getElementById('imgedit');
+        output.src = URL.createObjectURL(event.target.files[0]);
+        output.onload = function () {
+            URL.revokeObjectURL(output.src) // free memory
+        }
+    };
+    function editkey() { document.querySelector('#editbutton').disabled = false }
+</script>
+<script type="text/javascript">
+
 </script>
 </div>

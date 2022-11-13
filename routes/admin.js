@@ -30,7 +30,9 @@ router.get('/addBrandName', admin.addBrandName)
 
 router.post('/addBrandName', admin.BrandNameUpdate)
 
-router.get('/deleteBrandName/:id',admin.deleteBrandName)
+router.post('/deleteBrandName',admin.deleteBrandName)
+
+router.put('/EditBrandName', admin.EditBrandName)
 
 router.get('/deleteProduct/:id', admin.deleteProduct)
 
@@ -45,5 +47,11 @@ router.get('/genderType',admin.genderType)
 router.post('/genderType', fileUpload.upload.array('image'))
 
 router.post('/genderType', admin.genderTypeAdd)
+
+router.delete('/deleteGender',admin.deleteGender)
+
+router.post('/Editgender', fileUpload.upload.array('image'))
+
+router.post('/Editgender', admin.editGender)
 
 module.exports = router    
