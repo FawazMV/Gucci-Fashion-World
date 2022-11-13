@@ -3,7 +3,6 @@ const express = require('express')
 const app = express()
 const expressLayouts = require('express-ejs-layouts')
 const bodyParser = require("body-parser");
-//const aws = require('aws-sdk')
 const logger = require('morgan')
 const multer = require('multer')
 //const multers3 = require('multer-s3')

@@ -24,7 +24,7 @@
                             <th scope="col">Quantity</th>
                             <th scope="col">Size</th>
                             <th scope="col">Action</th>
-                        </tr>  
+                        </tr>
                     </thead>
                     <tbody class="">
                         <% for( let i=0; i < products.length; i ++ ) { %>
@@ -34,8 +34,8 @@
                                 <td>
                                     <%= i+1 %>
                                 </td>
-                                <td> <img style="width:30px; height: auto;" src="/product-images/<%= locals.products[i].imagesDetails[0].filename %> "
-                                        alt=""> </td>
+                                <td> <img style="width:30px; height: auto;"
+                                        src="<%= locals.products[i].imagesDetails[0].Location %> " alt=""> </td>
                                 <td>
                                     <%= products[i].brandName.brandName %>
                                 </td>
@@ -54,14 +54,15 @@
                                 <td>
                                     <%= products[i].size %>
                                 </td>
-                                
+
                                 <td class="d-flex justify-content-evenly">
                                     <a href="/admin/view-product/<%= products[i]._id %>" class="btn btn-info">View</a>
 
                                     <a href="/admin/editProduct/<%= products[i]._id %>" class="btn btn-primary"> Edit
                                     </a>
                                     <form action="/admin/deleteProduct/<%= products[i]._id %>" method="get">
-                                    <button type="submit" onclick="archiveFunction()" class="btn btn-danger">Delete</button>
+                                        <button type="submit" onclick="archiveFunction()"
+                                            class="btn btn-danger">Delete</button>
                                     </form>
                                 </td>
                             </tr>
@@ -96,10 +97,11 @@
 
 
 <script>
-   function archiveFunction() {
+
+    archiveFunction = async (id) => {
         event.preventDefault(); // prevent form submit
         var form = event.target.form; // storing the form
-        swal({
+        Swal.fire({
             title: 'Are you sure?',
             text: "You won't be able to revert this!",
             icon: 'warning',
@@ -107,12 +109,13 @@
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, delete it!'
-        },
-            function (isConfirm) {
-                if (isConfirm) {
-                    form.submit();  
-                } 
-            });
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+
+            }
+        })
     }
+
 
 </script>

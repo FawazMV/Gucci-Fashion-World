@@ -4,7 +4,8 @@ const productModel = require('../models/product-schema')
 const brandModel = require('../models/brandName-schema')
 const adminModel = require('../models/admin-schema');
 const genderModel = require('../models/gender_type-schema');
-const { IdentityStore } = require('aws-sdk');
+const { s3Uploadv2, s3Uploadv3, s3delte2 } = require('../config/s3Service')
+
 let msg, product_id
 
 
@@ -48,6 +49,7 @@ module.exports = {
     },
     productsView: async (req, res) => {
         let products = await productModel.find({ deleteProduct: false }).populate('brandName').populate('gender').lean()
+        console.log(products)
         res.render('admin/products', { admin: true, products, Products: "active", heading: "Products" })
     },
     addProduct: async (req, res) => {
@@ -56,9 +58,10 @@ module.exports = {
         res.render('admin/addProduct', { admin: true, heading: "Add Product", brandName, gender, msg })
         msg = false
     },
-    addProductPost: (req, res) => {
+    addProductPost: async (req, res) => {
+        const results = await s3Uploadv3(req.files);
         let product = req.body
-        product.imagesDetails = req.files
+        product.imagesDetails = results
         productModel.create(product).then(() => {
             msg = true
             res.redirect('/admin/addProduct')
@@ -97,7 +100,7 @@ module.exports = {
             res.json({ response: true })
         }).catch(error => {
             console.log(error)
-            res.json({response:false})
+            res.json({ response: false })
         })
     }
     ,
@@ -112,9 +115,12 @@ module.exports = {
         let brandName = await brandModel.find({})
         res.render('admin/editProduct', { admin: true, heading: "Edit Product", brandName, product, gender })
     },
-    updateProduct: (req, res) => {
+    updateProduct: async (req, res) => {
         let product = req.body
-        if (req.files.length) product.imagesDetails = req.files
+        if (req.files.length) {
+            const results = await s3Uploadv3(req.files);
+            product.imagesDetails = results
+        }
         productModel.findByIdAndUpdate(product_id, product).then(() => {
             res.redirect('/admin/Products')
         }).catch(error => {
@@ -126,10 +132,11 @@ module.exports = {
         let gender = await genderModel.find({})
         res.render('admin/gender', { admin: true, heading: "Gender Types", gender })
     },
-    genderTypeAdd: (req, res) => {
+    genderTypeAdd:async (req, res) => {
         let category = req.body
-        category.image = req.files
-        console.log(category)
+        const file = req.files[0];
+        const result = await s3Uploadv2(file);
+        category.image = result
         genderModel.create(category).then(() => {
             res.redirect('/admin/genderType')
         }).catch(error => {
@@ -152,10 +159,19 @@ module.exports = {
         }
 
     },
-    editGender: (req, res) => {
-        let category = {gender:req.body.gender}
+    editGender: async (req, res) => {
+        let category = { gender: req.body.gender }
         id = req.body.id
-        if (req.files.length) category.image = req.files
+        if (req.files.length) {
+            genderModel.findById(id).then(async(product)=>{
+                const image = product.image[0]
+                console.log(image)
+                await s3delte2(image)
+            })
+            const file = req.files[0];
+            const result = await s3Uploadv2(file);
+            category.image = result
+        }
         genderModel.findByIdAndUpdate(id, category).then(() => {
             res.redirect('/admin/genderType')
         }).catch(error => {

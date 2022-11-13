@@ -34,13 +34,13 @@
                                     <%= gender[i].gender %>
                                 </td>
 
-                                <td><img src="/product-images/<%= gender[i].image[0].filename %>"
+                                <td><img src="<%= gender[i].image[0].Location %>"
                                         style="height:60px;width:auto" alt=""> </td>
                                 <td class="pt-3">
                                     <!-- <a href="/admin/Edit-gender/ " class="btn btn-primary px-4 my-1">Edit</a> -->
                                     <button type="button" class="btn btn-primary px-4 my-1" data-bs-toggle="modal"
                                         data-bs-target="#staticBackdrop"
-                                        onclick="editcate('<%= gender[i].gender %>','/product-images/<%= gender[i].image[0].filename %>','<%= gender[i]._id %>')">
+                                        onclick="editcate('<%= gender[i].gender %>','<%= gender[i].image[0].Location %>','<%= gender[i]._id %>')">
                                         Edit
                                     </button>
                                     <button" onclick="archiveFunction('<%= gender[i]._id %>')"
@@ -128,7 +128,6 @@
 
 
 
-
 <script>
     var loadFile = function (event) {
         var output = document.getElementById('output');
@@ -182,7 +181,7 @@
 
 <script>
     let editIdg
-    editcate = (name, src,id) => {
+    editcate = (name, src, id) => {
         document.getElementById('idhide').value = id
         document.getElementById('genderEdit').value = name
         document.getElementById('imgedit').src = src

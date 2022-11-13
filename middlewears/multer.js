@@ -1,15 +1,16 @@
 const multer = require('multer')
 const path = require('path')
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, './public/product-images')
-    },
-    filename: (req, file, cb) => {
-        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
-    }
-})
+// const storage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null, './public/product-images')
+//     },
+//     filename: (req, file, cb) => {
+//         cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+//     }
+// })
 
+const storage = multer.memoryStorage()
 
 const maxSize = 82428800
 
