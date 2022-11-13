@@ -16,15 +16,16 @@ exports.s3Uploadv2 = async (file) => {
 
 exports.s3Uploadv3 = async (files) => {
     const s3 = new S3()
-
-    const params = files.map(file => {
+    let count = 0
+    const paramss = files.map(file => {
         return {
             Bucket: process.env.AWS_BUCKET_NAME,
-            Key: `Products_images/${Date.now()}-product ${path.extname(file.originalname)} `,
+            Key: `Products_images/${count++}_${Date.now()}-product ${path.extname(file.originalname)} `,
             Body: file.buffer
         }
     })
-    return await Promise.all(params.map(param => s3.upload(param).promise()))
+    console.log(paramss)
+    return await Promise.all(paramss.map(params => s3.upload(params).promise()))
 
 }
 
@@ -35,4 +36,25 @@ exports.s3delte2 = async (name) => {
         Bucket: process.env.AWS_BUCKET_NAME,
         Key: name.Key
     }).promise()
+}
+
+
+exports.s3delte3 = async (name) => {
+    const s3 = new S3()
+    s3.deleteObject({
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: name.Key
+    }).promise()
+}
+
+exports.s3delte3 = async (files) => {
+    const s3 = new S3()
+
+    const params = files.map(file => {
+        return {
+            Bucket: process.env.AWS_BUCKET_NAME,
+            Key: file.Key
+        }
+    })
+    Promise.all(params.map(param => s3.deleteObject(param).promise()))
 }
