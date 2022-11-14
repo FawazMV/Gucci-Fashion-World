@@ -1,5 +1,8 @@
 const bcrypt = require('bcrypt');
+const genderModel = require('../models/gender_type-schema');
+const productModel = require('../models/product-schema');
 const usermodel = require('../models/user-schema');
+
 const accoutnSID = process.env.accoutnSID
 const serviceSID = process.env.serviceSID
 const authToken = process.env.authToken
@@ -16,15 +19,30 @@ function otpcallin(number) {
 }
 
 
+
+
 module.exports = {
     signup: (req, res) => {
-        res.render('userSide/signup', { includes: true, responsee })
+        res.render('userSide/signup', { includes: true })
     },
     login: (req, res) => {
         res.render('userSide/userlogin', { includes: true })
     },
-    home: (req, res) => {
-        res.render('userSide/homepage', { admin: false })
+    home: async (req, res) => {
+        let Products = []
+        genderModel.find({}, { }).lean().then(async(catagories) => {
+            console.log(catagories)
+            for (let i=0; i < catagories.length; i++) {
+                console.log('avc')
+                let products = await productModel.find({ deleteProduct: false, gender: catagories[i]._id }, { imagesDetails: 1, brandName: 1, gender: 1, shopPrice: 1 }).populate('brandName').populate('gender').lean()
+                Products.push(products)
+            }
+            catagories.splice(4)
+            res.render('userSide/homepage', { admin: false, Products, catagories })
+        })
+
+         
+        
     },
     loginPost: async (req, res) => {
         let response = null
@@ -81,5 +99,10 @@ module.exports = {
         resend = false
         res.redirect('/otp')
 
+    },
+
+
+    singleProduct:(req,res)=>{
+        res.render('userSide/singleProduct')
     }
 }

@@ -5,7 +5,6 @@ const brandModel = require('../models/brandName-schema')
 const adminModel = require('../models/admin-schema');
 const genderModel = require('../models/gender_type-schema');
 const { s3Uploadv2, s3Uploadv3, s3delte2, s3delte3 } = require('../config/s3Service')
-
 let msg, product_id
 
 
@@ -60,10 +59,7 @@ module.exports = {
     addProductPost: async (req, res) => {
         const results = await s3Uploadv3(req.files);
         let product = req.body
-        console.log("resyktssss\n"+results[0])
-        console.log("resyktssss\n" + results[1])
         product.imagesDetails = results
-        console.log("imgadfakfaskfjasdk\n" + product.imagesDetails)
         productModel.create(product).then(() => {
             msg = true
             res.redirect('/admin/addProduct')
@@ -120,10 +116,10 @@ module.exports = {
     updateProduct: async (req, res) => {
         let product = req.body
         if (req.files.length) {
-            productModel.findById(product_id).then(async (product) => {
+            productModel.findById(product_id).then( (product) => {
                 const image = product.imagesDetails
                 console.log(image)
-                await s3delte3(image)
+                 s3delte3(image)
             })
             const results = await s3Uploadv3(req.files);
             product.imagesDetails = results
@@ -157,11 +153,16 @@ module.exports = {
         let gender = await productModel.findOne({ gender: id })
         if (gender) res.json({ response: false })
         else {
-            genderModel.findByIdAndDelete(id).then(() => {
-                res.json({ response: true })
-            }).catch(error => {
-                console.log(error)
-                res.redirect('/admin/genderType')
+            genderModel.findById(id).then( (category) => {
+                const image = category.image[0]
+                 s3delte2(image)
+            }).then(() => {
+                genderModel.findByIdAndDelete(id).then(() => {
+                    res.json({ response: true })
+                }).catch(error => {
+                    console.log(error)
+                    res.redirect('/admin/genderType')
+                })
             })
         }
 
@@ -170,10 +171,10 @@ module.exports = {
         let category = { gender: req.body.gender }
         id = req.body.id
         if (req.files.length) {
-            genderModel.findById(id).then(async (product) => {
+            genderModel.findById(id).then( (product) => {
                 const image = product.image[0]
                 console.log(image)
-                await s3delte2(image)
+                 s3delte2(image)
             })
             const file = req.files[0];
             const result = await s3Uploadv2(file);

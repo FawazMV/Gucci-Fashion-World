@@ -44,7 +44,7 @@
 
                             <div class="mb-0 input-group">
                                 <input class=" input--style-3" type="text" placeholder="Full Name" name="name"
-                                    onkeyup="onkey()" id="nameid">
+                                    onkeyup="onkey()" onkeydown="return /[a-z]/i.test(event.key)" id="nameid">
 
                             </div>
                             <p class="text-danger fw-light opacity-75" id="nameidwarning"></p>
@@ -196,25 +196,7 @@
 
 
 
-        <!-- <script>
-        function validatesign() {
-            if (document.getElementById('nameid').value === "" || document.getElementById('EmailId').value === "" || document.getElementById('mobileID').value === "" || document.getElementById('password1Id').value === "" || document.getElementById.value === "") {
-                alert('Some values are missing')
-                return false
-            } else if (document.getElementById('password1Id').value.length < 6) {
-                alert('Password need 6 letters minimum')
-                return false
-            }
-            else if (document.getElementById('password1Id').value != document.getElementById('password2Id').value) {
-                alert('Passwords are not match')
-                return false
-            } else if (document.getElementById('mobileID').value.length != 10 || isNaN(document.getElementById('mobileID').value)) {
-                alert('Mobile Number is not valid')
-                return false
-            }
-            return true;
-        }
-    </script> -->
+   
 
         <!-- Jquery JS-->
         <script src="vendor/jquery/jquery.min.js"></script>

@@ -47,7 +47,7 @@
                                         <div class="me-5" style="width:50%;">
                                             <label for="productType">Product Type :</label>
                                             <select name="type" id="productType" required="true" class="form-select">
-                                                <option value="" selected>Choose...</option>
+                                                <option value=""disabled selected>Choose...</option>
                                                 <option value="Shirt">Shirt</option>
                                                 <option value="T-Shirt">T-Shirt</option>
                                                 <option value="Jeans">Jeans</option>
@@ -61,8 +61,8 @@
                                         </div>
                                         <div style="width:50%;">
                                             <label for="category">Category :</label>
-                                            <select name="category" id="category" required="true" class="form-select">
-                                                <option value="" selected>Choose...</option>
+                                            <select name="category"  id="category" required="true" class="form-select">
+                                                <option value=""disabled selected>Choose...</option>
                                                 <option value="Formals">Formals</option>
                                                 <option value="Casuals">Casuals</option>
                                                 <option value="Innerwear">Innerwear</option>
@@ -77,13 +77,15 @@
                                     <div class="d-flex">
                                         <div class="me-5" style="width:50%;">
                                             <label for="retailPriceId">Retail Price</label>
-                                            <input type="phone" maxlength="10" size="10" name="retailPrice"
-                                                class="form-control" id="retailPriceId">
+                                            <input type="phone" onkeypress="return isNumberKey(event)" maxlength="10"
+                                                size="10" name="retailPrice" class="form-control" id="retailPriceId"
+                                                required>
                                         </div>
                                         <div style="width:50%;">
                                             <label for="shopPriceId">Shop Price</label>
-                                            <input type="phone" maxlength="10" size="10" name="shopPrice"
-                                                class="form-control" id="shopPriceId">
+                                            <input type="phone" onkeypress="return isNumberKey(event)" maxlength="10"
+                                                size="10" name="shopPrice" class="form-control" id="shopPriceId"
+                                                required>
                                         </div>
                                     </div>
                                     <br>
@@ -91,7 +93,7 @@
                                         <div class="me-4" style="width:45%;">
                                             <label for="sizeId">Size :</label>
                                             <select name="size" id="sizeId" required="true" class="form-select">
-                                                <option value="" selected>Choose...</option>
+                                                <option value="" disabled selected>Choose...</option>
                                                 <option value="X-Small">X-Small</option>
                                                 <option value="Small">Small</option>
                                                 <option value="Medium">Medium</option>
@@ -104,7 +106,7 @@
                                         <div style="width:30%;" class="me-3">
                                             <label for="color1Id">Color 1 :</label>
                                             <select name="color1" id="color1Id" required="true" class="form-select">
-                                                <option value="" selected>Choose...</option>
+                                                <option value="" disabled selected>Choose...</option>
                                                 <option value="Black">Black</option>
                                                 <option value="White">White</option>
                                                 <option value="Green">Green</option>
@@ -116,7 +118,7 @@
                                         <div style="width:30%;">
                                             <label for="color2">Color 2 :</label>
                                             <select name="color2" id="color2" class="form-select">
-                                                <option value="" selected>Choose...</option>
+                                                <option value="" disabled selected>Choose...</option>
                                                 <option value="Black">Black</option>
                                                 <option value="White">White</option>
                                                 <option value="Green">Green</option>
@@ -128,17 +130,18 @@
                                     </div>
                                     <br>
                                     <label for="descriptionId">Description</label>
-                                    <input type="text" name="description" size="5" class="form-control"
-                                        id="descriptionId">
-                                    <br>
 
-                                    <button type="submit" class="btn btn-warning mt-4">Submit</button>
+                                    <textarea id="descriptionId" class="form-control" name="description"
+                                        cols="40" required rows="4"></textarea>
+
+
+
 
                                 </div>
                                 <div class="">
                                     <div class="me-5" style="width:50%;">
                                         <label for="quantityId"> Quantity</label>
-                                        <input type="number" maxlength="10" size="10" name="quantity"
+                                        <input type="number" maxlength="10" size="10" required name="quantity"
                                             class="form-control" id="quantityId">
                                         <br>
                                     </div>
@@ -146,13 +149,14 @@
                                     <label for="formFileLg">Image <span class="fw-light fs-6 text-black-50"> ( You can
                                             choose multiple images)</span></label><br>
                                     <input type="file" onchange="previewMultiple(event)" name="image"
-                                        class="form-control" id="formFileLg" multiple>
+                                        class="form-control" id="formFileLg" multiple required>
 
                                     <div id="galeria" class="mt-2"></div>
                                     <br>
 
 
-
+                                    <button type="submit"
+                                        class="btn btn-warning px-5 py-2 mt-5 float-end ">Submit</button>
                                 </div>
 
                             </div>
@@ -177,8 +181,13 @@
             document.getElementById('galeria').innerHTML += '<img style="width:70px;" class="ml-1" src="' + urls + '">'
 
         }
-        zz
 
+    }
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 31 && (charCode < 48 || charCode > 57))
+            return false;
+        return true;
     }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

@@ -45,8 +45,7 @@ router.post('/genderType', fileUpload.upload.array('image'), admin.genderTypeAdd
 
 router.delete('/deleteGender', admin.deleteGender)
 
-router.post('/Editgender', fileUpload.upload.array('image'))
+router.post('/Editgender', fileUpload.upload.array('image'),admin.editGender)
 
-router.post('/Editgender', admin.editGender)
 
 module.exports = router    

@@ -17,7 +17,9 @@ router.get('/otp',user.otppage)
 router.post('/otpverification',user.otppageverify)
 
 router.get('/OTPResend', user.OTPResend)
-  
+
+
+router.get('/SingleProduct',user.singleProduct)  
 
 
 
