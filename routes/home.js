@@ -5,7 +5,7 @@ const user = require('../controller/userControllers')
 router.get('/',user.home)
 
 router.get('/login',user.login)
-
+ 
 router.post('/login',user.loginPost)
 
 router.get('/signup',user.signup)
@@ -18,8 +18,9 @@ router.post('/otpverification',user.otppageverify)
 
 router.get('/OTPResend', user.OTPResend)
 
+router.get('/singelProduct/:id',user.singleProduct)  
 
-router.get('/SingleProduct',user.singleProduct)  
+router.get('/logout',user.logout)
 
 
 

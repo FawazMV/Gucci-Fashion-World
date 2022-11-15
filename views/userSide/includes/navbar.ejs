@@ -1,4 +1,4 @@
-
+<script src="/assets/js/jquery-2.1.0.min.js"></script> --
 
 <!-- ***** Header Area Start ***** -->
 <header class="header-area header-sticky">
@@ -8,12 +8,12 @@
                 <nav class="main-nav">
                     <!-- ***** Logo Start ***** -->
                     <a href="index.html" class="logo">
-                        <img src="assets/images/logo.png">
+                        <img src="/assets/images/logo.png">
                     </a>
                     <!-- ***** Logo End ***** -->
                     <!-- ***** Menu Start ***** -->
                     <ul class="nav">
-                        <li class="scroll-to-section"><a href="#top" class="active">Home</a></li>
+                        <li class="scroll-to-section"><a href="/" class="active">Home</a></li>
                         <li class="scroll-to-section"><a href="#men">Men's</a></li>
                         <li class="scroll-to-section"><a href="#women">Women's</a></li>
                         <li class="scroll-to-section"><a href="#kids">Kid's</a></li>
@@ -37,6 +37,22 @@
                             </ul>
                         </li>
                         <li class="scroll-to-section"><a href="#explore">Explore</a></li>
+
+                        <% if (locals.user) { %>
+                            <li class="submenu mb-0">
+
+                                <a href="javascript:;" class="fw-bold text-primary mb-0">
+                                    <%= locals.user.name %>
+                                </a>
+                                <ul>
+                                    <li><a class="mt-0" href="/logout ">Log out</a></li>
+                                </ul>
+                            </li>
+                            <% } else { %>
+                                <li class="scroll-to-section"><a href="/login">Sign in</a></li>
+                                <% } %>
+
+
                     </ul>
                     <a class='menu-trigger'>
                         <span>Menu</span>
@@ -47,8 +63,7 @@
         </div>
     </div>
 </header>
-    <!-- search button needs -->
-    --
-    <script src="/assets/js/jquery-2.1.0.min.js"></script> --
+<!-- search button needs -->
+--
 <script></script>
 <!-- ***** Header Area End ***** -->

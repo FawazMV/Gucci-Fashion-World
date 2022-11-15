@@ -154,14 +154,15 @@
                     validation = false
                 } if (validation) {
                     try {
-                        axios.post('/signup', { email: email.value, mobile: mobile.value }).then((e) => {
+                        axios.post('/signup', { email: email.value, mobile: mobile.value,password:password.value, name:name.value }).then((e) => {
                             if (!e.data.response) {
                                 form.submit();
+                                location.href = "/otp"
                             } else {
                                 errmsg.style.display = "block"
                                 document.getElementById("errmsg").innerHTML = e.data.response
                             }
-                        })
+                        })  
                     } catch (error) {
                         console.log(error)
                     }

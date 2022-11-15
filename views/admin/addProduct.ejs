@@ -56,7 +56,11 @@
                                                 <option value="Maxi">Maxi</option>
                                                 <option value="Bottomwear">Bottomwear</option>
                                                 <option value="Saree">Saree</option>
+                                                <option value="Kurtas">Kurtas</option>
+                                                <option value=""></option>
                                                 <option value="Other">Other</option>
+                                                <option value="Other">Other</option>
+
                                             </select>
                                         </div>
                                         <div style="width:50%;">
@@ -172,11 +176,12 @@
 
 <script>
     function previewMultiple(event) {
+        
         var saida = document.getElementById('formFileLg');
         var quantos = saida.files.length
         document.getElementById("galeria").innerHTML = '';
 
-        for (i = 0; i < 5; i++) {
+        for (i = 0; i < 4; i++) {
             var urls = URL.createObjectURL(event.target.files[i]);
             document.getElementById('galeria').innerHTML += '<img style="width:70px;" class="ml-1" src="' + urls + '">'
 
@@ -211,19 +216,27 @@
 
         <script>
             function validate() {
-                if (document.getElementById("brandnameId").value === "" || document.getElementById("genderType").value === "" || document.getElementById('productType').value === "" || document.getElementById('category').value === "" || document.getElementById('retailPriceId').value === "" || document.getElementById('color1Id').value === "" || document.getElementById('shopPriceId').value === "" || document.getElementById('sizeId').value === "" || document.getElementById('imageId').value === "" || document.getElementById('descriptionId').value === "" || document.getElementById('quantityId').value === "") {
-                    alert('Fill the essential columns')
-                    return false
-                } else if (isNaN(document.getElementById('shopPriceId').value) || isNaN(document.getElementById('retailPriceId').value)) {
-                    alert("Price should be in number format")
-                    return false
-                } else if (isNaN(document.getElementById('quantityId').value)) {
-                    alert("Quantity should be in number format")
-                    return false
-                } else {
+                // if (document.getElementById("brandnameId").value === "" || document.getElementById("genderType").value === "" || document.getElementById('productType').value === "" || document.getElementById('category').value === "" || document.getElementById('retailPriceId').value === "" || document.getElementById('color1Id').value === "" || document.getElementById('shopPriceId').value === "" || document.getElementById('sizeId').value === "" || document.getElementById('imageId').value === "" || document.getElementById('descriptionId').value === "" || document.getElementById('quantityId').value === "") {
+                //     alert('Fill the essential columns')
+                //     return false
+                // } else if (isNaN(document.getElementById('shopPriceId').value) || isNaN(document.getElementById('retailPriceId').value)) {
+                //     alert("Price should be in number format")
+                //     return false
+                // } else if (isNaN(document.getElementById('quantityId').value)) {
+                //     alert("Quantity should be in number format")
+                //     return false
+                // } else {
 
-                    return true
-                }
+                //     return true
+                // }
+                if(document.getElementById('formFileLg').files.length>4){
+                    alert('Maximum 4 number of photos allowed')
+                    return false
+                }else return true
 
             }
+        </script>
+
+        <script>
+
         </script>

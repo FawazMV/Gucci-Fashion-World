@@ -1,11 +1,9 @@
 <div class="app-wrapper">
     <div class="app-content pt-3 p-md-3 p-lg-4">
-       
+
         <div class="container-xl  ">
-            
-            <a href="/admin/<%-locals.texts.linktext %> " class="h6  btn-link text-info fw-normal float-end">
-                <%- locals.texts.linktext %>
-            </a>
+
+
         </div>
         <br><br>
         <section>
@@ -41,12 +39,20 @@
                                     <a href="/admin/delete-user/<%= users[i]._id %> "
                                         onclick="return confirm('Do you want to delete <% users[i].name %> ?')"
                                         class="btn btn-info">View</a>
+                                    <% if (!users[i].isBanned) { %>
+                                        <a href="/admin/Block-user/<%= users[i]._id %> "
+                                            onclick="return confirm('Do you want to block <%= users[i].name %> ?')"
+                                            class="btn btn-success px-4">Block
+                                        </a>
 
-                                    <a href="/admin/<%-locals.texts.btntext %>-user/<%= users[i]._id %> "
-                                        onclick="return confirm('Do you want to block <%= users[i].name %> ?')"
-                                        class="btn btn-danger">
-                                        <%-locals.texts.btntext %>
-                                    </a>
+                                        <% } else { %>
+                                            <a href="/admin/Unblock-user/<%= users[i]._id %> "
+                                                class="btn btn-danger">Unblock
+                                            </a>
+
+                                            <% } %>
+
+
 
                                 </td>
                             </tr>
@@ -57,7 +63,7 @@
                     </tbody>
                 </table>
             </div>
-           
+
 
 
         </section>

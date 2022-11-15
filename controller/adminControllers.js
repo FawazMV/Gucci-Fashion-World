@@ -28,23 +28,16 @@ module.exports = {
         res.json({ response })
     },
     userview: async (req, res) => {
-        let users = await usermodel.find({ isBanned: false })
-        texts = { btntext: "Block", linktext: "BlockedUsers" }
-        res.render('admin/userview', { admin: true, users, texts, Clients: "active", heading: "Users" })
+        let users = await usermodel.find({})
+        res.render('admin/userview', { admin: true, users, Clients: "active", heading: "Users" })
     },
     blockUser: async (req, res) => {
         await usermodel.findByIdAndUpdate(req.params.id, { isBanned: true }, { new: true })
         res.redirect('/admin/users')
     },
-    viewBlockedUsers: async (req, res) => {
-        let users = await usermodel.find({ isBanned: true })
-        texts = { btntext: "Unblock", linktext: "Users" }
-        res.render('admin/userview', { admin: true, users, texts, heading: "Blocked Users", Clients: "active" })
-
-    },
     unblockUser: async (req, res) => {
         await usermodel.findByIdAndUpdate(req.params.id, { isBanned: false }, { new: true })
-        res.redirect('/admin/blockedusers')
+        res.redirect('/admin/users')
     },
     productsView: async (req, res) => {
         let products = await productModel.find({ deleteProduct: false }).populate('brandName').populate('gender').lean()
@@ -71,7 +64,6 @@ module.exports = {
     },
     BrandNameUpdate: (req, res) => {
         brandName = req.body.brandName.toUpperCase()
-        console.log(brandName)
         brandModel.create({ brandName: brandName }).then(() => {
             res.redirect('/admin/addBrandName')
         }).catch(error => {
@@ -118,7 +110,6 @@ module.exports = {
         if (req.files.length) {
             productModel.findById(product_id).then( (product) => {
                 const image = product.imagesDetails
-                console.log(image)
                  s3delte3(image)
             })
             const results = await s3Uploadv3(req.files);
@@ -173,7 +164,6 @@ module.exports = {
         if (req.files.length) {
             genderModel.findById(id).then( (product) => {
                 const image = product.image[0]
-                console.log(image)
                  s3delte2(image)
             })
             const file = req.files[0];

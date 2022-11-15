@@ -16,8 +16,7 @@
                                     <div class="d-flex">
                                         <div class="me-5" style="width:60%;">
                                             <label for="brandnameId">Brand Name</label>
-                                            <select name="brandName" id="brandnameId"
-                                                class="form-select">
+                                            <select name="brandName" id="brandnameId" class="form-select">
                                                 <option disabled selected>
                                                     <%= product.brandName.brandName %>
                                                 </option>
@@ -50,7 +49,7 @@
                                     <div class="d-flex">
                                         <div class="me-5" style="width:50%;">
                                             <label for="productType">Product Type :</label>
-                                            <select name="type" id="productType"   class="form-select">
+                                            <select name="type" id="productType" class="form-select">
                                                 <option disabled selected>
                                                     <%= product.type %>
                                                 </option>
@@ -99,7 +98,7 @@
                                     <div class="d-flex">
                                         <div class="me-4" style="width:45%;">
                                             <label for="sizeId">Size :</label>
-                                            <select name="size" id="sizeId"  class="form-select">
+                                            <select name="size" id="sizeId" class="form-select">
                                                 <option disabled selected>
                                                     <%= product.size %>
                                                 </option>
@@ -114,7 +113,7 @@
                                         </div>
                                         <div style="width:30%;" class="me-3">
                                             <label for="color1Id">Color 1 :</label>
-                                            <select name="color1" id="color1Id"  class="form-select">
+                                            <select name="color1" id="color1Id" class="form-select">
                                                 <option disabled selected>
                                                     <%= product.color1 %>
                                                 </option>
@@ -176,9 +175,9 @@
                                 <div class="ms-5">
                                     <label for="descriptionId">Description</label>
                                     <br>
-                                    <textarea name="description" class="" id="descriptionId" 
-                                        rows="4" cols="70"><%= product.description %></textarea>
-                                        <br>
+                                    <textarea name="description" class="" id="descriptionId" rows="4"
+                                        cols="70"><%= product.description %></textarea>
+                                    <br>
 
                                     <button type="submit" class="btn btn-warning mt-4">Submit</button>
                                 </div>
@@ -203,23 +202,32 @@
             var urls = URL.createObjectURL(event.target.files[i]);
             document.getElementById('galeria').innerHTML += '<img style="width:70px;" class="ml-1" src="' + urls + '">'
 
-        } 
+        }
+
+        function isNumberKey(evt) {
+            var charCode = (evt.which) ? evt.which : evt.keyCode
+            if (charCode > 31 && (charCode < 48 || charCode > 57))
+                return false;
+            return true;
+        }
 
 
     }
 </script>
 <script>
     function validate() {
-        if (document.getElementById("brandnameId").value === "" || document.getElementById("genderType").value === "" || document.getElementById('productType').value === "" || document.getElementById('category').value === "" || document.getElementById('retailPriceId').value === "" || document.getElementById('color1Id').value === "" || document.getElementById('shopPriceId').value === "" || document.getElementById('sizeId').value === "" || document.getElementById('imageId').value === "" || document.getElementById('descriptionId').value === "" || document.getElementById('quantityId').value === "") {
-            alert('Fill the essential columns')
+        // if (document.getElementById("brandnameId").value === "" || document.getElementById("genderType").value === "" || document.getElementById('productType').value === "" || document.getElementById('category').value === "" || document.getElementById('retailPriceId').value === "" || document.getElementById('color1Id').value === "" || document.getElementById('shopPriceId').value === "" || document.getElementById('sizeId').value === "" || document.getElementById('imageId').value === "" || document.getElementById('descriptionId').value === "" || document.getElementById('quantityId').value === "") {
+        //     alert('Fill the essential columns')
+        //     return false
+        // } else if (isNaN(document.getElementById('quantityId').value)) {
+        // } else {
+
+        //     return true
+        // }
+        if (document.getElementById('formFileLg').files.length > 4) {
+            alert('Maximum 4 number of photos allowed')
             return false
-        } else if (isNaN(document.getElementById('shopPriceId').value) || isNaN(document.getElementById('retailPriceId').value)) {
-            alert("Price should be in number format")
-            return false
-        } else if (isNaN(document.getElementById('quantityId').value)) {
-            alert("Quantity should be in number format")
-            return false
-        }
-        return true
+        } else return true
+
     }
 </script>

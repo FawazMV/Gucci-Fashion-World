@@ -1,4 +1,6 @@
 const bcrypt = require('bcrypt');
+const { otpcallin } = require('../config/otp');
+const { findById } = require('../models/gender_type-schema');
 const genderModel = require('../models/gender_type-schema');
 const productModel = require('../models/product-schema');
 const usermodel = require('../models/user-schema');
@@ -9,16 +11,7 @@ const authToken = process.env.authToken
 const client = require("twilio")(accoutnSID, authToken);
 let otpstatus, userNumber, userDetails
 let resend = true
-
-function otpcallin(number) {
-
-    client.verify.services(serviceSID).verifications.create({
-        to: `+91${number}`,
-        channel: "sms",
-    })
-}
-
-
+let user;
 
 
 module.exports = {
@@ -26,58 +19,64 @@ module.exports = {
         res.render('userSide/signup', { includes: true })
     },
     login: (req, res) => {
-        res.render('userSide/userlogin', { includes: true })
+        if (req.session.user) res.redirect('/')
+        else res.render('userSide/userlogin', { includes: true })
     },
     home: async (req, res) => {
         let Products = []
-        genderModel.find({}, { }).lean().then(async(catagories) => {
-            console.log(catagories)
-            for (let i=0; i < catagories.length; i++) {
-                console.log('avc')
+        genderModel.find({}).lean().then(async (catagories) => {
+            for (let i = 0; i < catagories.length; i++) {
                 let products = await productModel.find({ deleteProduct: false, gender: catagories[i]._id }, { imagesDetails: 1, brandName: 1, gender: 1, shopPrice: 1 }).populate('brandName').populate('gender').lean()
                 Products.push(products)
             }
             catagories.splice(4)
-            res.render('userSide/homepage', { admin: false, Products, catagories })
+            user = req.session.user
+            res.render('userSide/homepage', { admin: false, Products, catagories, user })
         })
-
-         
-        
     },
     loginPost: async (req, res) => {
         let response = null
-        user = await usermodel.findOne({ email: req.body.email })
+        const user = await usermodel.findOne({ email: req.body.email })
         if (user) {
             await bcrypt.compare(req.body.password, user.password).then(status => {
-                if (status) response = false
+                if (status) {
+                    if (user.isBanned) response = "Your account is blocked temporarly"
+                    else {
+                        response = false
+                        req.session.user = user
+                    }
+                }
                 else response = "Invalid password"
             })
         } else response = "Invalid email"
         res.json({ response })
     },
     doSignup: async (req, res) => {
-        let response = null
-        const email = req.body.email
-        userDetails = req.body
-        userNumber = req.body.mobile
-
-        if (await usermodel.findOne({ email: email })) {
-            response = "Email id already exists"
-        } else if (await usermodel.findOne({ mobile: userNumber })) {
-            response = "Mobile number is already exists";
-        }
+        if (req.session.user) res.redirect('/')
         else {
-            response = null
-            otpcallin(userNumber)
-            res.redirect('/otp')
+            let response = null
+            const email = req.body.email
+            userDetails = req.body
+            userNumber = req.body.mobile
+            if (await usermodel.findOne({ email: email })) {
+                response = "Email id already exists"
+            } else if (await usermodel.findOne({ mobile: userNumber })) {
+                response = "Mobile number is already exists";
+            }
+            else {
+                response = null
+                otpcallin(userNumber)
+                req.session.otp = true
+                // res.redirect('/otp')
+            }
+            res.json({ response })
         }
-        res.json({ response })
     },
     otppage: (req, res) => {
-        res.render('userSide/otp', { includes: true, userNumber, otpstatus, resend })
-        otpstatus = false
+        if (req.session.otp) res.render('userSide/otp', { includes: true, userNumber })
+        else res.redirect('/login')
     },
-    otppageverify: (req, res) => {
+    otppageverify: async (req, res) => {
         const { otp } = req.body;
         client.verify.v2.services(serviceSID)
             .verificationChecks
@@ -86,23 +85,28 @@ module.exports = {
                 if (response.valid) {
                     userDetails.password = await bcrypt.hash(userDetails.password, 10)
                     usermodel.create(userDetails).then(() => {
-                        res.redirect('/')
+                        req.session.user = userDetails.name
+                        req.session.otp = false
+                        userDetails = null
+                        res.json({ response: true })
                     })
                 } else {
-                    otpstatus = true
-                    res.redirect('/otp')
+                    response
+                    res.json({ response: false })
                 }
             });
     },
     OTPResend: (req, res) => {
         otpcallin(userNumber)
-        resend = false
-        res.redirect('/otp')
-
     },
-
-
-    singleProduct:(req,res)=>{
-        res.render('userSide/singleProduct')
+    singleProduct: (req, res) => {
+        let id = req.params.id
+        productModel.findById(id).populate('brandName').populate('gender').lean().then(product => {
+            res.render('userSide/singleProduct', { product, user })
+        })
+    },
+    logout: (req, res) => {
+        req.session.user = false
+        res.redirect('/')
     }
 }

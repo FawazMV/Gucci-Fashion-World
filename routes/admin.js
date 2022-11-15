@@ -15,8 +15,6 @@ router.get('/Users', admin.userview)
 
 router.get('/Block-user/:id', admin.blockUser)
 
-router.get('/Blockedusers', admin.viewBlockedUsers)
-
 router.get('/Unblock-user/:id', admin.unblockUser)
 
 router.get('/Products', admin.productsView)
@@ -37,7 +35,7 @@ router.get('/deleteProduct/:id', admin.deleteProduct)
 
 router.get('/editProduct/:id', admin.editPage)
 
-router.post('/editProduct', fileUpload.upload.array('image', 5), admin.updateProduct)
+router.post('/editProduct', fileUpload.upload.array('image', 4), admin.updateProduct)
 
 router.get('/genderType', admin.genderType)
 

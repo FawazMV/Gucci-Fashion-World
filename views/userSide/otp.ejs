@@ -19,26 +19,58 @@
                 <div class="">
                     <h5 class="m-0">Mobile phone verification</h5><span class="mobile-text">Enter the code we just send
                         on your
-                        mobile phone <b class="text-danger"> <br>+91 <%=userNumber %> </b></span>
+                        mobile phone <b class="text-danger"> <br>+91 <%=locals.userNumber %> </b></span>
                 </div>
                 <form action="/otpverification" method="post">
 
                     <div class="d-flex flex-row mt-5 px-5">
-                        <input type="text" name="otp" class="form-control" autofocus="">
+                        <input type="text" name="otp" id="otpid" class="form-control" onkeyup="otpcheck()" autofocus="">
                     </div>
-                    <button class="btn btn-success mt-2 me-5 float-end" type="submit">Submit</button>
+                    <!-- <button class="btn btn-success mt-2 me-5 float-end" onclick="otpcheck()" type="submit">Submit</button> -->
                 </form>
-                <% if (locals.otpstatus) { %>
-                    <p class="ml-5 text-danger">OTP verification failed</p>
-                <% } %>
-                <% if (locals.resend) { %>
-                    <div class="text-center mt-5"><span class="d-block mobile-text">Don't receive the
-                            code?</span><a href="/OTPResend"><span
-                                class="font-weight-bold text-danger cursor">Resend</span></a></div>
-                    <% } %>
+
+                <p class="ml-5 text-danger" id="errmsg" style="display:none;">OTP verification failed</p>
+
+                <div class="text-center mt-5 " id="resendId"><span class="d-block mobile-text">Don't receive the
+                        code?</span><button onclick="resend() " class="btn btn-outline-white"><span
+                            class="font-weight-bold text-danger cursor">Resend</span></button></div>
 
             </div>
         </div>
+
+        <script>
+            function otpcheck() {
+                let otp = document.getElementById('otpid').value
+                if (otp.length === 6) {
+                    document.getElementById('otpid').disabled = true
+                    try {
+                        axios.post('/otpverification', { otp: otp }).then((e) => {
+                            if (e.data.response) {
+                                location.href = "/"
+                            } else {
+                                document.getElementById('otpid').value = ""
+                                document.getElementById('otpid').disabled = false
+                                document.getElementById('errmsg').style.display = ""
+                            }
+                        })
+                    } catch (error) {
+                        console.log(error)
+                    }
+                }
+            }
+
+            function resend() {
+                document.getElementById('resendId').style.display = "none"
+                document.getElementById('errmsg').style.display = "none"
+                document.getElementById('otpid').value = ""
+                document.getElementById('otpid').disabled = false
+                try {
+                    axios.get('/OTPResend', {})
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+        </script>
 
 </body>
 
