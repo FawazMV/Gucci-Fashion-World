@@ -93,14 +93,14 @@
                                                                     <div class="input-group-btn">
                                                                         <button
                                                                             id="minusbutton<%= cartproduct[i]._id %>"
-                                                                            disabled
-                                                                            onclick="quantityminus('<%= cartproduct[i]._id %>')"
+                                                                            onclick="quantityminus('<%= cartproduct[i]._id %>','<%= cartproduct[i].product_id._id %>')"
                                                                             class="btn btn-sm btn-primary btn-minus">
                                                                             <i class="fa fa-minus"></i>
                                                                         </button>
                                                                     </div>
                                                                     <input type="text"
-                                                                        class="form-control form-control-sm border-0 text-center" name="quantity"
+                                                                        class="form-control form-control-sm border-0 text-center"
+                                                                        name="quantity"
                                                                         value="<%= cartproduct[i].quantity %>"
                                                                         id="quantity<%= cartproduct[i]._id %>">
                                                                     <div class="input-group-btn">
@@ -114,12 +114,15 @@
                                                             </td>
                                                             <td class="cart__price"
                                                                 id="totalPrice<%= cartproduct[i]._id %>"></td>
-                                                            <td class="cart__close"><a onclick="cartDelete('<%= cartproduct[i]._id %>')"><i
+                                                            <td class="cart__close"><a
+                                                                    onclick="cartDelete('<%= cartproduct[i]._id %>')"><i
                                                                         class="fa fa-close"></i></a>
                                                             </td>
 
                                                         </tr>
                                                         <script>
+                                                            if(document.getElementById('quantity<%= cartproduct[i]._id %>').value==1) {
+                                                                 document.querySelector('#minusbutton<%= cartproduct[i]._id %>').disabled = true;}
                                                             document.getElementById('totalPrice<%= cartproduct[i]._id %>').innerHTML = document.getElementById('price<%= cartproduct[i]._id %>').innerHTML * document.getElementById('quantity<%= cartproduct[i]._id %>').value
 
                                                         </script>
@@ -175,7 +178,7 @@
 
     function quantityPlus(id, product) {
         count = ++document.getElementById('quantity' + id).value
-        axios.post('/quantityPlus', { id: product, count: count , cartid:id}).then((e) => {
+        axios.post('/quantityPlus', { id: product, count: count, cartid: id }).then((e) => {
             if (e.data.response) {
                 document.getElementById('totalPrice' + id).innerHTML = document.getElementById('price' + id).innerHTML * count
                 document.querySelector('#minusbutton' + id).disabled = false;
@@ -194,19 +197,39 @@
 
 
     }
-    function quantityminus(id) {
+    function quantityminus(id, product) {
+
         document.querySelector('#plusButton' + id).disabled = false;
         count = --document.getElementById('quantity' + id).value
-        if (count == 1) {
-            document.querySelector('#minusbutton' + id).disabled = true;
 
+        if (count < 1) {
+            document.querySelector('#minusbutton' + id).disabled = true;
+            ++document.getElementById('quantity' + id).value
+        } else {
+            document.getElementById('totalPrice' + id).innerHTML = document.getElementById('price' + id).innerHTML * count
+            axios.post('/quantityPlus', { id: product, count: count, cartid: id })
         }
-        document.getElementById('totalPrice' + id).innerHTML = document.getElementById('price' + id).innerHTML * count
+       // .then((e) => {
+            //     if (e.data.response) {
+            //         document.getElementById('totalPrice' + id).innerHTML = document.getElementById('price' + id).innerHTML * count
+            //         document.querySelector('#minusbutton' + id).disabled = false;
+            //     }
+            //     else {
+            //         document.getElementById('quantity' + id).value--
+            //         Swal.fire({
+            //             icon: 'error',
+            //             title: 'Sorry',
+            //             text: 'Prodcut is out of stock,'
+            //         })
+            //         document.querySelector('#plusButton' + id).disabled = true;
+            //     }
+       // })
+
     }
 
-    function cartDelete(id){
-        axios.post('/cartDelete',{id:id}).then(()=>{
-            location.href= '/cart'
+    function cartDelete(id) {
+        axios.post('/cartDelete', { id: id }).then(() => {
+            location.href = '/cart'
         })
     }
 </script>

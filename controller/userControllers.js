@@ -117,15 +117,24 @@ module.exports = {
                 res.render('userSide/cart', { cartproduct })
             })
     },
-    addCart: (req, res) => {
+    addCart: async (req, res) => {
         let user = req.session.user._id
-        productModel.findById(req.body.id, { quantity: 1, _id: -1 }).then(count => {
-            if (count.quantity) {
-                usermodel.findByIdAndUpdate(user, { $push: { cart: { product_id: req.body.id } } })
-                    .then(() => res.json({ response: false }))
-                    .catch((error) => res.json({ response: error.message }))
-            } else res.json({ response: "The Product is out of stock" })
-        }).catch(error => res.json({ response: error.message }))
+        let cart = await usermodel.findOne({ _id: user, 'cart.product_id': req.body.id })
+            .catch((error) => res.json({ response: error.message }))
+
+        if (cart) {
+            usermodel.updateOne({ _id: user, 'cart.product_id': req.body.id }, { $inc: { 'cart.$.quantity': 1 } })
+                .then(() => res.json({ response: false }))
+                .catch((error) => res.json({ response: error.message }))
+        } else {
+            productModel.findById(req.body.id, { quantity: 1, _id: -1 }).then(count => {
+                if (count.quantity) {
+                    usermodel.findByIdAndUpdate(user, { $push: { cart: { product_id: req.body.id } } })
+                        .then(() => res.json({ response: false }))
+                        .catch((error) => res.json({ response: error.message }))
+                } else res.json({ response: "The Product is out of stock" })
+            }).catch(error => res.json({ response: error.message }))
+        }
     },
     quantityPlus: (req, res) => {
         let user = req.session.user._id
@@ -133,8 +142,9 @@ module.exports = {
             let { quantity } = pro
             let count = req.body.count
             if (count <= quantity) {
-                usermodel.findByIdAndUpdate(user,{$set:{'cart.quantity':count}})
-                res.json({ response: true })
+                usermodel.updateOne({ _id: user, 'cart._id': req.body.cartid }, { $set: { 'cart.$.quantity': count } }).then(() => {
+                    res.json({ response: true })
+                })
             }
             else res.json({ response: false })
         })
@@ -144,6 +154,5 @@ module.exports = {
         usermodel.findByIdAndUpdate(user, { $pull: { cart: { _id: req.body.id } } }).then(() => {
             res.json()
         })
-
     }
 }
