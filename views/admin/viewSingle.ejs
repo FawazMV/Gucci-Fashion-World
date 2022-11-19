@@ -1,0 +1,80 @@
+<div class="app-wrapper">
+    <div class="app-content pt-3 p-md-3 p-lg-4">
+        <div class="d-flex"  style="height:450px;">
+            <div class="d-flex flex-column justify-content-between " >
+                <% for( let i=0; i < product.imagesDetails.length; i++ ) { %>
+                   <div class="border border-warning" onclick="changeImg('<%= product.imagesDetails[i].Location %> ')"><img style="height:100px;"
+                            src="<%= product.imagesDetails[i].Location %> " alt="" class="border border-warning"> </div>
+
+                    <% } %>
+            </div>
+            <div >
+                <img id="imgId" src="<%= product.imagesDetails[0].Location %> " style="height:100%;"  alt="">
+            </div>
+
+        </div>
+
+        <div></div>
+    </div>
+
+
+
+
+
+
+</div>
+
+<script>
+    function changeImg(src){
+        document.getElementById('imgId').src=src
+    }
+</script>
+
+<!-- ***** Main Banner Area Start ***** -->
+
+
+
+<!-- ***** Main Banner Area End ***** -->
+
+
+
+
+
+
+
+
+
+<!-- Plugins JS File -->
+<script src="/singlePro/assets/js/jquery.min.js"></script>
+<script src="/singlePro/assets/js/bootstrap.bundle.min.js"></script>
+<script src="/singlePro/assets/js/jquery.hoverIntent.min.js"></script>
+<script src="/singlePro/assets/js/jquery.waypoints.min.js"></script>
+<script src="/singlePro/assets/js/superfish.min.js"></script>
+<script src="/singlePro/assets/js/owl.carousel.min.js"></script>
+<script src="/singlePro/assets/js/bootstrap-input-spinner.js"></script>
+<script src="/singlePro/assets/js/jquery.elevateZoom.min.js"></script>
+<script src="/singlePro/assets/js/bootstrap-input-spinner.js"></script>
+<script src="/singlePro/assets/js/jquery.magnific-popup.min.js"></script>
+<!-- Main JS File -->
+<script src="/singlePro/assets/js/main.js"></script>
+<script>
+
+    $(function () {
+        var selectedClass = "";
+        $("p").click(function () {
+            selectedClass = $(this).attr("data-rel");
+            $("#portfolio").fadeTo(50, 0.1);
+            $("#portfolio div").not("." + selectedClass).fadeOut();
+            setTimeout(function () {
+                $("." + selectedClass).fadeIn();
+                $("#portfolio").fadeTo(50, 1);
+            }, 500);
+
+        });
+    });
+
+</script>
+
+</body>
+
+</html>

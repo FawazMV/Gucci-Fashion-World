@@ -84,8 +84,8 @@ module.exports = {
             .then(async response => {
                 if (response.valid) {
                     userDetails.password = await bcrypt.hash(userDetails.password, 10)
-                    usermodel.create(userDetails).then(() => {
-                        req.session.user = userDetails.name
+                    usermodel.create(userDetails).then((e) => {
+                        req.session.user = e
                         req.session.otp = false
                         userDetails = null
                         res.json({ response: true })
@@ -108,5 +108,42 @@ module.exports = {
     logout: (req, res) => {
         req.session.user = false
         res.redirect('/')
+    },
+    getCart: (req, res) => {
+        let user = req.session.user._id
+        usermodel.findById(user, { cart: 1 }).populate({ path: 'cart.product_id', model: 'Products', populate: { path: 'brandName', model: 'brandName' } })
+            .then((result) => {
+                cartproduct = result.cart
+                res.render('userSide/cart', { cartproduct })
+            })
+    },
+    addCart: (req, res) => {
+        let user = req.session.user._id
+        productModel.findById(req.body.id, { quantity: 1, _id: -1 }).then(count => {
+            if (count.quantity) {
+                usermodel.findByIdAndUpdate(user, { $push: { cart: { product_id: req.body.id } } })
+                    .then(() => res.json({ response: false }))
+                    .catch((error) => res.json({ response: error.message }))
+            } else res.json({ response: "The Product is out of stock" })
+        }).catch(error => res.json({ response: error.message }))
+    },
+    quantityPlus: (req, res) => {
+        let user = req.session.user._id
+        productModel.findById(req.body.id, { quantity: 1, _id: -1 }).then(pro => {
+            let { quantity } = pro
+            let count = req.body.count
+            if (count <= quantity) {
+                usermodel.findByIdAndUpdate(user,{$set:{'cart.quantity':count}})
+                res.json({ response: true })
+            }
+            else res.json({ response: false })
+        })
+    },
+    cartDelete: (req, res) => {
+        let user = req.session.user._id
+        usermodel.findByIdAndUpdate(user, { $pull: { cart: { _id: req.body.id } } }).then(() => {
+            res.json()
+        })
+
     }
 }

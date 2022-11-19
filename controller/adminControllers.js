@@ -46,7 +46,7 @@ module.exports = {
     addProduct: async (req, res) => {
         let brandName = await brandModel.find({}).lean()
         let gender = await genderModel.find({}).lean()
-        res.render('admin/addProduct', { admin: true, heading: "Add Product", brandName, gender, msg })
+        res.render('admin/addProduct', { admin: true, heading: "Add Product", brandName, gender, msg, add: "active" })
         msg = false
     },
     addProductPost: async (req, res) => {
@@ -108,9 +108,9 @@ module.exports = {
     updateProduct: async (req, res) => {
         let product = req.body
         if (req.files.length) {
-            productModel.findById(product_id).then( (product) => {
+            productModel.findById(product_id).then((product) => {
                 const image = product.imagesDetails
-                 s3delte3(image)
+                s3delte3(image)
             })
             const results = await s3Uploadv3(req.files);
             product.imagesDetails = results
@@ -144,9 +144,9 @@ module.exports = {
         let gender = await productModel.findOne({ gender: id })
         if (gender) res.json({ response: false })
         else {
-            genderModel.findById(id).then( (category) => {
+            genderModel.findById(id).then((category) => {
                 const image = category.image[0]
-                 s3delte2(image)
+                s3delte2(image)
             }).then(() => {
                 genderModel.findByIdAndDelete(id).then(() => {
                     res.json({ response: true })
@@ -162,9 +162,9 @@ module.exports = {
         let category = { gender: req.body.gender }
         id = req.body.id
         if (req.files.length) {
-            genderModel.findById(id).then( (product) => {
+            genderModel.findById(id).then((product) => {
                 const image = product.image[0]
-                 s3delte2(image)
+                s3delte2(image)
             })
             const file = req.files[0];
             const result = await s3Uploadv2(file);
@@ -175,6 +175,13 @@ module.exports = {
         }).catch(error => {
             console.log(error)
             res.redirect('/admin/genderType')
+        })
+    },
+    single: (req, res) => {
+        id = req.params.id
+        productModel.findById(id).then((product) => {
+            console.log(product)     
+            res.render('admin/viewSingle', { admin: true, product })
         })
     }
 } 

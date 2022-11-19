@@ -22,19 +22,34 @@ const userSchema = new mongoose.Schema
             password: {
                 type: String,
                 required: true,
-                trim: true,  
+                trim: true,
                 minlength: [6]
             },
             isBanned: {
                 type: Boolean,
                 default: false
-            }
+            },
+            cart: [
+                {
+                    product_id: {
+                        type: mongoose.Schema.Types.ObjectId,
+                        ref: 'Products',
+                    },
+                    size:{  
+                        type:String
+                    },
+                    quantity:{
+                        type:Number,
+                        default:1
+                    }
+                }
+            ]
         },
         {
             timestamps: true
         }
     )
 
-const usermodel = mongoose.model('users',userSchema)
+const usermodel = mongoose.model('users', userSchema)
 
 module.exports = usermodel

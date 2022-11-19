@@ -2,25 +2,33 @@ const express = require('express')
 const router = express.Router()
 const user = require('../controller/userControllers')
 
-router.get('/',user.home)
+router.get('/', user.home)
 
-router.get('/login',user.login)
- 
-router.post('/login',user.loginPost)
+router.get('/login', user.login)
 
-router.get('/signup',user.signup)
+router.post('/login', user.loginPost)
 
-router.post('/signup',user.doSignup)  
+router.get('/signup', user.signup)
 
-router.get('/otp',user.otppage)
+router.post('/signup', user.doSignup)
 
-router.post('/otpverification',user.otppageverify)
+router.get('/otp', user.otppage)
+
+router.post('/otpverification', user.otppageverify)
 
 router.get('/OTPResend', user.OTPResend)
 
-router.get('/singelProduct/:id',user.singleProduct)  
+router.get('/singelProduct/:id', user.singleProduct)
 
-router.get('/logout',user.logout)
+router.get('/logout', user.logout)
+
+router.get('/cart', user.getCart)
+
+router.post('/addCart', user.addCart)
+
+router.post('/quantityPlus', user.quantityPlus)
+
+router.post('/cartDelete', user.cartDelete)
 
 
 
