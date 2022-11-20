@@ -4,7 +4,8 @@ const { findById } = require('../models/gender_type-schema');
 const genderModel = require('../models/gender_type-schema');
 const productModel = require('../models/product-schema');
 const usermodel = require('../models/user-schema');
-
+//const ObjectId = require('objectid');
+const { default: mongoose } = require('mongoose');
 const accoutnSID = process.env.accoutnSID
 const serviceSID = process.env.serviceSID
 const authToken = process.env.authToken
@@ -112,9 +113,13 @@ module.exports = {
     getCart: (req, res) => {
         let user = req.session.user._id
         usermodel.findById(user, { cart: 1 }).populate({ path: 'cart.product_id', model: 'Products', populate: { path: 'brandName', model: 'brandName' } })
-            .then((result) => {
+            .then(async (result) => {
                 cartproduct = result.cart
-                res.render('userSide/cart', { cartproduct })
+                total = await cartproduct.map(x => x.quantity * x.product_id.shopPrice).reduce((acc, curr) => {
+                    acc = acc + curr
+                    return acc
+                }, 0)
+                res.render('userSide/cart', { cartproduct, total, user })
             })
     },
     addCart: async (req, res) => {
@@ -143,7 +148,15 @@ module.exports = {
             let count = req.body.count
             if (count <= quantity) {
                 usermodel.updateOne({ _id: user, 'cart._id': req.body.cartid }, { $set: { 'cart.$.quantity': count } }).then(() => {
-                    res.json({ response: true })
+                    usermodel.findById(user, { cart: 1 }).populate({ path: 'cart.product_id', model: 'Products' })
+                        .then(async (result) => {
+                            cartproduct = result.cart
+                            total = await cartproduct.map(x => x.quantity * x.product_id.shopPrice).reduce((acc, curr) => {
+                                acc = acc + curr
+                                return acc
+                            }, 0)
+                            res.json({ response: true, total: total })
+                        })
                 })
             }
             else res.json({ response: false })
@@ -154,5 +167,47 @@ module.exports = {
         usermodel.findByIdAndUpdate(user, { $pull: { cart: { _id: req.body.id } } }).then(() => {
             res.json()
         })
+    },
+
+    checkout: (req, res) => {
+        let user = req.session.user._id
+        usermodel.findById(user, { cart: 1 }).populate({ path: 'cart.product_id', model: 'Products', populate: { path: 'brandName', model: 'brandName' } })
+            .then(async (result) => {
+                cartproduct = result.cart
+                total = await cartproduct.map(x => x.quantity * x.product_id.shopPrice).reduce((acc, curr) => {
+                    acc = acc + curr
+                    return acc
+                }, 0)
+                res.render('userSide/checkout', { cartproduct, total, user })
+            })
+    },
+    addAddress: (req, res) => {
+        let user = req.session.user._id
+        let response = null
+        usermodel.findByIdAndUpdate(user, { $push: { address: req.body } }).then(() => {
+            usermodel.findById(user, { address: 1 }).then(result => {
+                res.json({ response: false, address: result.address })
+            })
+        }).catch(error => res.json({ response: error.message }))
+    },
+    getAddress: (req, res) => {
+        let user = req.session.user._id
+        let response = null
+        usermodel.findById(user, { address: 1 }, { sort: { 'address.default': 1} })
+            .then(result => {
+                console.log(result)
+                res.json({ response: false, address: result.address })
+            }).catch(error => res.json({ response: error.message }))
+    },
+    dafaultAddress: (req, res) => {
+        let user = req.session.user._id
+        let response = null
+        console.log('aldshfakl' + req.body.id)
+        usermodel.updateOne({ _id: user, 'address.default': true }, { $set: { 'address.$.default': false } }).then(() => {
+            usermodel.updateOne({ _id: user, 'address._id': req.body.id }, { $set: { 'address.$.default': true } }).then(() => {
+                console.log('finished')
+            })
+        })
+
     }
 }

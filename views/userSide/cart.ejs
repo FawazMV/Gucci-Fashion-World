@@ -121,8 +121,9 @@
 
                                                         </tr>
                                                         <script>
-                                                            if(document.getElementById('quantity<%= cartproduct[i]._id %>').value==1) {
-                                                                 document.querySelector('#minusbutton<%= cartproduct[i]._id %>').disabled = true;}
+                                                            if (document.getElementById('quantity<%= cartproduct[i]._id %>').value == 1) {
+                                                                document.querySelector('#minusbutton<%= cartproduct[i]._id %>').disabled = true;
+                                                            }
                                                             document.getElementById('totalPrice<%= cartproduct[i]._id %>').innerHTML = document.getElementById('price<%= cartproduct[i]._id %>').innerHTML * document.getElementById('quantity<%= cartproduct[i]._id %>').value
 
                                                         </script>
@@ -156,10 +157,15 @@
                                         <div class="cart__total">
                                             <h6>Cart total</h6>
                                             <ul>
-                                                <li>Subtotal <span>$ 169.50</span></li>
-                                                <li>Total <span>$ 169.50</span></li>
+                                                <li>Subtotal <span>₹ <span id="subTotalId">
+                                                            <%- locals.total %>.00
+                                                        </span></span></li>
+                                                <li>Shipping Charges <span>₹ 00.00</span></li>
+                                                <li>Total <span>₹ <span id="totalId">
+                                                            <%- locals.total %>.00
+                                                        </span></span></li>
                                             </ul>
-                                            <a href="#" class="primary-btn">Proceed to checkout</a>
+                                            <a href="/checkout" class="primary-btn">Proceed to checkout</a>
                                         </div>
                                     </div>
                                 </div>
@@ -181,6 +187,8 @@
         axios.post('/quantityPlus', { id: product, count: count, cartid: id }).then((e) => {
             if (e.data.response) {
                 document.getElementById('totalPrice' + id).innerHTML = document.getElementById('price' + id).innerHTML * count
+                document.getElementById('subTotalId').innerHTML = e.data.total
+                document.getElementById('totalId').innerHTML = e.data.total
                 document.querySelector('#minusbutton' + id).disabled = false;
             }
             else {
@@ -207,23 +215,26 @@
             ++document.getElementById('quantity' + id).value
         } else {
             document.getElementById('totalPrice' + id).innerHTML = document.getElementById('price' + id).innerHTML * count
-            axios.post('/quantityPlus', { id: product, count: count, cartid: id })
+            axios.post('/quantityPlus', { id: product, count: count, cartid: id }).then(e => {
+                document.getElementById('subTotalId').innerHTML = e.data.total
+                document.getElementById('totalId').innerHTML = e.data.total
+            })
         }
-       // .then((e) => {
-            //     if (e.data.response) {
-            //         document.getElementById('totalPrice' + id).innerHTML = document.getElementById('price' + id).innerHTML * count
-            //         document.querySelector('#minusbutton' + id).disabled = false;
-            //     }
-            //     else {
-            //         document.getElementById('quantity' + id).value--
-            //         Swal.fire({
-            //             icon: 'error',
-            //             title: 'Sorry',
-            //             text: 'Prodcut is out of stock,'
-            //         })
-            //         document.querySelector('#plusButton' + id).disabled = true;
-            //     }
-       // })
+        // .then((e) => {
+        //     if (e.data.response) {
+        //         document.getElementById('totalPrice' + id).innerHTML = document.getElementById('price' + id).innerHTML * count
+        //         document.querySelector('#minusbutton' + id).disabled = false;
+        //     }
+        //     else {
+        //         document.getElementById('quantity' + id).value--
+        //         Swal.fire({
+        //             icon: 'error',
+        //             title: 'Sorry',
+        //             text: 'Prodcut is out of stock,'
+        //         })
+        //         document.querySelector('#plusButton' + id).disabled = true;
+        //     }
+        // })
 
     }
 

@@ -30,6 +30,13 @@ router.post('/quantityPlus', user.quantityPlus)
 
 router.post('/cartDelete', user.cartDelete)
 
+router.get('/checkout', user.checkout)
+
+router.post('/addAddress', user.addAddress)
+
+router.get('/getAddress', user.getAddress)
+
+router.put('/default',user.dafaultAddress)
 
 
 module.exports = router
