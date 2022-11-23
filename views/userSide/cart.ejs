@@ -43,132 +43,155 @@
                         <!-- Shopping Cart Section Begin -->
                         <section class="shopping-cart spad">
                             <div class="container">
-                                <div class="row">
-                                    <div class="col-lg-8">
-                                        <div class="shopping__cart__table">
-                                            <table>
-                                                <thead>
-                                                    <tr>
-                                                        <th>Product</th>
-                                                        <th>Quantity</th>
-                                                        <th>Total</th>
-                                                        <th></th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <% for( let i=0; i < cartproduct.length; i++ ) { %>
+                                <% if (cartproduct.length) { %>
+                                    <div class="row">
+                                        <div class="col-lg-8">
+                                            <div class="shopping__cart__table">
 
+                                                <table>
+                                                    <thead>
                                                         <tr>
-
-                                                            <td class="product__cart__item">
-
-
-                                                                <div class="product__cart__item__pic">
-                                                                    <% if (cartproduct[i].product_id.quantity==0) { %>
-                                                                        <span class="badge badge-danger me-3"
-                                                                            style="position:absolute;margin-top:30px;left: 8px; z-index:1;">Out
-                                                                            of
-                                                                            stock</span>
-                                                                        <% } %>
-
-                                                                            <img src="<%= cartproduct[i].product_id.imagesDetails[0].Location %> "
-                                                                                style="width:65px; position: relative;"
-                                                                                alt="">
-                                                                </div>
-                                                                <div class="product__cart__item__text">
-                                                                    <h6>
-                                                                        <%= cartproduct[i].product_id.brandName.brandName
-                                                                            %>
-                                                                    </h6>
-                                                                    <h5>₹<span id="price<%= cartproduct[i]._id %>">
-                                                                            <%= cartproduct[i].product_id.shopPrice %>
-                                                                        </span>
-                                                                    </h5>
-                                                                </div>
-                                                            </td>
-                                                            <td class="quantity__item">
-
-                                                                <div class="input-group quantity mx-auto"
-                                                                    style="width: 100px;">
-                                                                    <div class="input-group-btn">
-                                                                        <button
-                                                                            id="minusbutton<%= cartproduct[i]._id %>"
-                                                                            onclick="quantityminus('<%= cartproduct[i]._id %>','<%= cartproduct[i].product_id._id %>')"
-                                                                            class="btn btn-sm btn-primary btn-minus">
-                                                                            <i class="fa fa-minus"></i>
-                                                                        </button>
-                                                                    </div>
-                                                                    <input type="text"
-                                                                        class="form-control form-control-sm border-0 text-center"
-                                                                        name="quantity"
-                                                                        value="<%= cartproduct[i].quantity %>"
-                                                                        id="quantity<%= cartproduct[i]._id %>">
-                                                                    <div class="input-group-btn">
-                                                                        <button class="btn btn-sm btn-primary btn-plus"
-                                                                            id="plusButton<%= cartproduct[i]._id %>"
-                                                                            onclick="quantityPlus('<%= cartproduct[i]._id %>','<%= cartproduct[i].product_id._id %>')">
-                                                                            <i class="fa fa-plus"></i>
-                                                                        </button>
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-                                                            <td class="cart__price"
-                                                                id="totalPrice<%= cartproduct[i]._id %>"></td>
-                                                            <td class="cart__close"><a
-                                                                    onclick="cartDelete('<%= cartproduct[i]._id %>')"><i
-                                                                        class="fa fa-close"></i></a>
-                                                            </td>
-
+                                                            <th>Product</th>
+                                                            <th>Quantity</th>
+                                                            <th>Total</th>
+                                                            <th></th>
                                                         </tr>
-                                                        <script>
-                                                            if (document.getElementById('quantity<%= cartproduct[i]._id %>').value == 1) {
-                                                                document.querySelector('#minusbutton<%= cartproduct[i]._id %>').disabled = true;
-                                                            }
-                                                            document.getElementById('totalPrice<%= cartproduct[i]._id %>').innerHTML = document.getElementById('price<%= cartproduct[i]._id %>').innerHTML * document.getElementById('quantity<%= cartproduct[i]._id %>').value
+                                                    </thead>
+                                                    <tbody>
+                                                        <% for( let i=0; i < cartproduct.length; i++ ) { %>
 
-                                                        </script>
-                                                        <% } %>
+                                                            <tr>
+
+                                                                <td class="product__cart__item">
 
 
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-6 col-md-6 col-sm-6">
-                                                <div class="continue__btn">
-                                                    <a href="#">Continue Shopping</a>
-                                                </div>
+                                                                    <div class="product__cart__item__pic">
+                                                                        <% if (cartproduct[i].product_id.quantity==0) { %>
+                                                                            <span class="badge badge-danger me-3"
+                                                                                style="position:absolute;margin-top:30px;left: 8px; z-index:1;">Out
+                                                                                of
+                                                                                stock</span>
+                                                                            <% } %>
+
+                                                                                <img src="<%= cartproduct[i].product_id.imagesDetails[0].Location %> "
+                                                                                    style="width:65px; position: relative;"
+                                                                                    alt="">
+                                                                    </div>
+                                                                    <div class="product__cart__item__text">
+                                                                        <h6>
+                                                                            <%= cartproduct[i].product_id.brandName.brandName
+                                                                                %>
+                                                                        </h6>
+                                                                        <h5>₹<span id="price<%= cartproduct[i]._id %>">
+                                                                                <%= cartproduct[i].product_id.shopPrice
+                                                                                    %>
+                                                                            </span>
+                                                                        </h5>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="quantity__item">
+
+                                                                    <div class="input-group quantity mx-auto"
+                                                                        style="width: 100px;">
+                                                                        <div class="input-group-btn">
+                                                                            <button
+                                                                                id="minusbutton<%= cartproduct[i]._id %>"
+                                                                                onclick="quantityminus('<%= cartproduct[i]._id %>','<%= cartproduct[i].product_id._id %>')"
+                                                                                class="btn btn-sm btn-primary btn-minus">
+                                                                                <i class="fa fa-minus"></i>
+                                                                            </button>
+                                                                        </div>
+                                                                        <input type="text"
+                                                                            class="form-control form-control-sm border-0 text-center"
+                                                                            name="quantity"
+                                                                            value="<%= cartproduct[i].quantity %>"
+                                                                            id="quantity<%= cartproduct[i]._id %>">
+                                                                        <div class="input-group-btn">
+                                                                            <button
+                                                                                class="btn btn-sm btn-primary btn-plus"
+                                                                                id="plusButton<%= cartproduct[i]._id %>"
+                                                                                onclick="quantityPlus('<%= cartproduct[i]._id %>','<%= cartproduct[i].product_id._id %>')">
+                                                                                <i class="fa fa-plus"></i>
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="cart__price"
+                                                                    id="totalPrice<%= cartproduct[i]._id %>"></td>
+                                                                <td class="cart__close"><a
+                                                                        onclick="cartDelete('<%= cartproduct[i]._id %>')"><i
+                                                                            class="fa fa-close"></i></a>
+                                                                </td>
+
+                                                            </tr>
+                                                            <script>
+                                                                if (document.getElementById('quantity<%= cartproduct[i]._id %>').value == 1) {
+                                                                    document.querySelector('#minusbutton<%= cartproduct[i]._id %>').disabled = true;
+                                                                }
+                                                                document.getElementById('totalPrice<%= cartproduct[i]._id %>').innerHTML = document.getElementById('price<%= cartproduct[i]._id %>').innerHTML * document.getElementById('quantity<%= cartproduct[i]._id %>').value
+
+                                                            </script>
+                                                            <% } %>
+
+
+                                                    </tbody>
+                                                </table>
+
+
                                             </div>
-                                            <!-- <div class="col-lg-6 col-md-6 col-sm-6">
+                                            <div class="row">
+                                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                                    <div class="continue__btn">
+                                                        <a href="#">Continue Shopping</a>
+                                                    </div>
+                                                </div>
+                                                <!-- <div class="col-lg-6 col-md-6 col-sm-6">
                                                 <div class="continue__btn update__btn">
                                                     <a href="#" type="submit" ><i class="fa fa-spinner"></i>  Update cart</a>
                                                 </div>
                                             </div> -->
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="cart__discount">
+                                                <h6>Discount codes</h6>
+                                                <form action="#">
+                                                    <input type="text" placeholder="Coupon code">
+                                                    <button type="submit">Apply</button>
+                                                </form>
+                                            </div>
+                                            <div class="cart__total">
+                                                <h6>Cart total</h6>
+                                                <ul>
+                                                    <li>Subtotal <span>₹ <span id="subTotalId">
+                                                                <%- locals.total %>.00
+                                                            </span></span></li>
+                                                    <li>Shipping Charges <span>₹ 00.00</span></li>
+                                                    <li>Total <span>₹ <span id="totalId">
+                                                                <%- locals.total %>.00
+                                                            </span></span></li>
+                                                </ul>
+                                                <a href="/checkout" class="primary-btn">Proceed to checkout</a>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-lg-4">
-                                        <div class="cart__discount">
-                                            <h6>Discount codes</h6>
-                                            <form action="#">
-                                                <input type="text" placeholder="Coupon code">
-                                                <button type="submit">Apply</button>
-                                            </form>
+                                    <% } else { %>
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                                <div class="continue__btn update__btn">
+                                                    <h4 class="text-primary text-center mt-2" style="opacity:50%;">
+                                                        Ohoo... Your
+                                                        cart is empty !!</h4>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-sm-6 ">
+                                                <div class="continue__btn me-5">
+                                                    <a href="/">Continue Shopping</a>
+                                                </div>
+                                            </div>
+
                                         </div>
-                                        <div class="cart__total">
-                                            <h6>Cart total</h6>
-                                            <ul>
-                                                <li>Subtotal <span>₹ <span id="subTotalId">
-                                                            <%- locals.total %>.00
-                                                        </span></span></li>
-                                                <li>Shipping Charges <span>₹ 00.00</span></li>
-                                                <li>Total <span>₹ <span id="totalId">
-                                                            <%- locals.total %>.00
-                                                        </span></span></li>
-                                            </ul>
-                                            <a href="/checkout" class="primary-btn">Proceed to checkout</a>
-                                        </div>
-                                    </div>
-                                </div>
+                                        <% } %>
                             </div>
                         </section>
 
@@ -185,7 +208,9 @@
     function quantityPlus(id, product) {
         count = ++document.getElementById('quantity' + id).value
         axios.post('/quantityPlus', { id: product, count: count, cartid: id }).then((e) => {
-            if (e.data.response) {
+
+            if (e.data.response === "login") location.href = "/login"
+            else if (e.data.response) {
                 document.getElementById('totalPrice' + id).innerHTML = document.getElementById('price' + id).innerHTML * count
                 document.getElementById('subTotalId').innerHTML = e.data.total
                 document.getElementById('totalId').innerHTML = e.data.total
@@ -209,44 +234,31 @@
 
         document.querySelector('#plusButton' + id).disabled = false;
         count = --document.getElementById('quantity' + id).value
-
         if (count < 1) {
             document.querySelector('#minusbutton' + id).disabled = true;
             ++document.getElementById('quantity' + id).value
         } else {
             document.getElementById('totalPrice' + id).innerHTML = document.getElementById('price' + id).innerHTML * count
             axios.post('/quantityPlus', { id: product, count: count, cartid: id }).then(e => {
-                document.getElementById('subTotalId').innerHTML = e.data.total
-                document.getElementById('totalId').innerHTML = e.data.total
+                if (e.data.response === 'login') location.href = "/login"
+                else {
+                    document.getElementById('subTotalId').innerHTML = e.data.total
+                    document.getElementById('totalId').innerHTML = e.data.total
+                }
             })
         }
-        // .then((e) => {
-        //     if (e.data.response) {
-        //         document.getElementById('totalPrice' + id).innerHTML = document.getElementById('price' + id).innerHTML * count
-        //         document.querySelector('#minusbutton' + id).disabled = false;
-        //     }
-        //     else {
-        //         document.getElementById('quantity' + id).value--
-        //         Swal.fire({
-        //             icon: 'error',
-        //             title: 'Sorry',
-        //             text: 'Prodcut is out of stock,'
-        //         })
-        //         document.querySelector('#plusButton' + id).disabled = true;
-        //     }
-        // })
-
     }
 
     function cartDelete(id) {
-        axios.post('/cartDelete', { id: id }).then(() => {
-            location.href = '/cart'
+        axios.post('/cartDelete', { id: id }).then((e) => {
+            if (e.data.response === "login") location.href = "/login"
+            else location.href = '/cart'
         })
     }
 </script>
 
 
-<script src="/user/assets/js/bootstrap.min.js"></script>
+<!-- <script src="/user/assets/js/bootstrap.min.js"></script> -->
 <script src="/user/assets/js/jquery.nice-select.min.js"></script>
 <script src="/user/assets/js/jquery.nicescroll.min.js"></script>
 <script src="/user/assets/js/jquery.magnific-popup.min.js"></script>

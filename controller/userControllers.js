@@ -20,13 +20,12 @@ module.exports = {
         res.render('userSide/signup', { includes: true })
     },
     login: (req, res) => {
-        if (req.session.user) res.redirect('/')
-        else res.render('userSide/userlogin', { includes: true })
+        res.render('userSide/userlogin', { includes: true })
     },
     home: async (req, res) => {
         let Products = []
         genderModel.find({}).lean().then(async (catagories) => {
-            for (let i = 0; i < catagories.length; i++) {
+            for (let i = 0; i < 3; i++) {
                 let products = await productModel.find({ deleteProduct: false, gender: catagories[i]._id }, { imagesDetails: 1, brandName: 1, gender: 1, shopPrice: 1 }).populate('brandName').populate('gender').lean()
                 Products.push(products)
             }
@@ -111,8 +110,8 @@ module.exports = {
         res.redirect('/')
     },
     getCart: (req, res) => {
-        let user = req.session.user._id
-        usermodel.findById(user, { cart: 1 }).populate({ path: 'cart.product_id', model: 'Products', populate: { path: 'brandName', model: 'brandName' } })
+        let userId = req.session.user._id
+        usermodel.findById(userId, { cart: 1 }).populate({ path: 'cart.product_id', model: 'Products', populate: { path: 'brandName', model: 'brandName' } })
             .then(async (result) => {
                 cartproduct = result.cart
                 total = await cartproduct.map(x => x.quantity * x.product_id.shopPrice).reduce((acc, curr) => {
@@ -123,18 +122,47 @@ module.exports = {
             })
     },
     addCart: async (req, res) => {
-        let user = req.session.user._id
-        let cart = await usermodel.findOne({ _id: user, 'cart.product_id': req.body.id })
+        let userId = req.session.user._id
+        let cart = await usermodel.findOne({ _id: userId, 'cart.product_id': req.body.id })
             .catch((error) => res.json({ response: error.message }))
 
         if (cart) {
-            usermodel.updateOne({ _id: user, 'cart.product_id': req.body.id }, { $inc: { 'cart.$.quantity': 1 } })
-                .then(() => res.json({ response: false }))
-                .catch((error) => res.json({ response: error.message }))
+            usermodel.aggregate([
+                {
+                    $match: {
+                        _id: mongoose.Types.ObjectId(userId)
+                    }
+                },
+                {
+                    $project: {
+                        "cart": {
+                            $filter: {
+                                input: "$cart",
+                                cond: {
+                                    $eq: [
+                                        "$$this.product_id",
+                                        mongoose.Types.ObjectId(req.body.id)
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }]).then((cartquantity) => {
+                    productModel.findById(req.body.id, { quantity: 1, _id: -1 }).then(pro => {
+                        let { quantity } = pro
+                        let count = cartquantity[0].cart[0].quantity + 1
+                        if (count <= quantity) {
+                            usermodel.updateOne({ _id: userId, 'cart.product_id': req.body.id }, { $inc: { 'cart.$.quantity': 1 } })
+                                .then(() => res.json({ response: false }))
+                                .catch((error) => res.json({ response: error.message }))
+                        }
+                        else res.json({ response: "The Product is out of stock" })
+                    })
+                })
         } else {
             productModel.findById(req.body.id, { quantity: 1, _id: -1 }).then(count => {
                 if (count.quantity) {
-                    usermodel.findByIdAndUpdate(user, { $push: { cart: { product_id: req.body.id } } })
+                    usermodel.findByIdAndUpdate(userId, { $push: { cart: { product_id: req.body.id } } })
                         .then(() => res.json({ response: false }))
                         .catch((error) => res.json({ response: error.message }))
                 } else res.json({ response: "The Product is out of stock" })
@@ -142,13 +170,13 @@ module.exports = {
         }
     },
     quantityPlus: (req, res) => {
-        let user = req.session.user._id
+        let userId = req.session.user._id
         productModel.findById(req.body.id, { quantity: 1, _id: -1 }).then(pro => {
             let { quantity } = pro
             let count = req.body.count
             if (count <= quantity) {
-                usermodel.updateOne({ _id: user, 'cart._id': req.body.cartid }, { $set: { 'cart.$.quantity': count } }).then(() => {
-                    usermodel.findById(user, { cart: 1 }).populate({ path: 'cart.product_id', model: 'Products' })
+                usermodel.updateOne({ _id: userId, 'cart._id': req.body.cartid }, { $set: { 'cart.$.quantity': count } }).then(() => {
+                    usermodel.findById(userId, { cart: 1 }).populate({ path: 'cart.product_id', model: 'Products' })
                         .then(async (result) => {
                             cartproduct = result.cart
                             total = await cartproduct.map(x => x.quantity * x.product_id.shopPrice).reduce((acc, curr) => {
@@ -163,51 +191,172 @@ module.exports = {
         })
     },
     cartDelete: (req, res) => {
-        let user = req.session.user._id
-        usermodel.findByIdAndUpdate(user, { $pull: { cart: { _id: req.body.id } } }).then(() => {
+        let userId = req.session.user._id
+        usermodel.findByIdAndUpdate(userId, { $pull: { cart: { _id: req.body.id } } }).then(() => {
             res.json()
         })
     },
 
     checkout: (req, res) => {
-        let user = req.session.user._id
-        usermodel.findById(user, { cart: 1 }).populate({ path: 'cart.product_id', model: 'Products', populate: { path: 'brandName', model: 'brandName' } })
+        let userId = req.session.user._id
+        usermodel.findById(userId, { cart: 1 }).populate({ path: 'cart.product_id', model: 'Products', populate: { path: 'brandName', model: 'brandName' } })
             .then(async (result) => {
                 cartproduct = result.cart
                 total = await cartproduct.map(x => x.quantity * x.product_id.shopPrice).reduce((acc, curr) => {
                     acc = acc + curr
                     return acc
                 }, 0)
-                res.render('userSide/checkout', { cartproduct, total, user })
+                usermodel.aggregate([
+                    {
+                        $match: {
+                            _id: mongoose.Types.ObjectId(userId)
+                        }
+                    },
+                    {
+                        $project: {
+                            "address": {
+                                $filter: {
+                                    input: "$address",
+                                    cond: {
+                                        $eq: [
+                                            "$$this.default",
+                                            true
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ]).then(result => {
+                    res.render('userSide/checkout', { cartproduct, total, user, address: result[0].address[0] })
+                })
+
             })
     },
     addAddress: (req, res) => {
-        let user = req.session.user._id
+        let userId = req.session.user._id
         let response = null
-        usermodel.findByIdAndUpdate(user, { $push: { address: req.body } }).then(() => {
-            usermodel.findById(user, { address: 1 }).then(result => {
+        usermodel.findByIdAndUpdate(userId, { $push: { address: req.body } }).then(() => {
+            usermodel.findById(userId, { address: 1 }).then(result => {
                 res.json({ response: false, address: result.address })
             })
         }).catch(error => res.json({ response: error.message }))
     },
     getAddress: (req, res) => {
-        let user = req.session.user._id
+        let userId = req.session.user._id
         let response = null
-        usermodel.findById(user, { address: 1 }, { sort: { 'address.default': 1} })
-            .then(result => {
-                console.log(result)
-                res.json({ response: false, address: result.address })
-            }).catch(error => res.json({ response: error.message }))
+        usermodel.aggregate([
+            { $match: { _id: mongoose.Types.ObjectId(userId) } },
+            {
+                $project:
+                {
+                    _id: 0,
+                    address:
+                    {
+                        $sortArray: { input: "$address", sortBy: { default: -1 } }
+                    }
+                }
+            }
+        ]).then(result => {
+            if (result[0].address[0]) res.json({ response: false, address: result[0].address })
+            else res.json({ response: "Please add your address" })
+        }).catch(error => res.json({ response: error.message }))
     },
     dafaultAddress: (req, res) => {
-        let user = req.session.user._id
+        let userId = req.session.user._id
+        let address = null
         let response = null
-        console.log('aldshfakl' + req.body.id)
-        usermodel.updateOne({ _id: user, 'address.default': true }, { $set: { 'address.$.default': false } }).then(() => {
-            usermodel.updateOne({ _id: user, 'address._id': req.body.id }, { $set: { 'address.$.default': true } }).then(() => {
-                console.log('finished')
+        usermodel.updateOne({ _id: userId, 'address.default': true }, { $set: { 'address.$.default': false } }).then(() => {
+            usermodel.updateOne({ _id: userId, 'address._id': req.body.id }, { $set: { 'address.$.default': true } }).then(() => {
+                usermodel.aggregate([
+                    {
+                        $match: {
+                            _id: mongoose.Types.ObjectId(userId)
+                        }
+                    },
+                    {
+                        $project: {
+                            "address": {
+                                $filter: {
+                                    input: "$address",
+                                    cond: {
+                                        $eq: [
+                                            "$$this._id",
+                                            mongoose.Types.ObjectId(req.body.id)
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ]).then((result) => {
+                    res.json({ response: false, address: result[0].address })
+                })
             })
+        }).catch(error => res.json({ response: error.message }))
+    },
+    deleteAddress: (req, res) => {
+        let userId = req.session.user._id
+        usermodel.findByIdAndUpdate(userId, { $pull: { address: { _id: req.body.id } } }).then(() => {
+            res.json({})
+        })
+    },
+    getEditAddress: (req, res) => {
+        let userId = req.session.user._id
+        usermodel.aggregate([
+            {
+                $match: {
+                    _id: mongoose.Types.ObjectId(userId)
+                }
+            },
+            {
+                $project: {
+                    "address": {
+                        $filter: {
+                            input: "$address",
+                            cond: {
+                                $eq: [
+                                    "$$this._id",
+                                    mongoose.Types.ObjectId(req.query.id)
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        ]).then(result => {
+            console.log(result[0])
+            res.json({ address: result[0].address[0] })
         })
 
+
+    },
+    updateAddress: (req, res) => {
+        let userId = req.session.user._id
+        usermodel.updateMany({ _id: mongoose.Types.ObjectId(userId), 'address._id': mongoose.Types.ObjectId(req.body.id) }, { $set: { 'address.$.firstname': req.body.firstname, 'address.$.lastname': req.body.lastname, 'address.$.address': req.body.address, 'address.$.city': req.body.city, 'address.$.state': req.body.state, 'address.$.pincode': req.body.pincode, 'address.$.phone': req.body.phone } }).then((() => {
+            res.redirect('/checkout')
+        }))
+
+    },
+    product: (req, res) => {
+        let type = req.params.name
+        if (type == "Men") {
+            productModel.find({ gender: "63715c17b25596686e476c80" }).populate('brandName').then(Products=>{
+                console.log(Products)
+                res.render('userSide/productPage',{Products, gender:"Men's", user})
+            })
+        }
+        if (type == "Women") {
+            productModel.find({ gender: "637152ce800cd5eacd462106" }).populate('brandName').then(Products => {
+                console.log(Products)
+                res.render('userSide/productPage', { Products, gender: "Women's", user })
+            })
+        }
+        if (type == "Kid") {
+            productModel.find({ gender: "6371ae2419e01e8eec6e14c5" }).populate('brandName').then(Products => {
+                console.log(Products)
+                res.render('userSide/productPage', { Products, gender: "Kid's", user })
+            })
+        }
     }
 }

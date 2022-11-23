@@ -53,7 +53,7 @@
                                                 <!-- <p>Lorem ipsum dolor sit amet, conservisii ctetur adipiscing elit incid.
                                                 </p> -->
                                                 <div class="main-border-button">
-                                                    <a href="#">Discover More</a>
+                                                    <a href="/product/<%= catagories[a].gender %>">Discover More</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -213,13 +213,13 @@
             addtocart = (id) => {
                 try {
                     axios.post('/addCart', { id: id }).then((e) => {
-                        if (e.data.response) {
+                        if (e.data.response === "login") location.href = "/login"
+                         else if (e.data.response) {
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Oops...',
                                 text: 'Sorry, ' + e.data.response
                             })
-
                         } else {
                             Swal.fire({
                                 icon: 'success',
