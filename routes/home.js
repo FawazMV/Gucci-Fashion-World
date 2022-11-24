@@ -47,5 +47,10 @@ router.post('/updateAddress', sessionCheckAxios, user.updateAddress)
 
 router.get('/product/:name', user.product)
 
+router.get('/allProduct', user.allProduct)
+
+router.get('/productFilter', user.productFilter)
+
+
 
 module.exports = router

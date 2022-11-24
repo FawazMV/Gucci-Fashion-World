@@ -4,6 +4,7 @@ const { findById } = require('../models/gender_type-schema');
 const genderModel = require('../models/gender_type-schema');
 const productModel = require('../models/product-schema');
 const usermodel = require('../models/user-schema');
+const brandModel = require('../models/brandName-schema')
 //const ObjectId = require('objectid');
 const { default: mongoose } = require('mongoose');
 const accoutnSID = process.env.accoutnSID
@@ -341,9 +342,9 @@ module.exports = {
     product: (req, res) => {
         let type = req.params.name
         if (type == "Men") {
-            productModel.find({ gender: "63715c17b25596686e476c80" }).populate('brandName').then(Products=>{
+            productModel.find({ gender: "63715c17b25596686e476c80" }).populate('brandName').then(Products => {
                 console.log(Products)
-                res.render('userSide/productPage',{Products, gender:"Men's", user})
+                res.render('userSide/productPage', { Products, gender: "Men's", user })
             })
         }
         if (type == "Women") {
@@ -358,5 +359,80 @@ module.exports = {
                 res.render('userSide/productPage', { Products, gender: "Kid's", user })
             })
         }
+    },
+    allProduct: async (req, res) => {
+        let gender = await genderModel.find()
+        let brands = await brandModel.find()
+
+        productModel.find().populate('brandName').populate('gender').sort({ createdAt: -1 })
+            .then(Products => {
+                res.locals.Products = Products
+                res.render('userSide/allProducts', { gender, user, brands })
+            })
+    },
+    productFilter: (req, res) => {
+        let gender = req.query.gender
+        let brand = req.query.brand
+        let sortt = req.query.sortt
+        if (sortt == "shopPrice") {
+            if (!gender && !brand) {
+                productModel.find({}).populate('brandName').populate('gender').sort({ shopPrice: -1, }).
+                    then(Products => {
+                        res.json({ Products: Products })
+                    })
+            } else if (!gender) {
+                productModel.find({ brandName: { $in: brand } }).populate('brandName').populate('gender').sort({ shopPrice: -1 }).
+                    then(Products => {
+                        res.json({ Products: Products })
+                    })
+            } else if (!brand) {
+                productModel.find({ gender: { $in: gender } }).populate('brandName').populate('gender').sort({ shopPrice: -1 }).
+                    then(Products => {
+                        res.json({ Products: Products })
+                    })
+            }
+            else {
+                productModel.find({
+                    $and: [
+                        { gender: { "$in": gender } },
+                        { brandName: { "$in": brand } }
+                    ]
+                }).populate('brandName').populate('gender').sort({ shopPrice: -1 }).
+                    then(Products => {
+                        res.json({ Products: Products })
+                    })
+            }
+        }
+        else {
+
+            if (!gender && !brand) {
+                productModel.find({}).populate('brandName').populate('gender').sort({ createdAt: -1 }).
+                    then(Products => {
+                        res.json({ Products: Products })
+                    })
+
+            } else if (!gender) {
+                productModel.find({ brandName: { $in: brand } }).populate('brandName').populate('gender').sort({ createdAt: -1 }).
+                    then(Products => {
+                        res.json({ Products: Products })
+                    })
+            } else if (!brand) {
+                productModel.find({ gender: { $in: gender } }).populate('brandName').populate('gender').sort({ createdAt: -1 }).
+                    then(Products => {
+                        res.json({ Products: Products })
+                    })
+            }
+            else {
+                productModel.find({
+                    $and: [
+                        { gender: { "$in": gender } },
+                        { brandName: { "$in": brand } }
+                    ]
+                }).populate('brandName').populate('gender').sort({ createdAt: -1 }).
+                    then(Products => {
+                        res.json({ Products: Products })
+                    })
+            }
+        }
     }
-}
+}     
