@@ -7,6 +7,8 @@ const usermodel = require('../models/user-schema');
 const brandModel = require('../models/brandName-schema')
 //const ObjectId = require('objectid');
 const { default: mongoose } = require('mongoose');
+const { payment, verifyPayment } = require('../config/payment');
+const { OrderID } = require('../config/orderId');
 const accoutnSID = process.env.accoutnSID
 const serviceSID = process.env.serviceSID
 const authToken = process.env.authToken
@@ -126,7 +128,6 @@ module.exports = {
         let userId = req.session.user._id
         let cart = await usermodel.findOne({ _id: userId, 'cart.product_id': req.body.id })
             .catch((error) => res.json({ response: error.message }))
-
         if (cart) {
             usermodel.aggregate([
                 {
@@ -269,30 +270,30 @@ module.exports = {
         let response = null
         usermodel.updateOne({ _id: userId, 'address.default': true }, { $set: { 'address.$.default': false } }).then(() => {
             usermodel.updateOne({ _id: userId, 'address._id': req.body.id }, { $set: { 'address.$.default': true } }).then(() => {
-                usermodel.aggregate([
-                    {
-                        $match: {
-                            _id: mongoose.Types.ObjectId(userId)
-                        }
-                    },
-                    {
-                        $project: {
-                            "address": {
-                                $filter: {
-                                    input: "$address",
-                                    cond: {
-                                        $eq: [
-                                            "$$this._id",
-                                            mongoose.Types.ObjectId(req.body.id)
-                                        ]
-                                    }
-                                }
-                            }
-                        }
-                    }
-                ]).then((result) => {
-                    res.json({ response: false, address: result[0].address })
-                })
+                res.json({ response: false })
+                // usermodel.aggregate([
+                //     {
+                //         $match: {
+                //             _id: mongoose.Types.ObjectId(userId)
+                //         }
+                //     },
+                //     {
+                //         $project: {
+                //             "address": {
+                //                 $filter: {
+                //                     input: "$address",
+                //                     cond: {
+                //                         $eq: [
+                //                             "$$this._id",
+                //                             mongoose.Types.ObjectId(req.body.id)
+                //                         ]
+                //                     }
+                //                 }
+                //             }
+                //         }
+                //     }
+                // ]).then((result) => {
+                //  })
             })
         }).catch(error => res.json({ response: error.message }))
     },
@@ -404,7 +405,6 @@ module.exports = {
             }
         }
         else {
-
             if (!gender && !brand) {
                 productModel.find({}).populate('brandName').populate('gender').sort({ createdAt: -1 }).
                     then(Products => {
@@ -434,5 +434,36 @@ module.exports = {
                     })
             }
         }
+    },
+    placeOrder: (req, res) => {
+        if (req.body.payment === "online") {
+            let userId = req.session.user._id
+            usermodel.findById(userId, { cart: 1 }).populate({ path: 'cart.product_id', model: 'Products' })
+                .then(async (result) => {
+                    cartproduct = result.cart
+                    total = await cartproduct.map(x => x.quantity * x.product_id.shopPrice).reduce((acc, curr) => {
+                        acc = acc + curr
+                        return acc
+                    }, 0)
+                    payment(total * 100).then((response) => {
+                        res.json({ response: response })
+                    })
+                })
+        }
+        else {
+            OrderID().then((id)=>{
+                console.log(id)
+                res.json({ response: "cod" })
+            })
+        }
+    },
+    verification: (req, res) => {
+        verifyPayment(req.body.payment)
+            .then(() => {
+                res.json({ status: true })
+            }).catch(error => res.json({ status: false, error: error.message }))
+    },
+    success: (req, res) => {
+        res.render('userSide/success', { includes: true, user })
     }
 }     

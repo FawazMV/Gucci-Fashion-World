@@ -99,7 +99,8 @@
                                             <ul>
                                                 <li><a href="/singelProduct/<%= Products[k][i]._id %> "><i
                                                             class="fa fa-eye"></i></a></li>
-                                                <li><a href="single-product.html"><i class="fa fa-star"></i></a></li>
+                                                <li><a onclick="addtoWishlist('<%= Products[k][i]._id %>')"><i
+                                                            class="fa fa-star"></i></a></li>
                                                 <li><a onclick="addtocart('<%= Products[k][i]._id %>')"><i
                                                             class="fa fa-shopping-cart"></i></a>
                                                 </li>
@@ -214,7 +215,7 @@
                 try {
                     axios.post('/addCart', { id: id }).then((e) => {
                         if (e.data.response === "login") location.href = "/login"
-                         else if (e.data.response) {
+                        else if (e.data.response) {
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Oops...',
@@ -224,6 +225,37 @@
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Product added to cart',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        }
+                    })
+                }
+                catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Sorry,' + error.message
+                    })
+                }
+            }
+
+
+
+            addtoWishlist = (id) => {
+                try {
+                    axios.put('/addWhishlist', { id: id }).then((e) => {
+                        if (e.data.response === "login") location.href = "/login"
+                        else if (e.data.response) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Sorry, ' + e.data.response
+                            })
+                        } else {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Product added to wishlist',
                                 showConfirmButton: false,
                                 timer: 1500
                             })

@@ -1,0 +1,103 @@
+<script>
+
+
+    var canvas = $("#canvas"),
+        context = canvas.get(0).getContext("2d"),
+        $result = $('#result');
+    async function cropImage(id) {
+
+        document.getElementById('canvas').innerHTML=""
+        var reader = new FileReader();
+        reader.onload = function (evt) {
+            var img = new Image();
+            img.onload = function () {
+                context.canvas.height = img.height;
+                context.canvas.width = img.width;
+                context.drawImage(img, 0, 0);
+                var cropper = canvas.cropper({
+                    aspectRatio: 14 / 18
+                });
+                $('#btnCrop').click(function () {
+                    // Get a string base 64 data url
+                    var croppedImageDataURL = canvas.cropper('getCroppedCanvas').toDataURL("image/png");
+                    document.getElementById(id).src = croppedImageDataURL
+                    document.getElementById('result').src = croppedImageDataURL
+
+                    //$result.append($('<img>').attr('src', croppedImageDataURL));
+                    console.log(croppedImageDataURL)
+                });
+                $('#btnRestore').click(function () {
+                    canvas.cropper('reset');
+                    $result.empty();
+                });
+            };
+            img.src = evt.target.result;
+        };
+        let response = await fetch(id);
+        let data = await response.blob();
+        let metadata = {
+            type: 'image/jpeg'
+        };
+        let file = new File([data], "test.jpg", metadata);
+        reader.readAsDataURL(file);
+    };
+
+
+
+
+
+
+
+
+
+
+
+    // $('#formFileLg').on('change', function () {
+    //     if (this.files && this.files[0]) {
+    //         if (this.files[0].type.match(/^image\//)) {
+    //             var reader = new FileReader();
+    //             reader.onload = function (evt) {
+    //                 var img = new Image();
+    //                 img.onload = function () {
+    //                     context.canvas.height = img.height;
+    //                     context.canvas.width = img.width;
+    //                     context.drawImage(img, 0, 0);
+    //                     var cropper = canvas.cropper({
+    //                         aspectRatio: 14 / 18
+    //                     });
+    //                     $('#btnCrop').click(function () {
+    //                         // Get a string base 64 data url
+    //                         var croppedImageDataURL = canvas.cropper('getCroppedCanvas').toDataURL("image/png");
+    //                         $result.append($('<img  style="max-width:100%;">').attr('src', croppedImageDataURL));
+    //                     });
+    //                     $('#btnRestore').click(function () {
+    //                         canvas.cropper('reset');
+    //                         $result.empty();
+    //                     });
+    //                 };
+    //                 img.src = evt.target.result;
+    //             };
+    //             reader.readAsDataURL(this.files[1]);
+    //         }
+    //         else {
+    //             alert("Invalid file type! Please select an image file.");
+    //         }
+    //     }
+    //     else {
+    //         alert('No file(s) selected.');
+    //     }
+    // });
+</script>
+
+        <br />
+        <br />
+        <hr />
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/cropper/2.3.3/cropper.js"></script>
+
+
+        <button type="button" onclick="eidddd()"></button>
+
+
+

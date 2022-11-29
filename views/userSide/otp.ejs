@@ -15,11 +15,11 @@
     <%- include('../userSide/includes/navbar') %>
         <div class="d-flex justify-content-center align-items-center container" style="height:100vh;">
 
-            <div class="card py-5 px-3">
-                <div class="">
-                    <h5 class="m-0">Mobile phone verification</h5><span class="mobile-text">Enter the code we just send
+            <div class="card py-5 px-3 d-flex justify-content-center">
+                <div class="mx-3">
+                    <h5 class="text-center">Mobile phone verification</h5><span class="mobile-text" style="opacity:70%;">Enter the code we just send
                         on your
-                        mobile phone <b class="text-danger"> <br>+91 <%=locals.userNumber %> </b></span>
+                        number <b class="text-danger"> <br>+91 <%=locals.userNumber %> </b></span>
                 </div>
                 <form action="/otpverification" method="post">
 
@@ -31,12 +31,32 @@
 
                 <p class="ml-5 text-danger" id="errmsg" style="display:none;">OTP verification failed</p>
 
-                <div class="text-center mt-5 " id="resendId"><span class="d-block mobile-text">Don't receive the
-                        code?</span><button onclick="resend() " class="btn btn-outline-white"><span
-                            class="font-weight-bold text-danger cursor">Resend</span></button></div>
+                <div class="text-center mt-5 " id="resendId">
+                    <span class="d-block mobile-text" style="font-weight:500;font-size:17px;">Don't receive the code?</span>
+
+                    <div id="timerId">
+                        <p class="my-2 text-primary" style="font-size:13px;"> Resend OTP in
+                            <span id="countdowntimer">30</span> Seconds
+                        </p>
+                    </div>
+                </div>
+
 
             </div>
         </div>
+        <script>
+            var timeleft = 30;
+            var downloadTimer = setInterval(function () {
+                timeleft--;
+                document.getElementById("countdowntimer").textContent = timeleft;
+                if (timeleft <= 0) {
+                    clearInterval(downloadTimer);
+                    document.getElementById('timerId').innerHTML = `<button  id="resendIdButton" onclick="resend()" class="btn btn-outline-white">
+                        <span class="font-weight-bold text-danger cursor">Resend</span></button>`
+                }
+
+            }, 1000);
+        </script>
 
         <script>
             function otpcheck() {

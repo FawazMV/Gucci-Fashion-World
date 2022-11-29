@@ -36,14 +36,20 @@
                                     </div>
                                 </div>
                             </div>
+                            
                         </section>
+                        
 
-                        <!-- Breadcrumb Section End -->
-
-                        <!-- Shopping Cart Section Begin -->
-                        <section class="shopping-cart spad">
+                        <div class="alert alert-warning mt-2 mb-0 text-center" id="alertBox" style="display:none;" role="alert">
+                           Remove out of stock items to checkout ! ! !
+                        </div>
+                        <section class="shopping-cart spad ">
+                        
+                            
                             <div class="container">
+
                                 <% if (cartproduct.length) { %>
+                                    
                                     <div class="row">
                                         <div class="col-lg-8">
                                             <div class="shopping__cart__table">
@@ -73,9 +79,9 @@
                                                                                 stock</span>
                                                                             <% } %>
 
-                                                                                <img src="<%= cartproduct[i].product_id.imagesDetails[0].Location %> "
+                                                                              <a href="/singelProduct/<%= cartproduct[i].product_id._id %>">  <img src="<%= cartproduct[i].product_id.imagesDetails[0].Location %> "
                                                                                     style="width:65px; position: relative;"
-                                                                                    alt="">
+                                                                                    alt=""></a>
                                                                     </div>
                                                                     <div class="product__cart__item__text">
                                                                         <h6>
@@ -171,7 +177,7 @@
                                                                 <%- locals.total %>.00
                                                             </span></span></li>
                                                 </ul>
-                                                <a href="/checkout" class="primary-btn">Proceed to checkout</a>
+                                           <button class="btn btn-link" id="checkoutId" style="text-decoration:none;">  <a href="/checkout" class="primary-btn">Proceed to checkout</a></button>
                                             </div>
                                         </div>
                                     </div>
@@ -202,9 +208,17 @@
         </div>
     </div>
 </div>
+<% for( let i=0; i < cartproduct.length; i++ ) { %>
+<% if (cartproduct[i].product_id.quantity==0) { %>
+<script>
+    document.getElementById('checkoutId').disabled = true
+    document.getElementById('alertBox').style.display ="block"
+</script>
+<% } %>
+<% } %>
+
 
 <script>
-
     function quantityPlus(id, product) {
         count = ++document.getElementById('quantity' + id).value
         axios.post('/quantityPlus', { id: product, count: count, cartid: id }).then((e) => {

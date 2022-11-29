@@ -93,7 +93,7 @@
                                             <div class="details-filter-row details-row-size">
                                                 <label>Color:</label>
 
-                                                <div class="product-nav product-nav-thumbs">
+                                                <div class="product-nav">
                                                     <span class="me-3 fw-bold">
                                                         <%= locals.product.color1 %>
                                                     </span>
@@ -135,7 +135,7 @@
                                                     class="btn-product btn-cart"><span>add to cart</span></a>
 
                                                 <div class="details-action-wrapper">
-                                                    <a href="#" class="btn-product btn-wishlist"
+                                                    <a onclick="addtoWishlist('<%= product._id %>')" class="btn-product btn-wishlist"
                                                         title="Wishlist"><span>Add
                                                             to
                                                             Wishlist</span></a>
@@ -587,7 +587,7 @@
                                         </a>
 
                                         <div class="product-action-vertical">
-                                            <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add
+                                            <a onclick="addtoWishlist('')" class="btn-product-icon btn-wishlist btn-expandable"><span>add
                                                     to
                                                     wishlist</span></a>
                                             <a href="popup/quickView.html" class="btn-product-icon btn-quickview"
@@ -653,11 +653,44 @@
                 })
             }
             catch (error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Sorry,' + error.message
-                })
+                Swal.fire(
+                    'The Internet?',
+                    'That thing is still around?',
+                    'question'
+                )
             }
         }
+
+
+
+
+        addtoWishlist = (id) => {
+                try {
+                    axios.put('/addWhishlist', { id: id }).then((e) => {
+                        if (e.data.response === "login") location.href = "/login"
+                        else if (e.data.response) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Sorry, ' + e.data.response
+                            })
+                        } else {
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'success',
+                                text: 'Product added to wishlist',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        }
+                    })
+                }
+                catch (error) {
+                    Swal.fire(
+                        'The Internet?',
+                        'That thing is still around?',
+                        'question'
+                    )
+                }
+            }
     </script>

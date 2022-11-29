@@ -1,0 +1,166 @@
+<%- include('../userSide/includes/singleAndCart') %>
+    <section>
+        <div id="top">
+            <div class="container pt-5 mb-5">
+                <div class="page-wrapper">
+                    <main class="main pt-5 mb-5">
+                        <div class="page-header text-center"
+                            style="background-image: url('/singlePro/assets/images/page-header-bg.jpg')">
+                            <div class="container">
+                                <h1 class="page-title">Wishlist</h1>
+                            </div><!-- End .container -->
+                        </div><!-- End .page-header -->
+                        <nav aria-label="breadcrumb" class="breadcrumb-nav">
+                            <div class="container">
+
+                            </div><!-- End .container -->
+                        </nav><!-- End .breadcrumb-nav -->
+                        <% if (locals.wishlist.length) { %>
+                            <div class="page-content">
+                                <div class="container">
+                                    <table class="table table-wishlist table-mobile">
+                                        <thead>
+                                            <tr>
+                                                <th>Product</th>
+                                                <th>Price</th>
+                                                <th>Stock Status</th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            <% for( let i=0; i < wishlist.length; i++ ) { %>
+
+                                                <div id="">
+                                                    <tr id="tr<%= wishlist[i]._id %>">
+                                                        <td class="product-col">
+                                                            <div class="product">
+                                                                <figure class="product-media">
+                                                                    <a href="/singelProduct/<%= wishlist[i].product_id._id %> ">
+                                                                        <img src="<%= wishlist[i].product_id.imagesDetails[0].Location%>"
+                                                                            class="pe-4" style="width:80px;"
+                                                                            alt="Product image">
+                                                                    </a>
+                                                                </figure>
+
+                                                                <h3 class="product-title">
+                                                                    <a href="/singelProduct/<%= wishlist[i].product_id._id %>">
+                                                                        <%= wishlist[i].product_id.brandName.brandName
+                                                                            %>
+                                                                            <%= wishlist[i].product_id.type %>
+                                                                                <%= wishlist[i].product_id.color1 %>
+                                                                    </a>
+                                                                </h3><!-- End .product-title -->
+                                                            </div><!-- End .product -->
+                                                        </td>
+                                                        <td class="price-col">₹<%= wishlist[i].product_id.shopPrice %>
+                                                                .00
+                                                        </td>
+                                                        <% if (wishlist[i].product_id.quantity==0) { %>
+                                                            <td class="stock-col"><span class="out-of-stock">Out of
+                                                                    stock</span>
+                                                                <% } else { %>
+                                                            <td class="stock-col"><span class="in-stock">In stock</span>
+                                                            </td>
+                                                            <% } %>
+                                                                <td class="action-col">
+                                                                    <% if (wishlist[i].product_id.quantity>0) { %>
+                                                                    <button
+                                                                        onclick="addtocart('<%= wishlist[i].product_id._id %>','<%= wishlist[i]._id %>')"
+                                                                        class="btn btn-block btn-outline-primary-2"><i
+                                                                            class="icon-cart-plus"></i>Add to
+                                                                        Cart</button>
+                                                            <% } %>
+                                                                        
+                                                                </td>
+                                                                <td class="remove-col"><button
+                                                                        onclick="deleteWishlist('<%= wishlist[i]._id %>')"
+                                                                        class="btn-remove"><i
+                                                                            class="icon-close"></i></button>
+                                                                </td>
+                                                    </tr>
+                                                </div>
+                                                <% } %>
+
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <% } else { %>
+
+                                <h4 class="text-primary text-center mt-2" style="opacity:50%;">
+                                    Ohoo... Your
+                                    wishlist is empty !!</h4>
+
+                                <% } %>
+                    </main>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+
+    <script>
+        addtocart = (id, wish) => {
+            try {
+                axios.post('/addCart', { id: id }).then((e) => {
+                    if (e.data.response === "login") location.href = "/login"
+                    else if (e.data.response) {
+                        Swal.fire({
+                            icon: 'error',
+                             title: 'Already in cart',
+                            text: 'Product quantity reached the stock limit',
+                            showConfirmButton: false,
+                            timer: 3000
+                        })
+                    }
+                    else {
+                        Swal.fire({
+                            icon: 'success',
+                            text: 'Product moved to cart',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        deleteWishlist(wish)
+                    }
+                })
+            }
+            catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Sorry,' + error.message
+                })
+            }
+        }
+
+
+        deleteWishlist = (id) => {
+            try {
+                axios.delete('/deleteWishlist', { data: { id: id } }).then(e => {
+                    if (!e.data.response) document.getElementById('tr' + id).style.display = 'none'
+                    else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Sorry,' + response
+                        })
+                    }
+                })
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Sorry, something went wrong, Try again after some time..'
+                })
+            }
+        }
+
+
+    </script>

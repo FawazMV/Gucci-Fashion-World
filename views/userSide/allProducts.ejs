@@ -59,7 +59,9 @@
                                                             </a>
 
                                                             <div class="product-action-vertical">
-
+                                                                <a onclick="addtoWishlist('<%= Products[i]._id %>')"
+                                                                    class="btn-product-icon btn-wishlist btn-expandable"><span>add
+                                                                        to wishlist</span></a>
                                                             </div><!-- End .product-action -->
 
                                                             <div class="product-action action-icon-top">
@@ -101,7 +103,7 @@
 
                                                     <div class="product-nav product-nav-dots">
                                                         <a href="#" class="active"
-                                                            style="background: <%= Products[i].color1%>;"><span
+                                                            style="background:<%= Products[i].color1%>;"><span
                                                                 class="sr-only">
                                                                 <%= Products[i].color1%>
                                                             </span></a>
@@ -376,6 +378,37 @@
                 })
             }
         }
+
+
+        addtoWishlist = (id) => {
+            try {
+                axios.put('/addWhishlist', { id: id }).then((e) => {
+                    if (e.data.response === "login") location.href = "/login"
+                    else if (e.data.response) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Sorry, ' + e.data.response
+                        })
+                    } else {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            text: 'Product added to wishlist',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    }
+                })
+            }
+            catch (error) {
+                Swal.fire(
+                    'The Internet?',
+                    'That thing is still around?',
+                    'question'
+                )
+            }
+        }
     </script>
 
 
@@ -388,31 +421,34 @@
             let brand = []
             for (let i = 0; i < filter.length; i++) gender.push(filter[i].defaultValue)
             for (let i = 0; i < filter2.length; i++) brand.push(filter2[i].defaultValue)
-            axios.get('/productFilter', { params: { gender: gender, brand: brand, sortt: sortt } }).then((e) => {
-                let Products = e.data.Products
-                let html = ""
-                for (let i = 0; i < Products.length; i++) {
-                    html +=
-                        `
+            try {
+                axios.get('/productFilter', { params: { gender: gender, brand: brand, sortt: sortt } }).then((e) => {
+                    let Products = e.data.Products
+                    let html = ""
+                    for (let i = 0; i < Products.length; i++) {
+                        html +=
+                            `
                                         <div class="col-6 col-md-4 col-lg-4 col-xl-3">
                                             <div class="product">
                                                 <figure class="product-media">
                                                     <!-- <span class="product-label label-new">New</span> -->`
-                                                     if (Products[i].quantity==0) {
+                        if (Products[i].quantity == 0) {
 
-                                                html +=        ` <span class="badge badge-danger p-4 h3 me-3"
+                            html += ` <span class="badge badge-danger p-4 h3 me-3"
                                                             style="position:absolute;margin-top:50%; z-index:1; width:100%;">Out
                                                             of
                                                             stock</span>`
 
-                                                         } 
-                                             html +=        `<a href="/singelProduct/${Products[i]._id}">
+                        }
+                        html += `<a href="/singelProduct/${Products[i]._id}">
                                                         <img src="${Products[i].imagesDetails[0].Location} "
                                                             alt="Product image" class="product-image">
                                                     </a>
 
                                                     <div class="product-action-vertical">
-
+                                                         <a onclick="addtoWishlist('${Products[i]._id}')"
+                                                                    class="btn-product-icon btn-wishlist btn-expandable"><span>add
+                                                                        to wishlist</span></a>
                                                     </div><!-- End .product-action -->
 
                                                     <div class="product-action action-icon-top">
@@ -461,9 +497,16 @@
                                                 </div><!-- End .product-body -->
                                             </div><!-- End .product -->
                                         </div><!-- End .col-sm-6 col-lg-4 col-xl-3 -->  `
-                }
-                document.getElementById('ProductsId').innerHTML = html
+                    }
+                    document.getElementById('ProductsId').innerHTML = html
 
-            })
+                })
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Sorry, Something went wrong!\n Try again after some time'
+                })
+            }
         }
     </script>

@@ -35,25 +35,33 @@ const userSchema = new mongoose.Schema
                         type: mongoose.Schema.Types.ObjectId,
                         ref: 'Products',
                     },
-                    quantity:{
-                        type:Number,
-                        default:1
+                    quantity: {
+                        type: Number, 
+                        default: 1
                     }
                 }
             ],
-            address:[
+            wishlist: [
                 {
-                    default:{
+                    product_id: {
+                        type: mongoose.Schema.Types.ObjectId,
+                        ref: 'Products',
+                    }
+                }
+            ],
+            address: [
+                {
+                    default: {
                         type: Boolean,
-                        default:false
+                        default: false
                     },
-                    firstname:{
-                        type:String,
+                    firstname: {
+                        type: String,
                         required: true
                     },
-                    lastname:{
-                        type:String,
-                        required:true
+                    lastname: {
+                        type: String,
+                        required: true
                     },
                     address: {
                         type: String,
