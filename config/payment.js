@@ -6,12 +6,12 @@ var instance = new Razorpay({
     key_secret: process.env.key_secret,
 });
 
-exports.payment = (amount) => {
+exports.payment = (amount,orderID) => {
     return new Promise((resolve, reject) => {
         var options = {
             amount: amount,
             currency: "INR",
-            receipt: "order_rcptid_11"
+            receipt: orderID
         };
         instance.orders.create(options, function (err, order) {
             resolve(order)

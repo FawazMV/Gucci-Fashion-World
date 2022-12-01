@@ -42,6 +42,10 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use('/', homeRouter)
 app.use('/admin', adminRouter)
+app.use((req, res) => {
+    res.status(404).send('<h1>Page not Found <h1>')
+})
+  
 
 app.listen(process.env.PORT || 4444, () => {
     console.log('Server connected successfully');

@@ -1,69 +1,101 @@
 const express = require('express')
-const { verifyPayment } = require('../config/payment')
 const router = express.Router()
-const user = require('../controller/userControllers')
+const { verifyPayment } = require('../config/payment')
+const { placeOrder } = require('../controller/orderControllers')
+const { login, signup, home, orderPage, otppage, singleProduct, getCart, checkout, product, allProduct, success, loginPost, doSignup, otppageverify, OTPResend, logout, addCart, quantityPlus, cartDelete, addAddress, getAddress, dafaultAddress, deleteAddress, getEditAddress, updateAddress, productFilter, verification } = require('../controller/userControllers')
 const { getWishlist, addWishlist, deleteWishlist } = require('../controller/wishlistControllers.js')
 const { sessionCheck, sessionCheckAxios, loginCheck } = require('../middlewears/sessioncheck')
 
-router.get('/', user.home)
 
-router.get('/login', loginCheck, user.login)
+//---------Page rendering routes-----------------/////
 
-router.post('/login', user.loginPost)
 
-router.get('/signup', loginCheck, user.signup)
+router.get('/', home)
 
-router.post('/signup', user.doSignup)
+router.get('/login', loginCheck, login)
 
-router.get('/otp', user.otppage)
+router.get('/signup', loginCheck, signup)
 
-router.post('/otpverification', user.otppageverify)
+router.get('/otp', otppage)
 
-router.get('/OTPResend', user.OTPResend)
+router.get('/singelProduct/:id', singleProduct)
 
-router.get('/singelProduct/:id', user.singleProduct)
+router.get('/cart', sessionCheck, getCart)
 
-router.get('/logout', user.logout)
+router.get('/checkout', sessionCheck, checkout)
 
-router.get('/cart', sessionCheck, user.getCart)
+router.get('/product/:name', product)
 
-router.post('/addCart', sessionCheckAxios, user.addCart)
-
-router.post('/quantityPlus', sessionCheckAxios, user.quantityPlus)
-
-router.post('/cartDelete', sessionCheckAxios, user.cartDelete)
-
-router.get('/checkout', sessionCheck, user.checkout)
-
-router.post('/addAddress', sessionCheckAxios, user.addAddress)
-
-router.get('/getAddress', sessionCheckAxios, user.getAddress)
-
-router.put('/default', sessionCheckAxios, user.dafaultAddress)
-
-router.patch('/deleteAddress', sessionCheckAxios, user.deleteAddress)
-
-router.get('/getEditAddress', sessionCheckAxios, user.getEditAddress)
-
-router.post('/updateAddress', sessionCheckAxios, user.updateAddress)
-
-router.get('/product/:name', user.product)
-
-router.get('/allProduct', user.allProduct)
-
-router.get('/productFilter', user.productFilter)
+router.get('/allProduct', allProduct)
 
 router.get('/wishlist', sessionCheck, getWishlist)
+
+router.get('/success', sessionCheck, success)
+
+router.get('/orders', sessionCheck, orderPage)
+
+
+//--------<<</END-Page rendering routes----END/>-------------/////
+
+
+router.post('/login', loginPost)
+
+router.post('/signup', doSignup)
+
+router.post('/otpverification', otppageverify)
+
+router.get('/OTPResend', OTPResend)
+
+router.get('/logout', logout)
+
+//-----------------cart controllers-------///////
+
+router.post('/addCart', sessionCheckAxios, addCart)
+
+router.post('/quantityPlus', sessionCheckAxios, quantityPlus)
+
+router.post('/cartDelete', sessionCheckAxios, cartDelete)
+
+//--------------</END-cart controllers--END/>-----///////
+
+
+//--------------Address controllers-------///////
+
+
+router.post('/addAddress', sessionCheckAxios, addAddress)
+
+router.get('/getAddress', sessionCheckAxios, getAddress)
+
+router.put('/default', sessionCheckAxios, dafaultAddress)
+
+router.patch('/deleteAddress', sessionCheckAxios, deleteAddress)
+
+router.get('/getEditAddress', sessionCheckAxios, getEditAddress)
+
+router.post('/updateAddress', sessionCheckAxios, updateAddress)
+
+
+//-----------</END---Address controllers--END/>-----///////
+
+
+
+
+router.get('/productFilter', productFilter)
+//-----------------wishlist controllers-------///////
+
 
 router.put('/addWhishlist', sessionCheckAxios, addWishlist)
 
 router.delete('/deleteWishlist', sessionCheckAxios, deleteWishlist)
 
-router.put('/placeOrder', sessionCheckAxios, user.placeOrder)
+//--------------</END-wishlist controllers--END/>-----///////
 
-router.post('/verifyPayment', sessionCheckAxios, user.verification)
 
-router.get('/success', sessionCheck, user.success)
+router.put('/placeOrder', sessionCheckAxios, placeOrder)
+
+router.post('/verifyPayment', sessionCheckAxios, verification)
+
+
 
 
 

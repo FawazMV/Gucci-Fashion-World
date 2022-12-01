@@ -534,10 +534,10 @@
             document.getElementById('paymentSelect').style.display = "block"
         }
     }
-    </script>
+</script>
 
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
 
     function razorpayPayment(order) {
         var options = {
@@ -552,7 +552,7 @@
                 //alert(response.razorpay_payment_id);
                 // alert(response.razorpay_order_id);
                 //alert(response.razorpay_signature)
-                verifyPayment(response)
+                verifyPayment(response, order.receipt, order.amount)
             }//,
             // "prefill": {
             //     "name": "Gaurav Kumar",
@@ -588,12 +588,14 @@
     }
 
 
-    verifyPayment = (payment) => {
+    verifyPayment = (payment, orderId, amount) => {
         try {
-            axios.post('/verifyPayment', { payment: payment }).then(e => {
+            alert(orderId)
+            axios.post('/verifyPayment', { payment: payment, orderId: orderId, amount: amount }).then(e => {
                 if (e.data.response === "login") location.href = "/login"
                 else if (e.data.status) location.href = "/success"
                 else {
+                    // alert(e.data.error)
                     Swal.fire({
                         icon: 'error',
                         title: 'Payment Failed',

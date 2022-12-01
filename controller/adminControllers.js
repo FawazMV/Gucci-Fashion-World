@@ -53,6 +53,7 @@ module.exports = {
         const results = await s3Uploadv3(req.files);
         let product = req.body
         product.imagesDetails = results
+        console.log(product)
         productModel.create(product).then(() => {
             msg = true
             res.redirect('/admin/addProduct')
