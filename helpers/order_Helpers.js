@@ -14,7 +14,7 @@ exports.subTotal = (user) => {
     })
 }
 
-exports.OrderPush = (userId, orderId, total) => {
+exports.OrderPush = (userId, orderId, total, payment) => {
     return new Promise(async (resolve, reject) => {
         let x = {};
         x.OrderId = orderId;
@@ -27,7 +27,7 @@ exports.OrderPush = (userId, orderId, total) => {
         ])
         x.DeliverAddress = DeliverAddress[0].address[0]
         x.TotalPrice = total;
-        x.Payment = false
+        x.Payment = payment
         orders_Model.create(x).then(() => {
             usermodel.findByIdAndUpdate(userId, { $set: { cart: [] } }).then((e) => {
                 resolve()

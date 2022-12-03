@@ -1,8 +1,9 @@
+const { default: axios } = require('axios')
 const express = require('express')
 const router = express.Router()
 const { verifyPayment } = require('../config/payment')
 const { placeOrder } = require('../controller/orderControllers')
-const { login, signup, home, orderPage, otppage, singleProduct, getCart, checkout, product, allProduct, success, loginPost, doSignup, otppageverify, OTPResend, logout, addCart, quantityPlus, cartDelete, addAddress, getAddress, dafaultAddress, deleteAddress, getEditAddress, updateAddress, productFilter, verification } = require('../controller/userControllers')
+const { login, signup, home, orderPage, otppage, singleProduct, getCart, checkout, product, allProduct, success, loginPost, doSignup, otppageverify, OTPResend, logout, addCart, quantityPlus, cartDelete, addAddress, getAddress, dafaultAddress, deleteAddress, getEditAddress, updateAddress, productFilter, verification, singleOrder } = require('../controller/userControllers')
 const { getWishlist, addWishlist, deleteWishlist } = require('../controller/wishlistControllers.js')
 const { sessionCheck, sessionCheckAxios, loginCheck } = require('../middlewears/sessioncheck')
 
@@ -33,6 +34,10 @@ router.get('/wishlist', sessionCheck, getWishlist)
 router.get('/success', sessionCheck, success)
 
 router.get('/orders', sessionCheck, orderPage)
+
+router.get('/singleOrder/:id', sessionCheck, singleOrder)
+
+
 
 
 //--------<<</END-Page rendering routes----END/>-------------/////

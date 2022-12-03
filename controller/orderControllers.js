@@ -18,7 +18,7 @@ exports.placeOrder = async (req, res) => {
     else if (req.body.payment === "cod") {
         OrderID().then(async (id) => {
             res.json({ response: "cod" })
-            OrderPush(userId, id, total)
+            OrderPush(userId, id, total, false)
         })
     } else {
         console.log('something went wrong at order controlleres')

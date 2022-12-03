@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-
+var moment = require('moment');
 const orders_Schema = new mongoose.Schema(
     {
         OrderId: {
@@ -11,10 +11,22 @@ const orders_Schema = new mongoose.Schema(
             ref: "users",
             required: true
         },
-        OrderDetails: {
-            type: Array,
-            required: true
-        },
+        OrderDetails: [
+            {
+                product_id: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "Products"
+                },
+                quantity: {
+                    type: Number,
+                    required: true
+                },
+                Order_Status: {
+                    type: String,
+                    default: "Pending"
+                },
+            }
+        ],
         TotalPrice: {
             type: Number,
             required: true
@@ -25,19 +37,16 @@ const orders_Schema = new mongoose.Schema(
             required: true
         },
         Order_date: {
-            type: Date,
-            default: Date.now()
+            type: String,
+            default: moment(Date.now()).format('YYYY-MM-DD')
         },
         Delivery_date: {
             type: Date,
         },
-        Order_Status: {
+
+        Payment: {
             type: Boolean,
-            default: false
-        },
-        Payment:{
-            type:Boolean,
-            required:true
+            required: true
         }
 
     }
@@ -45,3 +54,4 @@ const orders_Schema = new mongoose.Schema(
 
 const orders_Model = mongoose.model('Orders', orders_Schema)
 module.exports = orders_Model
+

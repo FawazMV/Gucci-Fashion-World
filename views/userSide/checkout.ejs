@@ -590,7 +590,6 @@
 
     verifyPayment = (payment, orderId, amount) => {
         try {
-            alert(orderId)
             axios.post('/verifyPayment', { payment: payment, orderId: orderId, amount: amount }).then(e => {
                 if (e.data.response === "login") location.href = "/login"
                 else if (e.data.status) location.href = "/success"

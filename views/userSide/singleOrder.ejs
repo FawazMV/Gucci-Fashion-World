@@ -1,0 +1,159 @@
+<% - include('../userSide/includes/singleAndCart') %>
+
+
+
+
+
+    <section>
+        <div id="top">
+            <div class="container pt-5 mb-5">
+                <div class="page-wrapper">
+                    <main class="main pt-5 mb-5">
+                        <div class="page-content mt-5">
+                            <div class="container">
+
+                                <div class="row">
+                                    <div class="col-md-8 col-sm-6">
+                                        <div class="px-3 mt-4 mb-3">
+                                            <span style="opacity:60%;font-size:15px;">Order Id :</span> <span
+                                                class="fw-bold" style="font-size:18px;">
+                                                <%= order.OrderId %>
+                                            </span> 
+                                            <div class="mt-4 ">
+                                            <span style="opacity:60%;font-size:14px;">Delivery Address :</span>
+                                            <div class="mt-1"><span class="fw-bold">
+                                                    <%= order.DeliverAddress.firstname %>
+                                                        <%= order.DeliverAddress.lastname %>
+                                                </span> <br>
+                                                <span style="font-size:14px;">
+                                                    <%= order.DeliverAddress.address %>
+                                                </span> <br>
+                                                <span style="font-size:14px;">
+                                                    <%= order.DeliverAddress.city %> , <%= order.DeliverAddress.state %>
+                                                </span> <br>
+                                                <span style="font-size:15px;font-weight:600;">
+                                                    <%= order.DeliverAddress.pincode %>
+                                                </span>
+                                                <span class="ml-4"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-telephone-fill"
+                                                        viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd"
+                                                            d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z" />
+                                                    </svg></span> <span class="fw-bold">
+                                                    <%= order.DeliverAddress.phone %>
+                                                </span>
+                                            </div>
+                                            
+                                        </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="mb-3">
+                                            <div class="card" style="width:18rem;background-color: rgba(225, 214, 199, 0.716);">
+                                                <div class="card-body">
+                                                    <h5 class="card-title fw-bold">Order Payment Details</h5>
+                                                    <hr style="height:1px;border:none;color:#333;background-color:#333;"/>
+                                                    <p class="card-text my-2">Order amount : <span class="float-end">₹ <%= order.TotalPrice %>.00</span> </p>
+                                                    <p class="card-text my-2">Coupen Saving : <span class="float-end">- ₹ <%= order.TotalPrice %>.00</span> </p>
+                                                    <p class="card-text my-2">Shipping charge : <span class="float-end"> Free</span> </p>
+                                                    <hr style="height:1px;border:none;color:#333;background-color:#333;" />
+                                                    <p class="card-text my-2 fw-bold">Order Total : <span class="float-end">₹ <%= order.TotalPrice %></span> </p>
+                                                    <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <% for( let i=0; i < order.OrderDetails.length; i++ ) { %>
+
+                                    
+                                    
+                                        <table class="table table-wishlist table-mobile">
+                                            <thead>
+                                                <tr class="">
+                                                    <th class="col-md-6 col-sm-12">
+                                                            <% if (order.OrderDetails[i].Order_Status==="Pending" ) { %>
+                                                                <h5 class="mt-1 mb-0 fw-bold">Order Confirmed</h5>
+
+                                                            <% } else if (order.OrderDetails[i].Order_Status==="Delivered" ) { %>
+                                                                <h5 class="text-success mt-1 mb-0 fw-bold">
+                                                                    Delivered</h5>
+                                                                <h5 class="m-0">Delivered on
+                                                                    <%= order.Order_date %>
+                                                                </h5>
+                                                            <% } else if (order.OrderDetails[i].Order_Status==="Cancelled" ) { %>
+                                                                <h5 class="text-danger mt-1 mb-0 fw-bold">
+                                                                    Cancelled </h5>
+                                                            <% } %>
+                                                    </th>
+                                                    <th class="col-md-3 col-sm-6">grhr
+                                                    </th>
+                                                    <th class="col-md-3 col-sm-6">jgjv</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                <div id="">
+                                                    <tr id="t %>">
+                                                        <td class="product-col">
+                                                            <div class="product d-flex">
+                                                                <figure class="product-media">
+                                                                    <a href="/singelProduct/<%= order.OrderDetails[i].product_id._id %> ">
+                                                                        <img src="<%= order.OrderDetails[i].product_id.imagesDetails[0].Location %>"
+                                                                            class="pe-4" style="width:120px;"
+                                                                            alt="Product image">
+                                                                    </a>
+
+                                                                </figure>
+                                                                <div class="mt-2"> 
+                                                                    <p style="margin:0;font-size:18px;" class="fw-bold"><%= order.OrderDetails[i].product_id.brandName.brandName %> - <%= order.OrderDetails[i].product_id.type %> </p>
+                                                                    <p style="margin:0;opacity:80%;font-size:14px;">Ordered on <%= order.Order_date %> </p>
+                                                                    <p style="margin-top:8px;margin-bottom:0;">Size : <%= order.OrderDetails[i].product_id.size %> </p>
+                                                                    <p style="margin:0;">Color : <%= order.OrderDetails[i].product_id.color1 %> </p>
+                                                                </div>
+                                                                </div>
+                                                                 <% if (order.OrderDetails[i].Order_Status==="Pending" ) { %>
+                                                                <p class="mt-0 mb-0">Delivery expected on <%= order.deliveryDate %> </p>
+
+                                                                <% } else if (order.OrderDetails[i].Order_Status==="Delivered" ) { %>
+                                                                    <p class="mt-0 mb-0">Order deliveried on <%= order.deliveryDate %> </p>
+                                                                <% } else if (order.OrderDetails[i].Order_Status==="Cancelled" ) { %>
+                                                                    <p class="mt-0 mb-0">Order cancelled on <%= order.deliveryDate %> </p>
+                                                                <% } %>
+                                                            </td>
+                                                            <td>
+                                                                <p>Price:</p>
+                                                                <p>Quantity:</p>
+                                                                <!-- <button type="button" class="btn btn-primary bg-blue-500"
+                                                                data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                                Track your order
+                                                            </button> -->
+                                                            </td>
+                                                            <td>
+                                                                Total
+                                                            </td>
+
+                                                    </div>
+
+                                            </tbody>
+
+                                        </table>
+                                    </a>
+                                    <% } %>
+
+                            </div>
+                        </div>
+
+                        <!-- 
+                                <h4 class="text-primary text-center mt-2" style="opacity:50%;">
+                                    Ohoo... Your
+                                    wishlist is empty !!</h4> -->
+
+
+                    </main>
+                </div>
+            </div>
+        </div>
+    </section>

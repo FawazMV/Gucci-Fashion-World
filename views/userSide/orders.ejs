@@ -1,0 +1,182 @@
+<% - include('../userSide/includes/singleAndCart') %>
+
+
+
+
+
+    <section>
+        <div id="top">
+            <div class="container pt-5 mb-5">
+                <div class="page-wrapper">
+                    <main class="main pt-5 mb-5">
+                        <div class="page-header text-center p-5"
+                            style="background-image: url('/singlePro/assets/images/page-header-bg.jpg')">
+                            <div class="container">
+                                <h1 class="page-title">Orders</h1>
+                            </div><!-- End .container -->
+                        </div><!-- End .page-header -->
+
+
+                        <div class="page-content mt-5">
+                            <div class="container">
+                                <% for( let i=0; i < order.length; i++ ) { %>
+                                 <a href="/singleOrder/<%= order[i]._id %>">   <table class="table table-wishlist table-mobile">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    <%= order[i].OrderId %>
+                                                </th>
+                                                <th>
+                                                    ₹ <%= order[i].TotalPrice %>
+                                                </th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+
+                                            <% for( let k=0; k < order[i].OrderDetails.length; k++ ) { %>
+
+                                                <div id="">
+                                                    <tr id="t %>">
+                                                        <td class="product-col">
+                                                            <div class="product d-flex">
+                                                                <figure class="product-media">
+                                                                    <a
+                                                                        href="/singelProduct/<%= order[i].OrderDetails[k].quantity%> ">
+                                                                        <img src="<%= order[i].OrderDetails[k].product_id.imagesDetails[0].Location %>"
+                                                                            class="pe-4" style="width:80px;"
+                                                                            alt="Product image">
+                                                                    </a>
+
+                                                                </figure>
+                                                                <div>
+                                                                    <% if (order[i].OrderDetails[k].Order_Status==="Pending" ) { %>
+                                                                        <p class="mt-1 mb-0 fw-bold">Confirmed</p>
+                                                                        <p class="m-0">Ordered on <%=
+                                                                                order[i].Order_date %>
+                                                                        </p>
+                                                                        <% if (order[i].Payment) { %>
+                                                                            <p style="opacity:70%;">Paid</p>
+                                                                            <% } else { %>
+                                                                                <p style="opacity:70%;">Cash on delivery
+                                                                                </p>
+
+                                                                                <% } %>
+
+                                                                                    <% } else if (order[i].OrderDetails[k].Order_Status==="Delivered") { %>
+                                                                                        <p class="text-success">
+                                                                                            Delivered</p>
+                                                                                        <p class="m-0">Delivered on <%= order[i].Order_date %></p>
+                                                                                        <% } else if (order[i].OrderDetails[k].Order_Status==="Cancelled") { %>
+                                                                                            <p class="text-danger mt-3 fw-bold">  Cancelled </p>
+                                                                                        <% } %>
+                                                                </div>
+                                                        </td>
+                                                        <td>
+                                                            <!-- <button type="button" class="btn btn-primary bg-blue-500"
+                                                                data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                                Track your order
+                                                            </button> -->
+                                                        </td>
+
+                                                </div>
+                                                <% } %>
+
+
+                                        </tbody>
+
+                                    </table></a>
+                                    <% } %>
+
+                            </div>
+                        </div>
+
+                        <!-- 
+                                <h4 class="text-primary text-center mt-2" style="opacity:50%;">
+                                    Ohoo... Your
+                                    wishlist is empty !!</h4> -->
+
+
+                    </main>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Modal -->
+    <!-- <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-body text-start px-4 pt-0 pb-4">
+                <div class="container py-5 h-100">
+                    <div class="row d-flex justify-content-center align-items-center h-100 text-center">
+                        <div class="col">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content text-white"
+                                    style="background-color: #6d5b98; border-radius: 10px;">
+                                    <div class="modal-body text-start px-4 pt-3 pb-4">
+                                        <div class="text-center">
+                                            <h5 class="mb-3">Order Status</h5>
+                                            <h5 class="mb-5">AWB Number-5335T5S</h5>
+                                        </div>
+
+                                        <div class="d-flex justify-content-between mb-5">
+                                            <div class="text-center">
+                                                <i class="fas fa-circle"></i>
+                                                <p>Order placed</p>
+                                            </div>
+                                            <div class="text-center">
+                                                <i class="fas fa-circle"></i>
+                                                <p>In Transit</p>
+                                            </div>
+                                            <div class="text-center">
+                                                <i class="fas fa-circle"></i>
+                                                <p class="lead fw-normal">Out of Delivery</p>
+                                            </div>
+                                            <div class="text-center">
+                                                <i class="fas fa-circle" style="color: #979595;"></i>
+                                                <p style="color: #979595;">Delivered</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="row justify-content-center">
+                                            <div class="col-md-4 text-center">
+                                                <p class="lead fw-normal">Shipped with</p>
+                                            </div>
+                                            <div class="col-md-4 text-center">
+                                                <p class="lead fw-normal">UPS Expedited</p>
+                                            </div>
+                                            <div class="col-md-2 text-center">
+                                                <i class="fas fa-phone fa-lg"></i>
+                                            </div>
+                                        </div>
+
+                                        <div class="row justify-content-center">
+                                            <div class="col-md-4 text-center">
+                                                <p class="lead fw-normal">Estimated Delivery</p>
+                                            </div>
+                                            <div class="col-md-4 text-center">
+                                                <p class="lead fw-normal">02/12/2017</p>
+                                            </div>
+                                            <div class="col-md-2 text-center">
+                                                <i class="fas fa-envelope fa-lg"></i>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+
+    <script>
+        getOrder = (id)=>{
+            confirm(id)
+            axios.get('/singleOrder',{params:{id:id}})
+        }
+    </script>

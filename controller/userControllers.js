@@ -112,13 +112,40 @@ exports.success = (req, res) => {
 
 exports.orderPage = ((req, res) => {
     let userId = req.session.user._id
-    orders_Model.find({ user: userId }).then((e) => {
-        console.log(e)
-    })
-    res.render('userSide/orders', { user })
+    orders_Model.find({ user: userId }, { OrderDetails: 1, Order_date: 1, Order_Status: 1, OrderId: 1, _id: -1, Payment: 1, TotalPrice: 1 }).populate('OrderDetails.product_id').sort({_id:-1})
+        .then((order) => res.render('userSide/orders', { user, order }))
+        .catch((error) => res.redirect('/404'))
 })
 
+exports.singleOrder = (async (req, res) => {
+    console.log(req.query.id)
+    let order = await orders_Model.findById(req.params.id).populate({ path: 'OrderDetails.product_id', model: 'Products', populate: { path: 'brandName', model: 'brandName' } }).sort({ _id: -1 })
+    console.log(order)
+    res.render('userSide/singleOrder', { user, order })
+})
+
+
+
+
+
+
+
+
+
 ///------------------renderPageend---------------//
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 exports.loginPost = async (req, res) => {
@@ -414,6 +441,6 @@ exports.verification = (req, res) => {
     let id = req.body.orderId
     verifyPayment(req.body.payment)
         .then(() => {
-            OrderPush(userId, id, total).then(() => res.json({ status: true }))
+            OrderPush(userId, id, total, true).then(() => res.json({ status: true }))
         }).catch(error => res.json({ status: false, error: error.message }))
 }
