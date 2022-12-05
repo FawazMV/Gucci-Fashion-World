@@ -55,7 +55,7 @@
                                                                         <p class="m-0">Ordered on <%=
                                                                                 order[i].Order_date %>
                                                                         </p>
-                                                                        <% if (order[i].Payment) { %>
+                                                                        <% if (order[i].Payment=="online") { %>
                                                                             <p style="opacity:70%;">Paid</p>
                                                                             <% } else { %>
                                                                                 <p style="opacity:70%;">Cash on delivery

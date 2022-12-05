@@ -112,15 +112,13 @@ exports.success = (req, res) => {
 
 exports.orderPage = ((req, res) => {
     let userId = req.session.user._id
-    orders_Model.find({ user: userId }, { OrderDetails: 1, Order_date: 1, Order_Status: 1, OrderId: 1, _id: -1, Payment: 1, TotalPrice: 1 }).populate('OrderDetails.product_id').sort({_id:-1})
+    orders_Model.find({ user: userId }, { OrderDetails: 1, Order_date: 1, Order_Status: 1, OrderId: 1, _id: -1, Payment: 1, TotalPrice: 1 }).populate('OrderDetails.product_id').sort({ _id: -1 })
         .then((order) => res.render('userSide/orders', { user, order }))
         .catch((error) => res.redirect('/404'))
 })
 
 exports.singleOrder = (async (req, res) => {
-    console.log(req.query.id)
     let order = await orders_Model.findById(req.params.id).populate({ path: 'OrderDetails.product_id', model: 'Products', populate: { path: 'brandName', model: 'brandName' } }).sort({ _id: -1 })
-    console.log(order)
     res.render('userSide/singleOrder', { user, order })
 })
 
@@ -233,11 +231,13 @@ exports.addCart = async (req, res) => {
                     }
                 }
             }]).then((cartquantity) => {
-                productModel.findById(req.body.id, { quantity: 1, _id: -1 }).then(pro => {
+                productModel.findById(req.body.id, { quantity: 1, shopPrice: 1, _id: -1 }).then(pro => {
+                    let price = pro.shopPrice;
                     let { quantity } = pro
                     let count = cartquantity[0].cart[0].quantity + 1
                     if (count <= quantity) {
-                        usermodel.updateOne({ _id: userId, 'cart.product_id': req.body.id }, { $inc: { 'cart.$.quantity': 1 } })
+                        let total = price *count
+                        usermodel.updateOne({ _id: userId, 'cart.product_id': req.body.id }, { $inc: { 'cart.$.quantity': 1 }, $set: { 'cart.$.total': total } })
                             .then(() => res.json({ response: false }))
                             .catch((error) => res.json({ response: error.message }))
                     }
@@ -245,22 +245,29 @@ exports.addCart = async (req, res) => {
                 })
             })
     } else {
-        productModel.findById(req.body.id, { quantity: 1, _id: -1 }).then(count => {
+        productModel.findById(req.body.id, { quantity: 1, shopPrice: 1, _id: -1 }).then(count => {
             if (count.quantity) {
-                usermodel.findByIdAndUpdate(userId, { $push: { cart: { product_id: req.body.id } } })
+                let price = count.shopPrice;
+                let total = price
+                usermodel.findByIdAndUpdate(userId, { $push: { cart: { product_id: req.body.id, total: total } } })
                     .then(() => res.json({ response: false }))
-                    .catch((error) => res.json({ response: error.message }))
+                    .catch((error) => {
+                        console.log(error)
+                        res.json({ response: error.message })
+                    })
             } else res.json({ response: "The Product is out of stock" })
         }).catch(error => res.json({ response: error.message }))
     }
 }
 exports.quantityPlus = (req, res) => {
     let userId = req.session.user._id
-    productModel.findById(req.body.id, { quantity: 1, _id: -1 }).then(pro => {
+    productModel.findById(req.body.id, { quantity: 1, _id: -1, shopPrice: 1 }).then(pro => {
         let { quantity } = pro
         let count = req.body.count
+        let price = pro.shopPrice;
+        let totalsing = price * count
         if (count <= quantity) {
-            usermodel.updateOne({ _id: userId, 'cart._id': req.body.cartid }, { $set: { 'cart.$.quantity': count } }).then(() => {
+            usermodel.updateOne({ _id: userId, 'cart._id': req.body.cartid }, { $set: { 'cart.$.quantity': count, 'cart.$.total': totalsing } }).then(() => {
                 subTotal(userId).then(async (total) => res.json({ response: true, total: total }))
             })
         }
@@ -441,6 +448,6 @@ exports.verification = (req, res) => {
     let id = req.body.orderId
     verifyPayment(req.body.payment)
         .then(() => {
-            OrderPush(userId, id, total, true).then(() => res.json({ status: true }))
+            OrderPush(userId, id, total, 'Online').then(() => res.json({ status: true }))
         }).catch(error => res.json({ status: false, error: error.message }))
 }

@@ -36,8 +36,12 @@ const userSchema = new mongoose.Schema
                         ref: 'Products',
                     },
                     quantity: {
-                        type: Number, 
+                        type: Number,
                         default: 1
+                    },
+                    total: {
+                        type: Number,
+                        required:true 
                     }
                 }
             ],

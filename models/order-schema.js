@@ -21,9 +21,16 @@ const orders_Schema = new mongoose.Schema(
                     type: Number,
                     required: true
                 },
+                total: {
+                    type: Number,
+                    required: true
+                },
                 Order_Status: {
                     type: String,
                     default: "Pending"
+                },
+                Canceled_date: {
+                    type: String
                 },
             }
         ],
@@ -38,15 +45,19 @@ const orders_Schema = new mongoose.Schema(
         },
         Order_date: {
             type: String,
-            default: moment(Date.now()).format('YYYY-MM-DD')
+            default: moment(Date.now()).format('DD-MM-YYYY')
         },
         Delivery_date: {
             type: Date,
         },
 
         Payment: {
-            type: Boolean,
+            type: String,
             required: true
+        },
+        Delivery_status: {
+            type: String,
+            default: "Pending"
         }
 
     }

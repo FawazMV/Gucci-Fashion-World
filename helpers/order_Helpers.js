@@ -1,5 +1,6 @@
 const { default: mongoose } = require("mongoose")
 const orders_Model = require("../models/order-schema")
+const productModel = require("../models/product-schema")
 const usermodel = require("../models/user-schema")
 
 exports.subTotal = (user) => {
@@ -19,6 +20,12 @@ exports.OrderPush = (userId, orderId, total, payment) => {
         let x = {};
         x.OrderId = orderId;
         OrderDetails = await usermodel.findById(userId, { _id: -1, cart: 1 })
+        console.log(OrderDetails)
+        for (let i = 0; i < OrderDetails.cart.length; i++) {
+            let id = OrderDetails.cart[i].product_id
+            let qty = OrderDetails.cart[i].quantity
+            await this.inventory(id, qty)
+        }
         x.OrderDetails = OrderDetails.cart
         x.User = userId
         DeliverAddress = await usermodel.aggregate([
@@ -33,9 +40,25 @@ exports.OrderPush = (userId, orderId, total, payment) => {
                 resolve()
             })
         }).catch((error) => {
-            console.log(error.message) 
+            console.log(error.message)
             reject()
         })
     })
 
 }
+
+exports.inventory = (productId, qntity) => {
+    return new Promise((resolve, reject) => {
+        console.log(productId)
+        productModel.findByIdAndUpdate(productId, { $inc: { quantity: -qntity } }).then(() => {
+            resolve()
+        })
+    })
+}
+// exports.qntXprice = (id, qnt) => {
+//     return new Promise(async (resolve, reject) => {
+//         let product = await productModel.findById(id);
+//         let total = product.shopPrice * qnt
+//         resolve(total)
+//     })
+// }

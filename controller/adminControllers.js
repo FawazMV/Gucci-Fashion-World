@@ -4,7 +4,8 @@ const productModel = require('../models/product-schema')
 const brandModel = require('../models/brandName-schema')
 const adminModel = require('../models/admin-schema');
 const genderModel = require('../models/gender_type-schema');
-const { s3Uploadv2, s3Uploadv3, s3delte2, s3delte3 } = require('../config/s3Service')
+const { s3Uploadv2, s3Uploadv3, s3delte2, s3delte3 } = require('../config/s3Service');
+const orders_Model = require('../models/order-schema');
 let msg, product_id
 
 
@@ -181,8 +182,14 @@ module.exports = {
     single: (req, res) => {
         id = req.params.id
         productModel.findById(id).then((product) => {
-            console.log(product)     
+            console.log(product)
             res.render('admin/viewSingle', { admin: true, product })
         })
+    },
+    orders: async (req, res) => {
+        let order = await orders_Model.find()
+        console.log(order)
+        let heading = 'Orders'
+        res.render('admin/orders', { admin: true, Orders: "active", heading, order })
     }
 } 

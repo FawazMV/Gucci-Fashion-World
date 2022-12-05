@@ -47,6 +47,8 @@ router.post('/Editgender', fileUpload.upload.array('image'), admin.editGender)
 
 router.get('/view-product/:id', admin.single)
 
+router.get('/orders', admin.orders)
+
 
 
 
