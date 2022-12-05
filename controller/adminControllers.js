@@ -187,9 +187,12 @@ module.exports = {
         })
     },
     orders: async (req, res) => {
-        let order = await orders_Model.find()
-        console.log(order)
+        let order = await orders_Model.find().populate('User', "email")
         let heading = 'Orders'
         res.render('admin/orders', { admin: true, Orders: "active", heading, order })
+    },
+    deliveryStatus: async (req, res) => {
+        await orders_Model.findByIdAndUpdate(req.body.id, { $set: { Delivery_status: req.body.value } })
+        res.json()
     }
-} 
+}                            

@@ -49,6 +49,8 @@ router.get('/view-product/:id', admin.single)
 
 router.get('/orders', admin.orders)
 
+router.patch('/deliveryStatus', admin.deliveryStatus)
+
 
 
 
