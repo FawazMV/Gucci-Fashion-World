@@ -55,7 +55,9 @@
                                                 <option value="Delivered">Delivered</option>
                                                 <option class=" " value="Cancelled">Cancel</option>
                                                 <% } else if (order[i].Delivery_status==="Delivered" ) { %>
-                                                    <% } else if (order[i].Delivery_status==="Cancelled" ) { %>
+                                                    <% } else if (order[i].Delivery_status==="Out_for_Delivery" ) { %>
+                                                        <option value="Delivered">Delivered</option>
+                                                        <option value="Cancelled">Cancel</option>
                                                         <% } %>
                                                             <!-- <option value="Out_for_Delivery">Out for delivery</option>
                                         <option value="Delivered">Delivered</option>

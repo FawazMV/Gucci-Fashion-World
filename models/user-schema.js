@@ -42,6 +42,13 @@ const userSchema = new mongoose.Schema
                     total: {
                         type: Number,
                         required:true 
+                    },
+                    discount:{
+                        type: Number
+                    },
+                    discount_status:{
+                        type:Boolean,
+                        default:false
                     }
                 }
             ],

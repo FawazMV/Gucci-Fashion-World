@@ -161,9 +161,9 @@
                                         <div class="col-lg-4">
                                             <div class="cart__discount">
                                                 <h6>Discount codes</h6>
-                                                <form action="#">
-                                                    <input type="text" placeholder="Coupon code">
-                                                    <button type="submit">Apply</button>
+                                                <form >                                               
+                                                    <input id="coupenCodeId" type="text" placeholder="Coupon code">
+                                                    <button onclick="coupenApply()" type="button">Apply</button>
                                                 </form>
                                             </div>
                                             <div class="cart__total">
@@ -172,7 +172,7 @@
                                                     <li>Subtotal <span>₹ <span id="subTotalId">
                                                                 <%- locals.total %>.00
                                                             </span></span></li>
-                                                    <li>Shipping Charges <span>₹ 00.00</span></li>
+                                                    <li>Coupen discounts<span> - ₹ <%= locals.discount %>.00</span></li>
                                                     <li>Total <span>₹ <span id="totalId">
                                                                 <%- locals.total %>.00
                                                             </span></span></li>
@@ -219,6 +219,19 @@
 
 
 <script>
+
+    coupenApply = ()=>{
+        let coupencode =  document.getElementById('coupenCodeId').value
+        confirm(coupencode)
+        axios.put('/coupenApply',{code: coupencode }).then(()=>{
+
+        })
+    }
+
+
+
+
+
     function quantityPlus(id, product) {
         count = ++document.getElementById('quantity' + id).value
         axios.post('/quantityPlus', { id: product, count: count, cartid: id }).then((e) => {

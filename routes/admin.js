@@ -51,6 +51,12 @@ router.get('/orders', admin.orders)
 
 router.patch('/deliveryStatus', admin.deliveryStatus)
 
+router.get('/coupen',admin.coupen)
+
+router.post('/addCoupen', admin.addCoupen)
+
+router.patch('/coupenStatus',admin.coupenStatus)
+
 
 
 

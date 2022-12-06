@@ -133,23 +133,17 @@
                                                             <%= order.OrderDetails[i].product_id.brandName.brandName %>
                                                                 - <%= order.OrderDetails[i].product_id.type %>
                                                         </p>
-                                                        <p style="margin:0;opacity:80%;font-size:14px;">Ordered on <%=
-                                                                order.Order_date %>
-                                                        </p>
-                                                        <p style="margin-top:8px;margin-bottom:0;">Size : <%=
-                                                                order.OrderDetails[i].product_id.size %>
-                                                        </p>
-                                                        <p style="margin:0;">Color : <%=
-                                                                order.OrderDetails[i].product_id.color1 %>
-                                                        </p>
+                                                        <p style="margin:0;opacity:80%;font-size:14px;">Ordered on <%= order.Order_date %></p>
+                                                        <p style="margin-top:8px;margin-bottom:0;">Size : <%= order.OrderDetails[i].product_id.size %></p>
+                                                        <p style="margin:0;">Color : <%= order.OrderDetails[i].product_id.color1 %> </p>
                                                     </div>
 
                                                 </div>
                                                 <div id="date<%= order.OrderDetails[i]._id %>" >
                                                 <% if (order.OrderDetails[i].Order_Status==="Pending" ) { %>
-                                                    <p class="mt-0 mb-0">Delivery expected on  <%= order.deliveryDate %>  </p>
+                                                    <p class="mt-0 mb-0">Delivery expected on  <%=  order.Delivery_Expected_date %>  </p>
                                                 <% } else if (order.OrderDetails[i].Order_Status==="Delivered" ) { %>
-                                                    <p class="mt-0 mb-0">Order deliveried on  <%= order.deliveryDate %>  </p>
+                                                    <p class="mt-0 mb-0">Order deliveried on  <%= order.Delivery_Expected_date  %>  </p>
                                                 <% } else if (order.OrderDetails[i].Order_Status==="Cancelled" ) { %>
                                                         <p class="mt-0 mb-0 text-danger" >Order cancelled on  <%= order.OrderDetails[i].Canceled_date %></p>
                                                 <% } %>
@@ -170,12 +164,14 @@
                                                     <% if (order.OrderDetails[i].Order_Status==="Pending" ) { %>
                                                         <button class="btn btn-outline-warning" data-bs-toggle="modal"
                                                             data-bs-target="#exampleModal">Track Order</button>
-                                                        <% } %>
+                                                    <% } %>
                                                             </p>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                   
+
                                     <% } %>
 
                             </div>
@@ -198,7 +194,7 @@
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-body text-start px-4 pt-0 pb-4">
-                <div class="container py-5 h-100">
+                <div class="container h-100">
                     <div class="row d-flex justify-content-center align-items-center h-100 text-center">
                         <div class="col">
                             <div class="modal-dialog modal-lg">
@@ -207,46 +203,49 @@
                                     <div class="modal-body text-start px-4 pt-3 pb-4">
                                         <div class="text-center">
                                             <h5 class="mb-3">Order Status</h5>
-                                            <h5 class="mb-5">AWB Number-5335T5S</h5>
+                                            <h5 class="mb-5">
+                                                <%= order.OrderId %>
+                                            </h5>
                                         </div>
                                         <div class="d-flex justify-content-between mb-5">
-                                            <div class="text-center">
-                                                <i class="fas fa-circle"></i>
-                                                <p>Order placed</p>
+                                            <div class="text-center text-success">
+                                                <i class="fas fa-circle ml-2"></i>
+                                                <p class="ml-2 my-0 fw-bold">Order placed</p>
+                                                <p class="ml-2 my-0">
+                                                    <%= order.Order_date %>
+                                                </p>
                                             </div>
                                             <div class="text-center">
-                                                <i class="fas fa-circle"></i>
-                                                <p>In Transit</p>
+                                                <% if (order.Shipped_Date) { %>
+                                                <i class="fas fa-circle text-success ml-2"></i>
+                                                <% } else { %>
+                                                <i class="fas fa-circle ml-2"></i>
+                                                <% } %>
+                                                <p class="ml-2 my-0 fw-bold">Shipped</p>
+                                                <p class="ml-2 my-0">
+                                                    <%= order.Shipped_Date %>
+                                                </p>
                                             </div>
                                             <div class="text-center">
-                                                <i class="fas fa-circle"></i>
-                                                <p class="lead fw-normal">Out of Delivery</p>
-                                            </div>
-                                            <div class="text-center">
-                                                <i class="fas fa-circle" style="color: #979595;"></i>
-                                                <p style="color: #979595;">Delivered</p>
+                                                 <% if (order.Out_for_delivery_date) { %>
+                                                <i class="fas fa-circle text-success ml-2"></i>
+                                                <% } else { %>
+                                                <i class="fas fa-circle ml-2"></i>
+                                                <% } %>
+                                                <p class="ml-2 my-0 fw-bold">Out for Delivery</p>
+                                                <p class="ml-2 my-0">
+                                                    <%= order.Out_for_delivery_date %>
+                                                </p>
                                             </div>
                                         </div>
                                         <div class="row justify-content-center">
-                                            <div class="col-md-4 text-center">
-                                                <p class="lead fw-normal">Shipped with</p>
+                                            <div class="col-md-4 text-center mt-1">
+                                                <p class="h6 fw-bold">Estimated Delivery :</p>
                                             </div>
-                                            <div class="col-md-4 text-center">
-                                                <p class="lead fw-normal">UPS Expedited</p>
-                                            </div>
-                                            <div class="col-md-2 text-center">
-                                                <i class="fas fa-phone fa-lg"></i>
-                                            </div>
-                                        </div>
-                                        <div class="row justify-content-center">
-                                            <div class="col-md-4 text-center">
-                                                <p class="lead fw-normal">Estimated Delivery</p>
-                                            </div>
-                                            <div class="col-md-4 text-center">
-                                                <p class="lead fw-normal">02/12/2017</p>
-                                            </div>
-                                            <div class="col-md-2 text-center">
-                                                <i class="fas fa-envelope fa-lg"></i>
+                                            <div class="col-md-3 text-center">
+                                                <p class="lead fw-bold">
+                                                    <%= order.Delivery_Expected_date %>
+                                                </p>
                                             </div>
                                         </div>
                                     </div>
@@ -258,7 +257,6 @@
             </div>
         </div>
     </div>
-
 
 
 

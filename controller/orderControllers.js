@@ -5,6 +5,7 @@ const { subTotal, OrderPush, inventory } = require("../helpers/order_Helpers")
 const orders_Model = require("../models/order-schema")
 const usermodel = require("../models/user-schema")
 const moment = require('moment')
+const coupn_Model = require("../models/coupen_schema")
 
 
 
@@ -52,3 +53,28 @@ exports.cancelOrder = async (req, res) => {
     res.json({ response: false, total: TotalPrice, date: C_date })
 
 }
+
+exports.coupenApply = (req, res) => {
+    let userId = req.session.user._id;
+    console.log(req.body)
+    coupn_Model.findOne({ coupenCode: req.body.code }).then(async (coup) => {
+        if (coup) {
+            let user = await coupn_Model.findOne({ coupenCode: req.body.code, 'users.user': userId })
+            if(!user){
+                usermodel.findById(userId,{_id:-1,cart}).then((cart)=>{
+                    
+                }) 
+            }
+        }
+    })
+
+}
+
+const x = new Date('2013-05-23');
+const y = new Date('2013-05-23');
+console.log('+x === +y', +x === +y);
+console.log('x < y', x < y); // false
+console.log('x > y', x > y); // false
+console.log('x <= y', x <= y); // true
+console.log('x >= y', x >= y); // true
+console.log('x === y', x === y);

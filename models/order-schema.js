@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 var moment = require('moment');
+const dateee = new Date();
 const orders_Schema = new mongoose.Schema(
     {
         OrderId: {
@@ -47,8 +48,13 @@ const orders_Schema = new mongoose.Schema(
             type: String,
             default: moment(Date.now()).format('DD-MM-YYYY')
         },
-        Delivery_date: {
-            type: Date,
+        Delivery_Expected_date: {
+            type: String,
+            default: moment(dateee.setDate(dateee.getDate() + 7)).format('DD-MM-YYYY')
+               
+        },
+        Out_for_delivery_date: {
+            type: String
         },
 
         Payment: {
@@ -58,6 +64,9 @@ const orders_Schema = new mongoose.Schema(
         Delivery_status: {
             type: String,
             default: "Pending"
+        },
+        Shipped_Date:{
+            type:String
         }
 
     }
@@ -65,4 +74,9 @@ const orders_Schema = new mongoose.Schema(
 
 const orders_Model = mongoose.model('Orders', orders_Schema)
 module.exports = orders_Model
+
+
+
+
+
 

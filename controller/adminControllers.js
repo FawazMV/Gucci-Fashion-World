@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const { default: mongoose } = require("mongoose")
 const usermodel = require("../models/user-schema")
 const productModel = require('../models/product-schema')
 const brandModel = require('../models/brandName-schema')
@@ -6,7 +7,10 @@ const adminModel = require('../models/admin-schema');
 const genderModel = require('../models/gender_type-schema');
 const { s3Uploadv2, s3Uploadv3, s3delte2, s3delte3 } = require('../config/s3Service');
 const orders_Model = require('../models/order-schema');
-let msg, product_id
+const moment = require('moment');
+const { inventory } = require('../helpers/order_Helpers');
+const coupn_Model = require('../models/coupen_schema');
+let msg, product_id;
 
 
 
@@ -192,7 +196,57 @@ module.exports = {
         res.render('admin/orders', { admin: true, Orders: "active", heading, order })
     },
     deliveryStatus: async (req, res) => {
-        await orders_Model.findByIdAndUpdate(req.body.id, { $set: { Delivery_status: req.body.value } })
+        let status = req.body.value
+        let date = moment(Date.now()).format('DD-MM-YYYY')
+        if (status === "Shipped") {
+            await orders_Model.findByIdAndUpdate(req.body.id, { $set: { Delivery_status: status, Shipped_Date: date } })
+        }
+        if (status === "Out_for_Delivery") {
+            await orders_Model.findByIdAndUpdate(req.body.id, { $set: { Delivery_status: status, Out_for_delivery_date: date, Delivery_Expected_date: date } })
+        }
+        if (status === "Delivered") {
+            await orders_Model.findByIdAndUpdate(req.body.id, { $set: { Delivery_status: status, Delivery_Expected_date: date } })
+            await orders_Model.updateMany({ _id: req.body.id, "OrderDetails.Order_Status": 'Pending' },
+                { $set: { "OrderDetails.$[elem].Order_Status": 'Delivered' } },
+                { arrayFilters: [{ "elem.Order_Status": 'Pending' }], multi: true });
+        }
+        if (status === "Cancelled") {
+            let OrderDetails = await orders_Model.aggregate([
+                { $match: { '_id': mongoose.Types.ObjectId(req.body.id) } },
+                {
+                    $project: {
+                        "OrderDetails": {
+                            $filter: {
+                                input: "$OrderDetails",
+                                cond: { $eq: ["$$this.Order_Status", 'Pending'] }
+                            }
+                        }
+                    }
+                }
+            ])
+            OrderDetails = OrderDetails[0].OrderDetails
+            for (let i = 0; i < OrderDetails.length; i++) {
+                let id = OrderDetails[i].product_id
+                let qty = OrderDetails[i].quantity
+                await inventory(id, -qty)
+            }
+            await orders_Model.findByIdAndUpdate(req.body.id, { $set: { Delivery_status: status, Delivery_Expected_date: date, TotalPrice: 0 } })
+            await orders_Model.updateMany({ _id: req.body.id }, { $set: { "OrderDetails.$[elem].Order_Status": 'Cancelled', 'OrderDetails.$[elem].Canceled_date': date } },
+                { arrayFilters: [{ "elem.Order_Status": 'Pending' }], multi: true });
+        }
         res.json()
+    },
+    coupen: async (req, res) => {
+        heading = "Coupens"
+        let coupenss = []
+        coupenss = await coupn_Model.find()
+        res.render('admin/coupen', { admin: true, Coupens: "active", heading, coupenss })
+    },
+    addCoupen: (req, res) => {
+        coupn_Model.create(req.body).then(() => res.json())
+    },
+    coupenStatus:(req,res)=>{
+        coupn_Model.findByIdAndUpdate(req.body.id, { $set: { coupen_status: req.body.value }})
+        .then(()=> res.json())
     }
 }                            
