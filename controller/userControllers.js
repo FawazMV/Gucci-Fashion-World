@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const { otpcallin } = require('../config/otp');
+const { otpcallin, otpVeryfication } = require('../config/otp');
 const { findById } = require('../models/gender_type-schema');
 const genderModel = require('../models/gender_type-schema');
 const productModel = require('../models/product-schema');
@@ -10,6 +10,7 @@ const { payment, verifyPayment } = require('../config/payment');
 const { OrderID } = require('../config/orderId');
 const orders_Model = require('../models/order-schema');
 const { subTotal, OrderPush } = require('../helpers/order_Helpers');
+const review_model = require('../models/review_schema');
 const accoutnSID = process.env.accoutnSID
 const serviceSID = process.env.serviceSID
 const authToken = process.env.authToken
@@ -26,6 +27,9 @@ exports.signup = (req, res) => {
 }
 exports.login = (req, res) => {
     res.render('userSide/userlogin', { includes: true })
+}
+exports.forgetPassword = (req, res) => {
+    res.render('userSide/forget', { includes: true })
 }
 exports.home = async (req, res) => {
     let Products = []
@@ -187,23 +191,19 @@ exports.doSignup = async (req, res) => {
 
 exports.otppageverify = async (req, res) => {
     const { otp } = req.body;
-    client.verify.v2.services(serviceSID)
-        .verificationChecks
-        .create({ to: `+91${userNumber}`, code: otp })
-        .then(async response => {
-            if (response.valid) {
-                userDetails.password = await bcrypt.hash(userDetails.password, 10)
-                usermodel.create(userDetails).then((e) => {
-                    req.session.user = e
-                    req.session.otp = false
-                    userDetails = null
-                    res.json({ response: true })
-                })
-            } else {
-                response
-                res.json({ response: false })
-            }
-        });
+    otpVeryfication(otp, userNumber).then(async (response) => {
+        if (response) {
+            userDetails.password = await bcrypt.hash(userDetails.password, 10)
+            usermodel.create(userDetails).then((e) => {
+                req.session.user = e
+                req.session.otp = false
+                userDetails = null
+                res.json({ response: true })
+            })
+        } else {
+            res.json({ response: false })
+        }
+    })
 }
 exports.OTPResend = (req, res) => {
     otpcallin(userNumber)
@@ -212,6 +212,41 @@ exports.OTPResend = (req, res) => {
 exports.logout = (req, res) => {
     req.session.user = false
     res.redirect('/')
+}
+
+exports.forgetemail = (req, res) => {
+    let response = null
+    usermodel.findOne({ email: req.body.email }, { _id: 0, mobile: 1 }).then(user => {
+        if (user) {
+            console.log(user)
+            otpcallin(user.mobile)
+            res.json({ mobile: user.mobile })
+        } else {
+            res.json({ response: 'Email id not found' })
+        }
+    })
+}
+
+exports.otpForget = (req, res) => {
+    let { otp, userNumber } = req.body;
+    otpVeryfication(otp, userNumber).then((response) => {
+        console.log(response)
+        if (response) {
+            res.json({ response: true })
+        } else {
+            res.json({ response: false })
+        }
+    })
+
+}
+
+exports.changePassword = async (req, res) => {
+    let { password, email } = req.body
+    password = await bcrypt.hash(password, 10)
+    usermodel.updateOne({ email: email }, { $set: { password: password } }).then((e) => {
+        console.log(e)
+        res.json()
+    })
 }
 
 exports.addCart = async (req, res) => {
@@ -236,7 +271,7 @@ exports.addCart = async (req, res) => {
                     let { quantity } = pro
                     let count = cartquantity[0].cart[0].quantity + 1
                     if (count <= quantity) {
-                        let total = price *count
+                        let total = price * count
                         usermodel.updateOne({ _id: userId, 'cart.product_id': req.body.id }, { $inc: { 'cart.$.quantity': 1 }, $set: { 'cart.$.total': total } })
                             .then(() => res.json({ response: false }))
                             .catch((error) => res.json({ response: error.message }))
@@ -450,4 +485,19 @@ exports.verification = (req, res) => {
         .then(() => {
             OrderPush(userId, id, total, 'Online').then(() => res.json({ status: true }))
         }).catch(error => res.json({ status: false, error: error.message }))
+}
+
+exports.review = (req, res) => {
+    let userId = req.session.user._id
+    let { rating, review, id } = req.body
+    rating = rating * 20
+    const reviews = {}
+    reviews.rating = rating
+    reviews.product = id
+    reviews.user = userId
+    reviews.review = review
+    console.log(reviews)
+    review_model.create(reviews).then(()=>{
+        res.json()
+    })
 }

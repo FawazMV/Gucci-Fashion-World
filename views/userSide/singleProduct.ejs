@@ -1,6 +1,6 @@
 <%- include('../userSide/includes/singleAndCart') %>
 
-
+    
 
 
     <!-- ***** Preloader Start ***** -->
@@ -135,8 +135,8 @@
                                                     class="btn-product btn-cart"><span>add to cart</span></a>
 
                                                 <div class="details-action-wrapper">
-                                                    <a onclick="addtoWishlist('<%= product._id %>')" class="btn-product btn-wishlist"
-                                                        title="Wishlist"><span>Add
+                                                    <a onclick="addtoWishlist('<%= product._id %>')"
+                                                        class="btn-product btn-wishlist" title="Wishlist"><span>Add
                                                             to
                                                             Wishlist</span></a>
                                                     <!-- <a href="#" class="btn-product btn-compare"
@@ -270,6 +270,8 @@
                                                 please view our <a href="#">Returns information</a></p>
                                         </div><!-- End .product-desc-content -->
                                     </div><!-- .End .tab-pane -->
+
+
                                     <div class="tab-pane fade" id="product-review-tab" role="tabpanel"
                                         aria-labelledby="product-review-link">
                                         <div class="reviews">
@@ -280,7 +282,7 @@
                                                         <h4><a href="#">Samanta J.</a></h4>
                                                         <div class="ratings-container">
                                                             <div class="ratings">
-                                                                <div class="ratings-val" style="width: 80%;"></div>
+                                                                <div class="ratings-val" style="width: 50%;"></div>
                                                                 <!-- End .ratings-val -->
                                                             </div><!-- End .ratings -->
                                                         </div><!-- End .rating-container -->
@@ -301,9 +303,9 @@
                                                         </div><!-- End .review-content -->
 
                                                         <div class="review-action">
-                                                            <a href="#"><i class="icon-thumbs-up"></i>Helpful (2)</a>
+                                                            <!-- <a href="#"><i class="icon-thumbs-up"></i>Helpful (2)</a>
                                                             <a href="#"><i class="icon-thumbs-down"></i>Unhelpful
-                                                                (0)</a>
+                                                                (0)</a> -->
                                                         </div><!-- End .review-action -->
                                                     </div><!-- End .col-auto -->
                                                 </div><!-- End .row -->
@@ -587,7 +589,8 @@
                                         </a>
 
                                         <div class="product-action-vertical">
-                                            <a onclick="addtoWishlist('')" class="btn-product-icon btn-wishlist btn-expandable"><span>add
+                                            <a onclick="addtoWishlist('')"
+                                                class="btn-product-icon btn-wishlist btn-expandable"><span>add
                                                     to
                                                     wishlist</span></a>
                                             <a href="popup/quickView.html" class="btn-product-icon btn-quickview"
@@ -630,6 +633,13 @@
     </div>
 
 
+
+
+
+
+  
+
+
     <!-- ***** Main Banner Area End ***** -->
     <script>
         addtocart = (id) => {
@@ -665,32 +675,32 @@
 
 
         addtoWishlist = (id) => {
-                try {
-                    axios.put('/addWhishlist', { id: id }).then((e) => {
-                        if (e.data.response === "login") location.href = "/login"
-                        else if (e.data.response) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: 'Sorry, ' + e.data.response
-                            })
-                        } else {
-                            Swal.fire({
-                                position: 'top-end',
-                                icon: 'success',
-                                text: 'Product added to wishlist',
-                                showConfirmButton: false,
-                                timer: 1500
-                            })
-                        }
-                    })
-                }
-                catch (error) {
-                    Swal.fire(
-                        'The Internet?',
-                        'That thing is still around?',
-                        'question'
-                    )
-                }
+            try {
+                axios.put('/addWhishlist', { id: id }).then((e) => {
+                    if (e.data.response === "login") location.href = "/login"
+                    else if (e.data.response) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Sorry, ' + e.data.response
+                        })
+                    } else {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            text: 'Product added to wishlist',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    }
+                })
             }
+            catch (error) {
+                Swal.fire(
+                    'The Internet?',
+                    'That thing is still around?',
+                    'question'
+                )
+            }
+        }
     </script>

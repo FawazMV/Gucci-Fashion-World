@@ -9,5 +9,16 @@ exports.otpcallin = (number) => {
         channel: "sms",
     })
 }
+exports.otpVeryfication = (otp, userNumber) => {
+    return new Promise((resolve, reject) => {
+        client.verify.v2.services(serviceSID)
+            .verificationChecks
+            .create({ to: `+91${userNumber}`, code: otp })
+            .then(response => {
+                if (response.valid) resolve(true)
+                else resolve(false)
+            })
+    })
+}
 
 

@@ -21,7 +21,7 @@
                                 <ul>
                                     <li><a href="/singelProduct/<%= Products[i]._id %> "><i class="fa fa-eye"></i></a>
                                     </li>
-                                    <li><a href="single-product.html"><i class="fa fa-star"></i></a></li>
+                                    <li><a href="single-product.html" onclick="addtoWishlist('<%= Products[i]._id %>')"><i class="fa fa-star"></i></a></li>
                                     <li><a onclick="addtocart('<%= Products[i]._id %>')"><i
                                                 class="fa fa-shopping-cart"></i></a>
                                 </ul>
@@ -102,4 +102,35 @@
             })
         }
     }
+
+
+    addtoWishlist = (id) => {
+            try {
+                axios.put('/addWhishlist', { id: id }).then((e) => {
+                    if (e.data.response === "login") location.href = "/login"
+                    else if (e.data.response) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Sorry, ' + e.data.response
+                        })
+                    } else {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            text: 'Product added to wishlist',
+                            showConfirmButton: false,
+                            timer: 700
+                        })
+                    }
+                })
+            }
+            catch (error) {
+                Swal.fire(
+                    'The Internet?',
+                    'That thing is still around?',
+                    'question'
+                )
+            }
+        }
 </script>

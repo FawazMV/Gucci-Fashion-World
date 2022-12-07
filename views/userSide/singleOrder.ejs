@@ -1,289 +1,392 @@
 <% - include('../userSide/includes/singleAndCart') %>
 
+<style>
+  .modal-dialog-right-side {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: -ms-flexbox;
+    display: flex;
+
+
+    margin: 0 !important
+  }
+
+  /* component */
+
+  .star-rating {
+
+    display: flex;
+    flex-direction: row-reverse;
+    font-size: 1.5em;
+    justify-content: space-around;
+    padding: 0 .2em;
+    text-align: center;
+    width: 5em;
+  }
+
+  .star-rating input {
+    display: none;
+  }
+
+  .star-rating label {
+    color: #ccc;
+    cursor: pointer;
+  }
+
+  .star-rating :checked~label {
+    color: #f90;
+  }
+
+  .star-rating label:hover,
+  .star-rating label:hover~label {
+    color: #fc0;
+  }
+</style>
 
 
 
+<section>
+  <div id="top">
+    <div class="container pt-5 mb-5">
+      <div class="page-wrapper">
+        <main class="main pt-5 mb-5">
+          <div class="page-content mt-5">
+            <div class="container">
 
-    <section>
-        <div id="top">
-            <div class="container pt-5 mb-5">
-                <div class="page-wrapper">
-                    <main class="main pt-5 mb-5">
-                        <div class="page-content mt-5">
-                            <div class="container">
-
-                                <div class="row">
-                                    <div class="col-md-8 col-sm-6">
-                                        <div class="px-3 mt-4 mb-3">
-                                            <span style="opacity:60%;font-size:15px;">Order Id :</span> <span
-                                                class="fw-bold" style="font-size:18px;">
-                                                <%= order.OrderId %>
-                                            </span>
-                                            <div class="mt-4 ">
-                                                <span style="opacity:60%;font-size:14px;">Delivery Address :</span>
-                                                <div class="mt-1"><span class="fw-bold">
-                                                        <%= order.DeliverAddress.firstname %>
-                                                            <%= order.DeliverAddress.lastname %>
-                                                    </span> <br>
-                                                    <span style="font-size:14px;">
-                                                        <%= order.DeliverAddress.address %>
-                                                    </span> <br>
-                                                    <span style="font-size:14px;">
-                                                        <%= order.DeliverAddress.city %> , <%=
+              <div class="row">
+                <div class="col-md-8 col-sm-6">
+                  <div class="px-3 mt-4 mb-3">
+                    <span style="opacity:60%;font-size:15px;">Order Id :</span> <span class="fw-bold" style="font-size:18px;">
+                      <%= order.OrderId %>
+                    </span>
+                    <div class="mt-4 ">
+                      <span style="opacity:60%;font-size:14px;">Delivery Address :</span>
+                      <div class="mt-1"><span class="fw-bold">
+                          <%= order.DeliverAddress.firstname %>
+                          <%= order.DeliverAddress.lastname %>
+                        </span> <br>
+                        <span style="font-size:14px;">
+                          <%= order.DeliverAddress.address %>
+                        </span> <br>
+                        <span style="font-size:14px;">
+                          <%= order.DeliverAddress.city %> , <%=
                                                                 order.DeliverAddress.state %>
-                                                    </span> <br>
-                                                    <span style="font-size:15px;font-weight:600;">
-                                                        <%= order.DeliverAddress.pincode %>
-                                                    </span>
-                                                    <span class="ml-4"><svg xmlns="http://www.w3.org/2000/svg"
-                                                            width="20" height="20" fill="currentColor"
-                                                            class="bi bi-telephone-fill" viewBox="0 0 20 20">
-                                                            <path fill-rule="evenodd"
-                                                                d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z" />
-                                                        </svg></span> <span class="fw-bold">
-                                                        <%= order.DeliverAddress.phone %>
-                                                    </span>
-                                                </div>
+                        </span> <br>
+                        <span style="font-size:15px;font-weight:600;">
+                          <%= order.DeliverAddress.pincode %>
+                        </span>
+                        <span class="ml-4"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-telephone-fill" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z" />
+                          </svg></span> <span class="fw-bold">
+                          <%= order.DeliverAddress.phone %>
+                        </span>
+                      </div>
 
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-sm-6">
-                                        <div class="mb-3">
-                                            <div class="card"
-                                                style="width:18rem;background-color: rgba(225, 214, 199, 0.716);">
-                                                <div class="card-body">
-                                                    <h5 class="card-title fw-bold">Order Payment Details</h5>
-                                                    <hr
-                                                        style="height:1px;border:none;color:#333;background-color:#333;" />
-                                                    <p class="card-text my-2">Order amount : <span id="totalPrice"
-                                                            class="float-end">₹ <%= order.TotalPrice %>.00</span> </p>
-                                                    <p class="card-text my-2">Coupen Saving : <span class="float-end">-
-                                                            ₹ <%= order.TotalPrice %>.00</span> </p>
-                                                    <p class="card-text my-2">Shipping charge : <span class="float-end">
-                                                            Free</span> </p>
-                                                    <hr
-                                                        style="height:1px;border:none;color:#333;background-color:#333;" />
-                                                    <p class="card-text my-2 fw-bold">Order Total : <span
-                                                            id="PriceTOTAL" class="float-end">₹ <%= order.TotalPrice %>
-                                                                </span> </p>
-                                                    <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                  <div class="mb-3">
+                    <div class="card" style="width:18rem;background-color: rgba(225, 214, 199, 0.716);">
+                      <div class="card-body">
+                        <h5 class="card-title fw-bold">Order Payment Details</h5>
+                        <hr style="height:1px;border:none;color:#333;background-color:#333;" />
+                        <p class="card-text my-2">Order amount : <span id="totalPrice" class="float-end">₹ <%= order.TotalPrice %>.00</span> </p>
+                        <p class="card-text my-2">Coupen Saving : <span class="float-end">-
+                            ₹ <%= order.TotalPrice %>.00</span> </p>
+                        <p class="card-text my-2">Shipping charge : <span class="float-end">
+                            Free</span> </p>
+                        <hr style="height:1px;border:none;color:#333;background-color:#333;" />
+                        <p class="card-text my-2 fw-bold">Order Total : <span id="PriceTOTAL" class="float-end">₹ <%= order.TotalPrice %>
+                          </span> </p>
+                        <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
 
 
-                                <% for( let i=0; i < order.OrderDetails.length; i++ ) { %>
-                                    <hr style="height:1px;border:none;color:#333;background-color:#333;" />
-                                    <div class="container">
-                                        <div class="row">
-                                            <div class="col-md-6 col-sm-6 col-5">
-                                                <div id="orderStatus<%= order.OrderDetails[i]._id %>">
-                                                    <% if (order.OrderDetails[i].Order_Status==="Pending" ) { %>
-                                                        <h5 class="mt-1 mb-0 fw-bold">Order Confirmed</h5>
-                                                        <% } else if (order.OrderDetails[i].Order_Status==="Delivered" ) { %>
-                                                            <h5 class="text-success mt-1 mb-0 fw-bold">
-                                                                Delivered</h5>
-                                                        <% } else if (order.OrderDetails[i].Order_Status==="Cancelled" ) { %>
-                                                                <h5 class="text-danger mt-1 mb-0 fw-bold">
-                                                                    Cancelled </h5>
-                                                        <% } %>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3 col-sm-3 col-2">
+              <% for( let i=0; i < order.OrderDetails.length; i++ ) { %>
+              <hr style="height:1px;border:none;color:#333;background-color:#333;" />
+              <div class="container">
+                <div class="row">
+                  <div class="col-md-6 col-sm-6 col-5">
+                    <div id="orderStatus<%= order.OrderDetails[i]._id %>">
+                      <% if (order.OrderDetails[i].Order_Status==="Pending" ) { %>
+                      <h5 class="mt-1 mb-0 fw-bold">Order Confirmed</h5>
+                      <% } else if (order.OrderDetails[i].Order_Status==="Delivered" )  { %>
+                      <h5 class="text-success mt-1 mb-0 fw-bold">
+                        Delivered</h5>
+                      <% } else if (order.OrderDetails[i].Order_Status==="Cancelled" ) { %>
+                      <h5 class="text-danger mt-1 mb-0 fw-bold">
+                        Cancelled </h5>
+                      <% } %>
+                    </div>
+                  </div>
+                  <div class="col-md-3 col-sm-3 col-2">
 
-                                            </div>
-                                            <div class="col-md-3 col-sm-3 col-5">
-                                                <div id="<%= order.OrderDetails[i]._id %>">
-                                                    <% if (order.OrderDetails[i].Order_Status==="Pending" ) { %>
-                                                        <button onclick="Cancel('<%= order.OrderDetails[i]._id %>')"
-                                                            class="btn btn-danger">Cancel</button>
-                                                        <% } else if (order.OrderDetails[i].Order_Status==="Delivered" )  { %>
-                                                            <h5 class="text-success mt-1 mb-0 fw-bold">
-                                                                Delivered</h5>
-                                                            <h5 class="m-0">Delivered on
-                                                                <%= order.Order_date %>
-                                                            </h5>
-                                                        <% } else if(order.OrderDetails[i].Order_Status==="Cancelled" ) { %>
-                                                            <button
-                                                                onclick="reOrder('<%= order.OrderDetails[i]._id %>')"
-                                                                class="btn btn-primary">Re-order</button>
-                                                        <% } %>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <hr style="height:1px;border:none;color:#333;background-color:#333;" />
-                                    <div class="container">
-                                        <div class="row">
-                                            <div class="col-md-6 col-sm-12">
-                                                <div class="product d-flex">
-                                                    <figure class="product-media">
-                                                        <a
-                                                            href="/singelProduct/<%= order.OrderDetails[i].product_id._id %> ">
-                                                            <img src="<%= order.OrderDetails[i].product_id.imagesDetails[0].Location %>"
-                                                                class="pe-4" style="width:120px;" alt="Product image">
-                                                        </a>
-                                                    </figure>
-                                                    <div class="mt-2">
-                                                        <p style="margin:0;font-size:18px;" class="fw-bold">
-                                                            <%= order.OrderDetails[i].product_id.brandName.brandName %>
-                                                                - <%= order.OrderDetails[i].product_id.type %>
-                                                        </p>
-                                                        <p style="margin:0;opacity:80%;font-size:14px;">Ordered on <%= order.Order_date %></p>
-                                                        <p style="margin-top:8px;margin-bottom:0;">Size : <%= order.OrderDetails[i].product_id.size %></p>
-                                                        <p style="margin:0;">Color : <%= order.OrderDetails[i].product_id.color1 %> </p>
-                                                    </div>
+                  </div>
+                  <div class="col-md-3 col-sm-3 col-5">
+                    <div id="<%= order.OrderDetails[i]._id %>">
+                      <% if (order.OrderDetails[i].Order_Status==="Pending" ) { %>
+                      <button onclick="Cancel('<%= order.OrderDetails[i]._id %>')" class="btn btn-danger">Cancel</button>
+                      <% } else if (order.OrderDetails[i].Order_Status==="Delivered" )   { %>
 
-                                                </div>
-                                                <div id="date<%= order.OrderDetails[i]._id %>" >
-                                                <% if (order.OrderDetails[i].Order_Status==="Pending" ) { %>
-                                                    <p class="mt-0 mb-0">Delivery expected on  <%=  order.Delivery_Expected_date %>  </p>
-                                                <% } else if (order.OrderDetails[i].Order_Status==="Delivered" ) { %>
-                                                    <p class="mt-0 mb-0">Order deliveried on  <%= order.Delivery_Expected_date  %>  </p>
-                                                <% } else if (order.OrderDetails[i].Order_Status==="Cancelled" ) { %>
-                                                        <p class="mt-0 mb-0 text-danger" >Order cancelled on  <%= order.OrderDetails[i].Canceled_date %></p>
-                                                <% } %>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3 col-sm-7">
-                                                <div class="mt-3">
-                                                    <p class="fw-bold h6">Price : ₹ <%=
-                                                            order.OrderDetails[i].product_id.shopPrice %>.00 </p>
-                                                    <p class="fw-bold h6">Quantity : <%= order.OrderDetails[i].quantity
-                                                            %>
-                                                    </p>
-                                                    <p class="fw-bold h6 mt-4">Total : <%= order.OrderDetails[i].quantity * order.OrderDetails[i].product_id.shopPrice %> </p>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-2 col-sm-5">
-                                                <div id="trackOrder<%= order.OrderDetails[i]._id %>" class="mt-4">
-                                                    <% if (order.OrderDetails[i].Order_Status==="Pending" ) { %>
-                                                        <button class="btn btn-outline-warning" data-bs-toggle="modal"
-                                                            data-bs-target="#exampleModal">Track Order</button>
-                                                    <% } %>
-                                                            </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                   
+                      <button class="btn btn-outline-primary" data-toggle="modal" onclick="reviewIdd('<%= order.OrderDetails[i]._id %>')" data-target="#exampleModalreview">Review</button>
 
-                                    <% } %>
+                      <% } else if(order.OrderDetails[i].Order_Status==="Cancelled" ) { %>
+                      <button onclick="reOrder('<%= order.OrderDetails[i]._id %>')" class="btn btn-primary">Re-order</button>
+                      <% } %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <hr style="height:1px;border:none;color:#333;background-color:#333;" />
+              <div class="container">
+                <div class="row">
+                  <div class="col-md-6 col-sm-12">
+                    <div class="product d-flex">
+                      <figure class="product-media">
+                        <a href="/singelProduct/<%= order.OrderDetails[i].product_id._id %> ">
+                          <img src="<%= order.OrderDetails[i].product_id.imagesDetails[0].Location %>" class="pe-4" style="width:120px;" alt="Product image">
+                        </a>
+                      </figure>
+                      <div class="mt-2">
+                        <p style="margin:0;font-size:18px;" class="fw-bold">
+                          <%= order.OrderDetails[i].product_id.brandName.brandName %>
+                          - <%= order.OrderDetails[i].product_id.type %>
+                        </p>
+                        <p style="margin:0;opacity:80%;font-size:14px;">Ordered on <%=  order.Order_date %>
+                        </p>
+                        <p style="margin-top:8px;margin-bottom:0;">Size : <%=  order.OrderDetails[i].product_id.size %>
+                        </p>
+                        <p style="margin:0;">Color : <%=  order.OrderDetails[i].product_id.color1 %>
+                        </p>
+                      </div>
 
-                            </div>
-                        </div>
+                    </div>
+                    <div id="date<%= order.OrderDetails[i]._id %>">
+                      <% if (order.OrderDetails[i].Order_Status==="Pending" ) { %>
+                      <p class="mt-0 mb-0">Delivery expected on <%= order.Delivery_Expected_date %> </p>
+                      <% } else if (order.OrderDetails[i].Order_Status==="Delivered" ) { %>
+                      <p class="mt-0 mb-0">Order deliveried on <%=  order.Delivery_Expected_date %>
+                      </p>
+                      <% } else if (order.OrderDetails[i].Order_Status==="Cancelled" ) { %>
+                      <p class="mt-0 mb-0 text-danger">Order cancelled on <%= order.OrderDetails[i].Canceled_date %> </p>
+                      <% } %>
+                    </div>
+                  </div>
+                  <div class="col-md-3 col-sm-7">
+                    <div class="mt-3">
+                      <p class="fw-bold h6">Price : ₹ <%= order.OrderDetails[i].product_id.shopPrice %>.00 </p>
+                      <p class="fw-bold h6">Quantity : <%= order.OrderDetails[i].quantity  %>
+                      </p>
+                      <p class="fw-bold h6 mt-4">Total : <%= order.OrderDetails[i].quantity * order.OrderDetails[i].product_id.shopPrice %>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="col-md-2 col-sm-5">
+                    <div id="trackOrder<%= order.OrderDetails[i]._id %>" class="mt-4">
+                      <% if (order.OrderDetails[i].Order_Status==="Pending" ) { %>
+                      <button class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#exampleModal">Track Order</button>
+                      <% } %>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-                        <!-- 
+              <% } %>
+
+            </div>
+          </div>
+
+          <!-- 
                                 <h4 class="text-primary text-center mt-2" style="opacity:50%;">
                                     Ohoo... Your
                                     wishlist is empty !!</h4> -->
 
 
-                    </main>
-                </div>
-            </div>
-        </div>
-    </section>
-
-
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-body text-start px-4 pt-0 pb-4">
-                <div class="container h-100">
-                    <div class="row d-flex justify-content-center align-items-center h-100 text-center">
-                        <div class="col">
-                            <div class="modal-dialog modal-lg">
-                                <div class="modal-content text-white"
-                                    style="background-color: #6d5b98; border-radius: 10px;">
-                                    <div class="modal-body text-start px-4 pt-3 pb-4">
-                                        <div class="text-center">
-                                            <h5 class="mb-3">Order Status</h5>
-                                            <h5 class="mb-5">
-                                                <%= order.OrderId %>
-                                            </h5>
-                                        </div>
-                                        <div class="d-flex justify-content-between mb-5">
-                                            <div class="text-center text-success">
-                                                <i class="fas fa-circle ml-2"></i>
-                                                <p class="ml-2 my-0 fw-bold">Order placed</p>
-                                                <p class="ml-2 my-0">
-                                                    <%= order.Order_date %>
-                                                </p>
-                                            </div>
-                                            <div class="text-center">
-                                                <% if (order.Shipped_Date) { %>
-                                                <i class="fas fa-circle text-success ml-2"></i>
-                                                <% } else { %>
-                                                <i class="fas fa-circle ml-2"></i>
-                                                <% } %>
-                                                <p class="ml-2 my-0 fw-bold">Shipped</p>
-                                                <p class="ml-2 my-0">
-                                                    <%= order.Shipped_Date %>
-                                                </p>
-                                            </div>
-                                            <div class="text-center">
-                                                 <% if (order.Out_for_delivery_date) { %>
-                                                <i class="fas fa-circle text-success ml-2"></i>
-                                                <% } else { %>
-                                                <i class="fas fa-circle ml-2"></i>
-                                                <% } %>
-                                                <p class="ml-2 my-0 fw-bold">Out for Delivery</p>
-                                                <p class="ml-2 my-0">
-                                                    <%= order.Out_for_delivery_date %>
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="row justify-content-center">
-                                            <div class="col-md-4 text-center mt-1">
-                                                <p class="h6 fw-bold">Estimated Delivery :</p>
-                                            </div>
-                                            <div class="col-md-3 text-center">
-                                                <p class="lead fw-bold">
-                                                    <%= order.Delivery_Expected_date %>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </main>
+      </div>
     </div>
+  </div>
+</section>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-body text-start px-4 pt-0 pb-4">
+      <div class="container h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100 text-center">
+          <div class="col">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content text-white" style="background-color: #6d5b98; border-radius: 10px;">
+                <div class="modal-body text-start px-4 pt-3 pb-4">
+                  <div class="text-center">
+                    <h5 class="mb-3">Order Status</h5>
+                    <h5 class="mb-5">
+                      <%= order.OrderId %>
+                    </h5>
+                  </div>
+                  <div class="d-flex justify-content-between mb-5">
+                    <div class="text-center text-success">
+                      <i class="fas fa-circle ml-2"></i>
+                      <p class="ml-2 my-0 fw-bold">Order placed</p>
+                      <p class="ml-2 my-0">
+                        <%= order.Order_date %>
+                      </p>
+                    </div>
+                    <div class="text-center">
+                      <% if (order.Shipped_Date) { %>
+                      <i class="fas fa-circle text-success ml-2"></i>
+                      <% } else { %>
+                      <i class="fas fa-circle ml-2"></i>
+                      <% } %>
+                      <p class="ml-2 my-0 fw-bold">Shipped</p>
+                      <p class="ml-2 my-0">
+                        <%= order.Shipped_Date %>
+                      </p>
+                    </div>
+                    <div class="text-center">
+                      <% if (order.Out_for_delivery_date) { %>
+                      <i class="fas fa-circle text-success ml-2"></i>
+                      <% } else { %>
+                      <i class="fas fa-circle ml-2"></i>
+                      <% } %>
+                      <p class="ml-2 my-0 fw-bold">Out for Delivery</p>
+                      <p class="ml-2 my-0">
+                        <%= order.Out_for_delivery_date %>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="row justify-content-center">
+                    <div class="col-md-4 text-center mt-1">
+                      <p class="h6 fw-bold">Estimated Delivery :</p>
+                    </div>
+                    <div class="col-md-3 text-center">
+                      <p class="lead fw-bold">
+                        <%= order.Delivery_Expected_date %>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 
-    <script>
-        Cancel = (id) => {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "Do you want to cancel the order",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, Cancel it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    axios.patch('/cancelOrder', { id: id }).then((e) => {
-                        if (e.data.response === "login") location.href = "/login"
-                        else if (!e.data.response) {
-                            document.getElementById(id).innerHTML = ` <button onclick="reOrder('${id}')" class="btn btn-primary">Re-order</button>`
-                            document.getElementById('totalPrice').innerHTML = e.data.total
-                            document.getElementById('PriceTOTAL').innerHTML = e.data.total
-                            document.getElementById('orderStatus' + id).innerHTML = `<h5 class="text-danger mt-1 mb-0 fw-bold"> Cancelled </h5>`
-                            document.getElementById('date'+id).innerHTML = ` <p class="mt-0 mb-0 text-danger" >Order cancelled on ${e.data.date}</p>`
-                            document.getElementById('trackOrder'+id).style.display = "none"
-                        }
-                    })
-                }
-            })
-        }
-    </script>
+<!-- Modal -->
+<div class="modal fade" id="exampleModalreview" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-right-side" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add your review</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-2" style="width:350px;">
+        <form onsubmit="return reviewww()">
+          <label for="" class="text-primary mb-0 fw-bold">Rate the product</label>
+          <div class="star-rating mt-0 d-flex justify-content-between" style="width:200px;">
+            <input type="radio" id="5-stars" name="rating" value="5" />
+            <label for="5-stars" class="star">&#9733;</label>
+            <input type="radio" id="4-stars" name="rating" value="4" />
+            <label for="4-stars" class="star">&#9733;</label>
+            <input type="radio" id="3-stars" name="rating" value="3" />
+            <label for="3-stars" class="star">&#9733;</label>
+            <input type="radio" id="2-stars" name="rating" value="2" />
+            <label for="2-stars" class="star">&#9733;</label>
+            <input type="radio" id="1-star" name="rating" value="1" />
+            <label for="1-star" class="star">&#9733;</label>
+          </div>
+          <label class="" for="reviewId">Write your review</label><br>
+          <textarea name="review" id="reviewId" cols="30" rows="5" required></textarea>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Add</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+  Cancel = (id) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "Do you want to cancel the order",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, Cancel it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.patch('/cancelOrder', {
+          id: id
+        }).then((e) => {
+          if (e.data.response === "login") location.href = "/login"
+          else if (!e.data.response) {
+            document.getElementById(id).innerHTML = ` <button onclick="reOrder('${id}')" class="btn btn-primary">Re-order</button>`
+            document.getElementById('totalPrice').innerHTML = e.data.total
+            document.getElementById('PriceTOTAL').innerHTML = e.data.total
+            document.getElementById('orderStatus' + id).innerHTML = `<h5 class="text-danger mt-1 mb-0 fw-bold"> Cancelled </h5>`
+            document.getElementById('date' + id).innerHTML = ` <p class="mt-0 mb-0 text-danger" >Order cancelled on ${e.data.date}</p>`
+            document.getElementById('trackOrder' + id).style.display = "none"
+          }
+        })
+      }
+    })
+  }
+
+  let iddd;
+  reviewIdd = (id) => {
+    iddd = id
+  }
+
+  reviewww = async () => {
+    alert(iddd)
+    event.preventDefault()
+    const formData = new FormData(event.target);
+    const formProps = await Object.fromEntries(formData);
+    formProps.id = iddd
+    axios.post('/review', formProps).then(async e => {
+      if (e.data.response === "login") location.href = "/login"
+      else {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 1000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+          }
+        })
+
+       await Toast.fire({
+          icon: 'success',
+          title: 'Your review added successfully'
+        })
+        event.submit()
+      }
+    })
+
+  }
+</script>

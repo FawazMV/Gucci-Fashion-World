@@ -55,6 +55,11 @@ exports.inventory = (productId, qntity) => {
         })
     })
 }
+
+
+exports.percentage = (pV, total) => {
+    return (total * pV) / 100;
+}
 // exports.qntXprice = (id, qnt) => {
 //     return new Promise(async (resolve, reject) => {
 //         let product = await productModel.findById(id);

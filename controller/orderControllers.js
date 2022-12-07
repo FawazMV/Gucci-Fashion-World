@@ -1,7 +1,7 @@
 const { default: mongoose } = require("mongoose")
 const { OrderID } = require("../config/orderId")
 const { payment } = require("../config/payment")
-const { subTotal, OrderPush, inventory } = require("../helpers/order_Helpers")
+const { subTotal, OrderPush, inventory, percentage } = require("../helpers/order_Helpers")
 const orders_Model = require("../models/order-schema")
 const usermodel = require("../models/user-schema")
 const moment = require('moment')
@@ -11,7 +11,7 @@ const coupn_Model = require("../models/coupen_schema")
 
 exports.placeOrder = async (req, res) => {
     let userId = req.session.user._id
-    let total = await subTotal(userId)
+    let total = await subTotal(userId) 
     if (req.body.payment === "online") {
         OrderID().then(orderId => {
             payment(total * 100, orderId).then((response) => res.json({ response: response }))
@@ -57,24 +57,48 @@ exports.cancelOrder = async (req, res) => {
 exports.coupenApply = (req, res) => {
     let userId = req.session.user._id;
     console.log(req.body)
-    coupn_Model.findOne({ coupenCode: req.body.code }).then(async (coup) => {
+    coupn_Model.findOne({ coupenCode: req.body.code, coupen_status: true }).then(async (coup) => {
         if (coup) {
-            let user = await coupn_Model.findOne({ coupenCode: req.body.code, 'users.user': userId })
-            if(!user){
-                usermodel.findById(userId,{_id:-1,cart}).then((cart)=>{
-                    
-                }) 
+            let str_date = coup.starting_Date
+            let end_date = coup.Ending_Date
+            const x = new Date(str_date);
+            const y = new Date(end_date);
+            const now = new Date('2022-12-07');
+            if (x >= now) {
+                if (y <= now) {
+                    let user = await coupn_Model.findOne({ coupenCode: req.body.code, 'users.user': userId })
+                    if (!user) {
+                        subTotal(userId).then((Total) => {
+                            let disc = coup.discount
+                            let discout = percentage(disc, Total)
+                            let limit = coup.discount_limit
+                            if (discout > limit) discout = limit
+                            usermodel.findByIdAndUpdate(userId,{$set:{  }})
+                        })
+
+
+                    } else {
+                        //you are already used the coupen
+                    }
+                } else {
+                    //Your coupen is expired
+                }
+            } else {
+                //the offer didin't started yet
             }
+
+        } else {
+            //coupen is not available
         }
     })
 
 }
 
-const x = new Date('2013-05-23');
-const y = new Date('2013-05-23');
-console.log('+x === +y', +x === +y);
-console.log('x < y', x < y); // false
-console.log('x > y', x > y); // false
-console.log('x <= y', x <= y); // true
-console.log('x >= y', x >= y); // true
-console.log('x === y', x === y);
+// const x = new Date('2013-05-23');
+// const x = new Date('2013-05-23');
+// console.log('+x === +y', +x === +y);
+// console.log('x < y', x < y); // false
+// console.log('x > y', x > y); // false
+// console.log('x <= y', x <= y); // true
+// console.log('x >= y', x >= y); // true
+// console.log('x === y', x === y);

@@ -41,17 +41,14 @@ const userSchema = new mongoose.Schema
                     },
                     total: {
                         type: Number,
-                        required:true 
+                        required: true
                     },
-                    discount:{
-                        type: Number
-                    },
-                    discount_status:{
-                        type:Boolean,
-                        default:false
-                    }
                 }
             ],
+            cartDiscout:{
+                type:Number,
+                default:00
+            },
             wishlist: [
                 {
                     product_id: {

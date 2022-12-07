@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Login 08</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/adminlogin.css">
+
+
+</head>
+
+<body class="overflow-hidden">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!------ Include the above in your HEAD tag ---------->
+    <%- include('../userSide/includes/navbar') %>
+
+        <div class="wrapper  fadeInDown" style="overflow-y:hidden;">
+            <div id="formContent">
+                <!-- Tabs Titles -->
+
+                <!-- Icon -->
+                <div class="fadeIn first">
+                    <img src="/assets/images/logo.png" style="width:160px;" class="p-4" id="icon" alt="User Icon" />
+                </div>
+                <div class="p-5" id="forgetemailId">
+                    <!-- Login Form -->
+                    <form>
+                        <input type="email" id="login"
+                            class="fadeIn second px-5 mt-1   py-4 bg-light border-0 form-control" name="email"
+                            placeholder="Email Id" onkeyup="emailkey()">
+
+                        <p class="float-start text-danger mb-1 fw-light opacity-75" id="emailidwarning"></p>
+
+
+
+                        
+
+                        <p class="text-danger fw-light opacity-75" id="password2idwarning"></p>
+
+                        <input type="submit" onclick="validate()" class="fadeIn fourth mt-4  px-5" value="Submit">
+
+                        <p class="text-danger" id="errmsg"></p>
+                    </form>
+
+                </div> <!-- Remind Passowrd -->
+                <div id="formFooter" class="d-flex justify-content-between">
+                    <a class="underlineHover" href="/login">Back to sign in</a>
+                    <a class="underlineHover" href="/signup" style="color: #393f81;">Don't have an account?</a>
+                </div>
+
+            </div>
+        </div>
+        <script>
+            let email = document.getElementById('login')
+            let emailwarning = document.getElementById('emailidwarning')
+            let mobile;
+            function validate() {
+                event.preventDefault();
+                let form = event.target.form;
+                let validation = true;
+                document.getElementById("errmsg").innerHTML = ""
+                emailwarning.innerHTML = "";
+                if (email.value === "") {
+                    emailwarning.innerHTML = "Please enter your email id"
+                    validation = false
+                }
+                if (validation) {
+                    email = email.value
+                    try {
+                        axios.post('/forgetemail', { email: email }).then((e) => {
+                            if (!e.data.response) {
+                                mobile = e.data.mobile
+                                document.getElementById('forgetemailId').innerHTML =
+                                    `<h6 class="m-3">Enter the code we just send on your number</h6>
+                        <h5 class="fw-bold text-danger">${e.data.mobile}</h5>
+                                <div class="px-5">
+                        <input type="email" id="otpid" class=" px-5 mt-1   py-4 bg-light border-0 form-control" name="Otp"
+                            placeholder="OTP" onkeyup="otpcheck()"></div>
+                        
+                        <p class="float-start text-danger mb-1 fw-light opacity-75" id="otpidwarning"></p>
+                        <p class="text-danger" id="errmsg"></p>`
+                                //form.submit();
+                                //location.href = '/';
+                            } else {
+                                document.getElementById("errmsg").innerHTML = e.data.response;
+                            }
+                        })
+                    } catch (error) {
+                        console.log(error)
+                    }
+                }
+            }
+            function otpcheck() {
+                let otp = document.getElementById('otpid').value
+                if (otp.length === 6) {
+                    document.getElementById('otpid').disabled = true
+                    try {
+                        axios.post('/otpForget', { otp: otp, userNumber: mobile }).then((e) => {
+                            if (e.data.response) {
+                                document.getElementById('forgetemailId').innerHTML =
+                                    `<div class="mt-3 mb-0 input-group">
+                            <input class="fadeIn second px-5 mt-1   py-4 bg-light border-0 form-control" type="password" onkeyup="passwordkey()" placeholder="Enter New Password" name="password"
+                                id="password1Id">
+                        </div>
+                        
+                        <p class="text-danger fw-light opacity-75" id="passwordidwarning"></p>
+                        
+                        <div class="mt-3 mb-0 input-group">
+                            <input class="fadeIn second px-5 mt-1   py-4 bg-light border-0 form-control" type="password" placeholder="Confirm Password" onkeyup="confirmkey()"
+                                id="password2Id">
+                        </div>
+                        
+                        <p class="text-danger fw-light opacity-75" id="password2idwarning"></p>
+
+                        <input type="submit" onclick="validatesignup()" class="fadeIn fourth mt-4  px-5" value="Submit">`
+                                
+                            } else {
+                                document.getElementById('otpid').value = ""
+                                document.getElementById('otpid').disabled = false
+                                document.getElementById('errmsg').style.display = ""
+                            }
+                        })
+                    } catch (error) {
+                        console.log(error)
+                    }
+                }
+            }
+
+            function emailkey() {
+                emailwarning.innerHTML = ""
+            }
+
+
+
+
+            
+            function validatesignup() {
+                let password = document.getElementById('password1Id'), password2 = document.getElementById('password2Id')
+                let passwordwarning = document.getElementById('passwordidwarning'), password2warning = document.getElementById('password2idwarning');
+                passwordwarning.innerHTML = ""; password2warning.innerHTML = "";
+                event.preventDefault();
+                let form = event.target.form;
+                let validation = true;
+                if (password.value === "") {
+                    passwordwarning.innerHTML = "Please enter a password"
+                    validation = false
+                } else if (password.value.length < 6 || password.value.length > 12) {
+                    passwordwarning.innerHTML = "Password should be between 6 to 12 letters"
+                    validation = false
+                } else if (password2.value === "") {
+                    password2warning.innerHTML = "Please confirm your password"
+                    validation = false
+                } else if (password.value != password2.value) {
+                    password2warning.innerHTML = "Password confirmation is failed"
+                    validation = false
+                } if (validation) {
+                    try {
+                        axios.patch('/changePassword', { email: email, password: password.value }).then(async () => {
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                showConfirmButton: false,
+                                timer: 1000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                            })
+
+                            await Toast.fire({
+                                icon: 'success',
+                                title: 'Your password updated successfully'
+                            })
+                            location.href = "/login"
+                        })
+
+                    } catch (error) {
+                        console.log(error)
+                    }
+                }
+
+            }
+            function passwordkey() {
+                passwordwarning.innerHTML = ""
+            }
+            function confirmkey() {
+                password2warning.innerHTML = ""
+            }
+        </script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+        <script>
+
+
+        </script>
+
+        <script src="js/jquery.min.js"></script>
+        <script src="js/popper.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/main.js"></script>
+
+
+
+</body>
+
+</html>
