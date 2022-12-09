@@ -9,8 +9,11 @@ const review_Schema = new mongoose.Schema(
         },
         user: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Users',
+            ref: 'users',
             required: true
+        },
+        title: {
+            type: String,
         },
 
         review: {
@@ -24,7 +27,7 @@ const review_Schema = new mongoose.Schema(
         date: {
             type: String,
             default: moment(Date.now()).format('DD-MM-YYYY')
-        }
+        }       
     }
 )
 

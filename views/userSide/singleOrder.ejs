@@ -92,14 +92,19 @@
                       <div class="card-body">
                         <h5 class="card-title fw-bold">Order Payment Details</h5>
                         <hr style="height:1px;border:none;color:#333;background-color:#333;" />
-                        <p class="card-text my-2">Order amount : <span id="totalPrice" class="float-end">₹ <%= order.TotalPrice %>.00</span> </p>
-                        <p class="card-text my-2">Coupen Saving : <span class="float-end">-
-                            ₹ <%= order.TotalPrice %>.00</span> </p>
+                        <p class="card-text my-2">Order amount : <span class="float-end">₹ <span id="totalPrice"> <%= order.TotalPrice %></span>.00</span> </p>
+                        <p class="card-text my-2">Coupen Saving : <span class="float-end">- ₹ <span id="discid"><%= order.discountPrice %></span>.00</span> </p>
                         <p class="card-text my-2">Shipping charge : <span class="float-end">
                             Free</span> </p>
                         <hr style="height:1px;border:none;color:#333;background-color:#333;" />
-                        <p class="card-text my-2 fw-bold">Order Total : <span id="PriceTOTAL" class="float-end">₹ <%= order.TotalPrice %>
-                          </span> </p>
+                        <p class="card-text my-2 fw-bold">Order Total : <span class="float-end">₹ <span id="PriceTOTAL"><%= order.finalPrice %></span></span> </p>
+                        <hr style="height:1px;border:none;color:#333;background-color:#333;" />
+                        <div style="width:100%;" class="ml-4">
+                        <p class="card-text mt-4 fw-bold text-primary h6 ">Payment type : <span class=""> <%= order.Payment %></span> </p>
+                        <% if (order.coupenapplied) { %>
+                        <p class="card-text mt-3 fw-bold text-primary h6">Coupen NO : <span class=""> <%= order.cartDiscout %></span> </p>
+                        <% } %>
+                        </div>
                         <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
                       </div>
                     </div>
@@ -127,7 +132,6 @@
                     </div>
                   </div>
                   <div class="col-md-3 col-sm-3 col-2">
-
                   </div>
                   <div class="col-md-3 col-sm-3 col-5">
                     <div id="<%= order.OrderDetails[i]._id %>">
@@ -135,7 +139,7 @@
                       <button onclick="Cancel('<%= order.OrderDetails[i]._id %>')" class="btn btn-danger">Cancel</button>
                       <% } else if (order.OrderDetails[i].Order_Status==="Delivered" )   { %>
 
-                      <button class="btn btn-outline-primary" data-toggle="modal" onclick="reviewIdd('<%= order.OrderDetails[i]._id %>')" data-target="#exampleModalreview">Review</button>
+                      <button class="btn btn-outline-primary" data-toggle="modal" onclick="reviewIdd('<%= order.OrderDetails[i].product_id._id %>')" data-target="#exampleModalreview">Review</button>
 
                       <% } else if(order.OrderDetails[i].Order_Status==="Cancelled" ) { %>
                       <button onclick="reOrder('<%= order.OrderDetails[i]._id %>')" class="btn btn-primary">Re-order</button>
@@ -144,7 +148,7 @@
                   </div>
                 </div>
               </div>
-              <hr style="height:1px;border:none;color:#333;background-color:#333;" />
+              <hr style="height:1px;border:none;color:#333;background-color:#333;"/>
               <div class="container">
                 <div class="row">
                   <div class="col-md-6 col-sm-12">
@@ -166,7 +170,6 @@
                         <p style="margin:0;">Color : <%=  order.OrderDetails[i].product_id.color1 %>
                         </p>
                       </div>
-
                     </div>
                     <div id="date<%= order.OrderDetails[i]._id %>">
                       <% if (order.OrderDetails[i].Order_Status==="Pending" ) { %>
@@ -296,9 +299,10 @@
         </button>
       </div>
       <div class="modal-body mx-2" style="width:350px;">
-        <form onsubmit="return reviewww()">
+        <form action="#" onsubmit="reviewww()">
+          
           <label for="" class="text-primary mb-0 fw-bold">Rate the product</label>
-          <div class="star-rating mt-0 d-flex justify-content-between" style="width:200px;">
+          <div class="star-rating mt-0 mb-0 d-flex justify-content-between" onclick="removewarning()" style="width:200px;">
             <input type="radio" id="5-stars" name="rating" value="5" />
             <label for="5-stars" class="star">&#9733;</label>
             <input type="radio" id="4-stars" name="rating" value="4" />
@@ -310,8 +314,11 @@
             <input type="radio" id="1-star" name="rating" value="1" />
             <label for="1-star" class="star">&#9733;</label>
           </div>
+          <p class="text-danger mb-2 mt-0" id="removewarning" style="display:none;">Please add your rating also</p>
+          <label class=""> Title (optional) </label><br>
+          <input type="text" name="title" class="form-control">
           <label class="" for="reviewId">Write your review</label><br>
-          <textarea name="review" id="reviewId" cols="30" rows="5" required></textarea>
+          <textarea name="review" class="form-control" id="reviewId" cols="30" rows="4" required></textarea>
 
       </div>
       <div class="modal-footer">
@@ -344,7 +351,8 @@
           else if (!e.data.response) {
             document.getElementById(id).innerHTML = ` <button onclick="reOrder('${id}')" class="btn btn-primary">Re-order</button>`
             document.getElementById('totalPrice').innerHTML = e.data.total
-            document.getElementById('PriceTOTAL').innerHTML = e.data.total
+            document.getElementById('PriceTOTAL').innerHTML = e.data.finalPrice
+            document.getElementById('discid').innerHTML = e.data.discountPrice
             document.getElementById('orderStatus' + id).innerHTML = `<h5 class="text-danger mt-1 mb-0 fw-bold"> Cancelled </h5>`
             document.getElementById('date' + id).innerHTML = ` <p class="mt-0 mb-0 text-danger" >Order cancelled on ${e.data.date}</p>`
             document.getElementById('trackOrder' + id).style.display = "none"
@@ -360,33 +368,38 @@
   }
 
   reviewww = async () => {
-    alert(iddd)
     event.preventDefault()
     const formData = new FormData(event.target);
     const formProps = await Object.fromEntries(formData);
     formProps.id = iddd
-    axios.post('/review', formProps).then(async e => {
-      if (e.data.response === "login") location.href = "/login"
-      else {
-        const Toast = Swal.mixin({
-          toast: true,
-          position: 'top-end',
-          showConfirmButton: false,
-          timer: 1000,
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.addEventListener('mouseenter', Swal.stopTimer)
-            toast.addEventListener('mouseleave', Swal.resumeTimer)
-          }
-        })
+    if (formProps.rating) {
+      axios.post('/review', formProps).then(async e => {
+        if (e.data.response === "login") location.href = "/login"
+        else {
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 1000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer)
+              toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+          })
 
-       await Toast.fire({
-          icon: 'success',
-          title: 'Your review added successfully'
-        })
-        event.submit()
-      }
-    })
-
+          await Toast.fire({
+            icon: 'success',
+            title: 'Your review added successfully'
+          })
+          location.reload()
+        }
+      })
+    }else{
+      document.getElementById('removewarning').style.display = "block"
+    }
+  }
+  removewarning = ()=>{
+     document.getElementById('removewarning').style.display = "none"
   }
 </script>

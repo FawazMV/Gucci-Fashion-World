@@ -32,6 +32,7 @@
                                             <select onchange="Select()" name="sortby" id="sortby" class="form-control">
                                                 <option value="createdAt">Latest</option>
                                                 <option value="shopPrice">Price</option>
+                                                <!-- <option value="rating">Top rated</option> -->
                                             </select>
                                         </div>
                                     </div><!-- End .toolbox-sort -->
@@ -95,10 +96,10 @@
                                                     </div><!-- End .product-price -->
                                                     <div class="ratings-container">
                                                         <div class="ratings">
-                                                            <div class="ratings-val" style="width: 0%;"></div>
+                                                            <div class="ratings-val" style="width:<%= Products[i].rating %>%;"></div>
                                                             <!-- End .ratings-val -->
                                                         </div><!-- End .ratings -->
-                                                        <span class="ratings-text">( 0 Reviews )</span>
+                                                        <span class="ratings-text">( <%= Products[i].review %>  Reviews )</span>
                                                     </div><!-- End .rating-container -->
 
                                                     <div class="product-nav product-nav-dots">
@@ -481,10 +482,10 @@
                                                     </div><!-- End .product-price -->
                                                     <div class="ratings-container">
                                                         <div class="ratings">
-                                                            <div class="ratings-val" style="width: 0%;"></div>
+                                                            <div class="ratings-val" style="width:${Products[i].rating}%;"></div>
                                                             <!-- End .ratings-val -->
                                                         </div><!-- End .ratings -->
-                                                        <span class="ratings-text">( 0 Reviews )</span>
+                                                        <span class="ratings-text">( ${Products[i].review} Reviews )</span>
                                                     </div><!-- End .rating-container -->
 
                                                     <div class="product-nav product-nav-dots">

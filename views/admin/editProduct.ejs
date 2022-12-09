@@ -1,249 +1,401 @@
-<div class="app-wrapper">
-    <div class="app-content pt-3 p-md-3 p-lg-4">
-        <a href="/admin/Products " class=" float-end btn-link text-info fw-normal">
-            All Products
-        </a>
-        <section>
-            <div class="container mt-4">
-                <div class="row">
+ <link rel="stylesheet" href="https://foliotek.github.io/Croppie/croppie.css">
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
-                    <div class="col-md-11 ">
-                        <form action="/admin/editProduct" method="post" enctype="multipart/form-data" class="mt-4"
-                            onsubmit="return validate()">
+ <style>
+   label.cabinet {
+     display: block;
+     cursor: pointer;
+   }
 
-                            <div class="d-flex justify-content-around" style="width:100%;">
-                                <div>
-                                    <div class="d-flex">
-                                        <div class="me-5" style="width:60%;">
-                                            <label for="brandnameId">Brand Name</label>
-                                            <select name="brandName" id="brandnameId" class="form-select">
-                                                <option disabled selected>
-                                                    <%= product.brandName.brandName %>
-                                                </option>
-                                                <% for( let i=0; i < brandName.length; i++ ) { %>
-                                                    <option value="<%= brandName[i]._id %>">
-                                                        <%= brandName[i].brandName %>
-                                                    </option>
-                                                    <% } %>
-                                            </select>
+   label.cabinet input.file {
+     position: relative;
+     height: 100%;
+     width: auto;
+     opacity: 0;
+     -moz-opacity: 0;
+     filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+     margin-top: -30px;
+   }
 
-                                        </div>
-                                        <div style="width:30%;">
-                                            <label for="genderType">Gender Type :</label>
-                                            <select name="gender" id="genderType" class="form-select">
-                                                <option disabled selected>
-                                                    <%= product.gender.gender %>
-                                                </option>
-                                                <% for( let i=0; i < gender.length; i++ ) { %>
-                                                    <option value="<%= gender[i]._id %>">
-                                                        <%= gender[i].gender %>
-                                                    </option>
-                                                    <% } %>
-                                            </select>
-                                        </div>
+   #upload-demo {
+     width: 250px;
+     height: 250px;
+     padding-bottom: 25px;
+   }
 
-                                    </div>
+   figure figcaption {
+     position: absolute;
+     bottom: 0;
+     color: #fff;
+     width: 100%;
+     padding-left: 9px;
+     padding-bottom: 5px;
+     text-shadow: 0 0 10px #000;
+   }
+ </style>
+ <div class="app-wrapper">
+   <div class="app-content pt-3 p-md-3 p-lg-4">
+     <a href="/admin/Products " class=" float-end btn-link text-info fw-normal">
+       All Products
+     </a>
+     <section>
+       <div class="container mt-4">
+         <div class="row">
 
+           <div class="col-md-11 ">
+             <form class="mt-4" onsubmit="editProduct()">
 
-                                    <br>
-                                    <div class="d-flex">
-                                        <div class="me-5" style="width:50%;">
-                                            <label for="productType">Product Type :</label>
-                                            <select name="type" id="productType" class="form-select">
-                                                <option disabled selected>
-                                                    <%= product.type %>
-                                                </option>
-                                                <option value="Shirt">Shirt</option>
-                                                <option value="T-Shirt">T-Shirt</option>
-                                                <option value="Jeans">Jeans</option>
-                                                <option value="CottonPants">Cotton Pants</option>
-                                                <option value="Churidar">Churidar</option>
-                                                <option value="Maxi">Maxi</option>
-                                                <option value="Bottomwear">Bottomwear</option>
-                                                <option value="Saree">Saree</option>
-                                                <option value="Kurtas">Kurtas</option>
-                                                <option value="Top">Top</option>
-                                                <option value="Pants">Pants</option>
-                                                <option value="Jacket">Jacket</option>
-                                                <option value="Other">Other</option>
-                                            </select>
-                                        </div>
-                                        <div style="width:50%;">
-                                            <label for="category">Category :</label>
-                                            <select name="category" id="category" class="form-select">
-                                                <option disabled selected>
-                                                    <%= product.category %>
-                                                </option>
-                                                <option value="Formals">Formals</option>
-                                                <option value="Casuals">Casuals</option>
-                                                <option value="Innerwear">Innerwear</option>
-                                                <option value="Partywear">Partywear</option>
-                                                <option value="Other">Other</option>
-                                            </select>
-                                        </div>
+               <div class="d-flex justify-content-around" style="width:100%;">
+                 <div>
+                   <div class="d-flex">
+                     <div class="me-5" style="width:60%;">
+                       <label for="brandnameId">Brand Name</label>
+                       <select name="brandName" id="brandnameId" class="form-select">
+                         <option disabled selected>
+                           <%= product.brandName.brandName %>
+                         </option>
+                         <% for( let i=0; i < brandName.length; i++ ) { %>
+                         <option value="<%= brandName[i]._id %>">
+                           <%= brandName[i].brandName %>
+                         </option>
+                         <% } %>
+                       </select>
 
-                                    </div>
+                     </div>
+                     <div style="width:30%;">
+                       <label for="genderType">Gender Type :</label>
+                       <select name="gender" id="genderType" class="form-select">
+                         <option disabled selected>
+                           <%= product.gender.gender %>
+                         </option>
+                         <% for( let i=0; i < gender.length; i++ ) { %>
+                         <option value="<%= gender[i]._id %>">
+                           <%= gender[i].gender %>
+                         </option>
+                         <% } %>
+                       </select>
+                     </div>
 
-                                    <br>
-                                    <div class="d-flex">
-                                        <div class="me-5" style="width:50%;">
-                                            <label for="retailPriceId">Retail Price</label>
-                                            <input type="phone" maxlength="10" size="10" name="retailPrice"
-                                                class="form-control" id="retailPriceId"
-                                                value="<%= product.retailPrice %>">
-                                        </div>
-                                        <div style="width:50%;">
-                                            <label for="shopPriceId">Shop Price</label>
-                                            <input type="phone" maxlength="10" size="10" name="shopPrice"
-                                                class="form-control" id="shopPriceId" value="<%= product.shopPrice %>">
-                                        </div>
-                                    </div>
-                                    <br>
-                                    <div class="d-flex">
-                                        <div class="me-4" style="width:45%;">
-                                            <label for="sizeId">Size :</label>
-                                            <select name="size" id="sizeId" class="form-select">
-                                                <option disabled selected>
-                                                    <%= product.size %>
-                                                </option>
-                                                <option value="X-Small">X-Small</option>
-                                                <option value="Small">Small</option>
-                                                <option value="Medium">Medium</option>
-                                                <option value="Large">Large</option>
-                                                <option value="X Large">X Large</option>
-                                                <option value="XX Large">XX Large</option>
-
-                                            </select>
-                                        </div>
-                                        <div style="width:30%;" class="me-3">
-                                            <label for="color1Id">Color 1 :</label>
-                                            <select name="color1" id="color1Id" class="form-select">
-                                                <option disabled selected>
-                                                    <%= product.color1 %>
-                                                </option>
-                                                <option value="Black">Black</option>
-                                                <option value="White">White</option>
-                                                <option value="Green">Green</option>
-                                                <option value="Blue">Blue</option>
-                                                <option value="Orange">Orange</option>
-                                                <option value="Yellow">Yellow</option>
-                                                <option value="Chocolate">Chocolate</option>
-                                                <option value="Rose">Rose</option>
-                                                <option value="Navy">Navy</option>
-                                                <option value="Aqua">Aqua</option>
-                                                <option value="Brown">Brown</option>
-                                                <option value="Other">Other</option>
-                                            </select>
-                                        </div>
-                                        <div style="width:30%;">
-                                            <label for="color2">Color 2 :</label>
-                                            <select name="color2" id="color2" class="form-select">
-                                                <option disabled selected>
-                                                    <%= product.color2 %>
-                                                </option>
-                                                <option value="Black">Black</option>
-                                                <option value="White">White</option>
-                                                <option value="Green">Green</option>
-                                                <option value="Blue">Blue</option>
-                                                <option value="Orange">Orange</option>
-                                                <option value="Yellow">Yellow</option>
-                                                <option value="Chocolate">Chocolate</option>
-                                                <option value="Rose">Rose</option>
-                                                <option value="Navy">Navy</option>
-                                                <option value="Aqua">Aqua</option>
-                                                <option value="Brown">Brown</option>
-                                                <option value="Other">Other</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <br>
+                   </div>
 
 
+                   <br>
+                   <div class="d-flex">
+                     <div class="me-5" style="width:50%;">
+                       <label for="productType">Product Type :</label>
+                       <select name="type" id="productType" class="form-select">
+                         <option disabled selected>
+                           <%= product.type %>
+                         </option>
+                         <option value="Shirt">Shirt</option>
+                         <option value="T-Shirt">T-Shirt</option>
+                         <option value="Jeans">Jeans</option>
+                         <option value="CottonPants">Cotton Pants</option>
+                         <option value="Churidar">Churidar</option>
+                         <option value="Maxi">Maxi</option>
+                         <option value="Bottomwear">Bottomwear</option>
+                         <option value="Saree">Saree</option>
+                         <option value="Kurtas">Kurtas</option>
+                         <option value="Top">Top</option>
+                         <option value="Pants">Pants</option>
+                         <option value="Jacket">Jacket</option>
+                         <option value="Other">Other</option>
+                       </select>
+                     </div>
+                     <div style="width:50%;">
+                       <label for="category">Category :</label>
+                       <select name="category" id="category" class="form-select">
+                         <option disabled selected>
+                           <%= product.category %>
+                         </option>
+                         <option value="Formals">Formals</option>
+                         <option value="Casuals">Casuals</option>
+                         <option value="Innerwear">Innerwear</option>
+                         <option value="Partywear">Partywear</option>
+                         <option value="Other">Other</option>
+                       </select>
+                     </div>
+
+                   </div>
+
+                   <br>
+                   <div class="d-flex">
+                     <div class="me-5" style="width:50%;">
+                       <label for="retailPriceId">Retail Price</label>
+                       <input type="phone" maxlength="10" size="10" name="retailPrice" class="form-control" id="retailPriceId" value="<%= product.retailPrice %>">
+                     </div>
+                     <div style="width:50%;">
+                       <label for="shopPriceId">Shop Price</label>
+                       <input type="phone" maxlength="10" size="10" name="shopPrice" class="form-control" id="shopPriceId" value="<%= product.shopPrice %>">
+                     </div>
+                   </div>
+                   <br>
+                   <div class="d-flex">
+                     <div class="me-4" style="width:45%;">
+                       <label for="sizeId">Size :</label>
+                       <select name="size" id="sizeId" class="form-select">
+                         <option disabled selected>
+                           <%= product.size %>
+                         </option>
+                         <option value="X-Small">X-Small</option>
+                         <option value="Small">Small</option>
+                         <option value="Medium">Medium</option>
+                         <option value="Large">Large</option>
+                         <option value="X Large">X Large</option>
+                         <option value="XX Large">XX Large</option>
+
+                       </select>
+                     </div>
+                     <div style="width:30%;" class="me-3">
+                       <label for="color1Id">Color 1 :</label>
+                       <select name="color1" id="color1Id" class="form-select">
+                         <option disabled selected>
+                           <%= product.color1 %>
+                         </option>
+                         <option value="Black">Black</option>
+                         <option value="White">White</option>
+                         <option value="Green">Green</option>
+                         <option value="Blue">Blue</option>
+                         <option value="Orange">Orange</option>
+                         <option value="Yellow">Yellow</option>
+                         <option value="Chocolate">Chocolate</option>
+                         <option value="Rose">Rose</option>
+                         <option value="Navy">Navy</option>
+                         <option value="Aqua">Aqua</option>
+                         <option value="Brown">Brown</option>
+                         <option value="Other">Other</option>
+                       </select>
+                     </div>
+                     <div style="width:30%;">
+                       <label for="color2">Color 2 :</label>
+                       <select name="color2" id="color2" class="form-select">
+                         <option disabled selected>
+                           <%= product.color2 %>
+                         </option>
+                         <option value="Black">Black</option>
+                         <option value="White">White</option>
+                         <option value="Green">Green</option>
+                         <option value="Blue">Blue</option>
+                         <option value="Orange">Orange</option>
+                         <option value="Yellow">Yellow</option>
+                         <option value="Chocolate">Chocolate</option>
+                         <option value="Rose">Rose</option>
+                         <option value="Navy">Navy</option>
+                         <option value="Aqua">Aqua</option>
+                         <option value="Brown">Brown</option>
+                         <option value="Other">Other</option>
+                       </select>
+                     </div>
+                   </div>
+                   <br>
 
 
-                                </div>
-                                <div class="">
-                                    <div class="me-5" style="width:50%;">
-                                        <label for="quantityId"> Quantity</label>
-                                        <input type="number" value="<%= product.quantity %>" maxlength="10" size="10"
-                                            name="quantity" class="form-control" id="quantityId">
-                                        <br>
-                                    </div>
-
-                                    <label for="formFileLg">Image <span class="fw-light fs-6 text-black-50"> ( You can
-                                            choose multiple images)</span></label><br>
-                                    <input type="file" onchange="previewMultiple(event)" name="image"
-                                        class="form-control" id="formFileLg" multiple>
-                                    <div id="galeria" class="mt-2">
-                                        <% for( let i=0; i < locals.product.imagesDetails.length; i++ ) { %>
-                                            <img style="width:70px;" class="ml-1"
-                                                src="<%= product.imagesDetails[i].Location %>">
-                                            <% } %>
-                                    </div>
-                                    <br>
 
 
+                 </div>
+                 <div class="">
+                   <div class="me-5" style="width:50%;">
+                     <label for="quantityId"> Quantity</label>
+                     <input type="number" value="<%= product.quantity %>" maxlength="10" size="10" name="quantity" class="form-control" id="quantityId">
+                     <br>
+                   </div>
 
-                                </div>
-
-                            </div>
-                            <div class="d-flex justify-content-between ms-5" style="width:100%;">
-                                <div class="ms-5">
-                                    <label for="descriptionId">Description</label>
-                                    <br>
-                                    <textarea name="description" class="" id="descriptionId" rows="4"
-                                        cols="70"><%= product.description %></textarea>
-                                    <br>
-
-                                    <button type="submit" class="btn btn-warning mt-4">Submit</button>
-                                </div>
-                            </div>
-
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </div>
-</div>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-
-<script>
-    function previewMultiple(event) {
-        var saida = document.getElementById('formFileLg');
-        var quantos = saida.files.length
-        document.getElementById("galeria").innerHTML = '';
-
-        for (i = 0; i < 5; i++) {
-            var urls = URL.createObjectURL(event.target.files[i]);
-            document.getElementById('galeria').innerHTML += '<img style="width:70px;" class="ml-1" src="' + urls + '">'
-
-        }
-
-        function isNumberKey(evt) {
-            var charCode = (evt.which) ? evt.which : evt.keyCode
-            if (charCode > 31 && (charCode < 48 || charCode > 57))
-                return false;
-            return true;
-        }
+                   <label for="abcdefa">Image <span class="fw-light fs-6 text-black-50"> ( You can choose images up to 4)</span></label><br>
 
 
-    }
-</script>
-<script>
-    function validate() {
-        // if (document.getElementById("brandnameId").value === "" || document.getElementById("genderType").value === "" || document.getElementById('productType').value === "" || document.getElementById('category').value === "" || document.getElementById('retailPriceId').value === "" || document.getElementById('color1Id').value === "" || document.getElementById('shopPriceId').value === "" || document.getElementById('sizeId').value === "" || document.getElementById('imageId').value === "" || document.getElementById('descriptionId').value === "" || document.getElementById('quantityId').value === "") {
-        //     alert('Fill the essential columns')
-        //     return false
-        // } else if (isNaN(document.getElementById('quantityId').value)) {
-        // } else {
+                   <div class="modal fade" id="cropImagePop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                     <div class="modal-dialog">
+                       <div class="modal-content">
+                         <div class="modal-header">
+                           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                           <h4 class="modal-title" id="myModalLabel">
+                             <?=multiLanguage( "Edit Foto" , "Edit Photo" )?>
+                           </h4>
+                         </div>
+                         <div class="modal-body">
+                           <div id="upload-demo" class="center-block"></div>
+                         </div>
+                         <div class="modal-footer">
+                           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                           <button type="button" id="cropImageBtn" class="btn btn-primary">Crop</button>
+                         </div>
+                       </div>
+                     </div>
+                   </div>
 
-        //     return true
-        // }
-        if (document.getElementById('formFileLg').files.length > 4) {
-            alert('Maximum 4 number of photos allowed')
-            return false
-        } else return true
+                   <!-- <input type="file" onchange="previewMultiple(event)" name="image"
+                                        class="form-control" id="formFileLg" multiple> -->
+                   <input  type="file" class="form-control item-img file center-block" name="" id="abcdefa" />
+                   <div id="galeria" class="mt-2 d-flex">
+                     <div id="formFileLg">
+                       <% for( let i=0; i < locals.product.imagesDetails.length; i++ ) { %>
+                       <img style="width:70px;" class="ml-1" src="<%= product.imagesDetails[i].Location %>">
+                       <% } %>
+                     </div>
+                   </div>
+                   <br>
 
-    }
-</script>
+
+
+                 </div>
+
+               </div>
+               <div class="d-flex justify-content-between ms-5" style="width:100%;">
+                 <div class="ms-5">
+                   <label for="descriptionId">Description</label>
+                   <br>
+                   <textarea name="description" class="" id="descriptionId" rows="4" cols="70"><%= product.description %></textarea>
+                   <br>
+
+                   <button type="submit" class="btn btn-warning mt-4">Submit</button>
+                 </div>
+               </div>
+
+             </form>
+           </div>
+         </div>
+       </div>
+     </section>
+   </div>
+ </div>
+ <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+ <script>
+   function isNumberKey(evt) {
+     var charCode = (evt.which) ? evt.which : evt.keyCode
+     if (charCode > 31 && (charCode < 48 || charCode > 57))
+       return false;
+     return true;
+   }
+ </script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+ <script src="https://foliotek.github.io/Croppie/croppie.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+ <script>
+   let count = 0
+   $(".gambar").attr("src", "https://user.gadjian.com/static/images/personnel_boy.png");
+   var $uploadCrop, tempFilename, rawImg, imageId;
+
+   function readFile(input) {
+     if (input.files && input.files[0]) {
+       var reader = new FileReader();
+       reader.onload = function(e) {
+         $('.upload-demo').addClass('ready');
+         $('#cropImagePop').modal('show');
+         rawImg = e.target.result;
+       }
+       reader.readAsDataURL(input.files[0]);
+     } else {
+       swal("Sorry - you're browser doesn't support the FileReader API");
+     }
+   }
+   $uploadCrop = $('#upload-demo').croppie({
+     viewport: {
+       width: 160,
+       height: 200,
+     },
+     enforceBoundary: false,
+     enableExif: true
+   });
+   $('#cropImagePop').on('shown.bs.modal', function() {
+     // alert('Shown pop');
+     $uploadCrop.croppie('bind', {
+       url: rawImg
+     }).then(function() {
+       console.log('jQuery bind complete');
+     });
+   });
+   $('.item-img').on('change', function() {
+     imageId = $(this).data('id');
+     tempFilename = $(this).val();
+     $('#cancelCropBtn').data('id', imageId);
+     readFile(this);
+   });
+   $('#cropImageBtn').on('click', function(ev) {
+     $uploadCrop.croppie('result', {
+       type: 'base64',
+       format: 'jpeg',
+       size: {
+         width: 150,
+         height: 200
+       }
+     }).then(function(resp) {
+       console.log(resp)
+       let imageFile = urltofile(resp)
+       uploadImage(imageFile)
+       previewMultiple(resp, count)
+       count++
+       if (count == 4) document.getElementById('abcdefa').disabled = true
+       $('#item-img-output').attr('src', resp);
+       $('#cropImagePop').modal('hide');
+     });
+   });
+
+   urltofile = (url) => {
+     let arr = url.split(',');
+     let mime = arr[0].match(/:(.*?);/)[1]
+     let data = arr[1]
+     let dataStr = atob(data)
+     let n = dataStr.length
+     let dataArr = new Uint8Array(n)
+     while (n--) {
+       dataArr[n] = dataStr.charCodeAt(n)
+     }
+     let file = new File([dataArr], 'File.jpg', {
+       type: mime
+     })
+     return file
+   }
+
+
+
+
+   let formData = new FormData()
+   var imagefile = document.querySelector('#abcdefa');
+
+   let uploadImage = (file) => {
+     formData.append("image", imagefile.files[0]);
+     console.log(formData)
+     // axios.post('/admin/upload_file', formData, {
+     //   headers: {
+     //     'Content-Type': 'multipart/form-data'
+     //   }
+     // })
+   }
+
+   editProduct = async () => {
+     event.preventDefault()
+     const formvalues = new FormData(event.target);
+     for (var pair of formvalues.entries()) {
+       formData.append(pair[0], pair[1]);
+     }
+     axios.patch('/admin/editProduct', formData, {
+       headers: {
+         'Content-Type': 'multipart/form-data'
+       }
+     }).then(async (e) => {
+       if (e.data.success) {
+         await Swal.fire({
+           icon: 'success',
+           title: 'Product Updated successfully',
+           showConfirmButton: false,
+           timer: 1500
+         })
+         location.href='/admin/Products'
+       }
+     })
+   }
+ </script>
+ <script>
+   function previewMultiple(src, ct) {
+     var images = document.getElementById('formFileLg').style.display = 'none'
+     document.getElementById("galeria").innerHTML += `<div><img style="width:80px;" id="id${ct}" class="p-2" src="${src}"></div>`;
+   }
+
+   function isNumberKey(evt) {
+     var charCode = (evt.which) ? evt.which : evt.keyCode
+     if (charCode > 31 && (charCode < 48 || charCode > 57))
+       return false;
+     return true;
+   }
+ </script>

@@ -55,13 +55,14 @@ module.exports = {
         msg = false
     },
     addProductPost: async (req, res) => {
+        // console.log(req.body)
+        // console.log(req.files)
         const results = await s3Uploadv3(req.files);
         let product = req.body
         product.imagesDetails = results
         console.log(product)
         productModel.create(product).then(() => {
-            msg = true
-            res.redirect('/admin/addProduct')
+            res.json({ success: true })
         }).catch(error => console.log(error))
     },
     addBrandName: async (req, res) => {
@@ -113,6 +114,8 @@ module.exports = {
     },
     updateProduct: async (req, res) => {
         let product = req.body
+        console.log(product)
+        console.log(req.files)
         if (req.files.length) {
             productModel.findById(product_id).then((product) => {
                 const image = product.imagesDetails
@@ -122,7 +125,7 @@ module.exports = {
             product.imagesDetails = results
         }
         productModel.findByIdAndUpdate(product_id, product).then(() => {
-            res.redirect('/admin/Products')
+            res.json({ success: true })
         }).catch(error => {
             console.log(error)
             res.redirect('/admin/Products')
@@ -185,7 +188,7 @@ module.exports = {
     },
     single: (req, res) => {
         id = req.params.id
-        productModel.findById(id).then((product) => {
+        productModel.findById(id).populate('brandName').populate('gender').then((product) => {
             console.log(product)
             res.render('admin/viewSingle', { admin: true, product })
         })
@@ -230,7 +233,14 @@ module.exports = {
                 let qty = OrderDetails[i].quantity
                 await inventory(id, -qty)
             }
-            await orders_Model.findByIdAndUpdate(req.body.id, { $set: { Delivery_status: status, Delivery_Expected_date: date, TotalPrice: 0 } })
+            let { coupenapplied, cartDiscout, User } = await orders_Model.findById(req.body.id, { coupenapplied: 1, cartDiscout: 1, User: 1, _id: 0 })
+            if (coupenapplied) {
+                console.log(User)
+                await coupn_Model.updateOne({ coupenCode: cartDiscout }, { $pull: { users: { user: User } } }, { safe: true }).then(e => {
+                    console.log(e)
+                })
+            }
+            await orders_Model.findByIdAndUpdate(req.body.id, { $set: { Delivery_status: status, Delivery_Expected_date: date, TotalPrice: 0, finalPrice: 0, discountPrice: 0, coupenapplied: false } })
             await orders_Model.updateMany({ _id: req.body.id }, { $set: { "OrderDetails.$[elem].Order_Status": 'Cancelled', 'OrderDetails.$[elem].Canceled_date': date } },
                 { arrayFilters: [{ "elem.Order_Status": 'Pending' }], multi: true });
         }
@@ -245,8 +255,8 @@ module.exports = {
     addCoupen: (req, res) => {
         coupn_Model.create(req.body).then(() => res.json())
     },
-    coupenStatus:(req,res)=>{
-        coupn_Model.findByIdAndUpdate(req.body.id, { $set: { coupen_status: req.body.value }})
-        .then(()=> res.json())
+    coupenStatus: (req, res) => {
+        coupn_Model.findByIdAndUpdate(req.body.id, { $set: { coupen_status: req.body.value } })
+            .then(() => res.json())
     }
 }                            

@@ -27,7 +27,7 @@
                                                     <%= order[i].OrderId %>
                                                 </th>
                                                 <th>
-                                                    ₹ <%= order[i].TotalPrice %>
+                                                    ₹ <%= order[i].finalPrice %>
                                                 </th>
                                             </tr>
                                         </thead>
@@ -55,7 +55,7 @@
                                                                         <p class="m-0">Ordered on <%=
                                                                                 order[i].Order_date %>
                                                                         </p>
-                                                                        <% if (order[i].Payment=="online") { %>
+                                                                        <% if (order[i].Payment=="Online") { %>
                                                                             <p style="opacity:70%;">Paid</p>
                                                                             <% } else { %>
                                                                                 <p style="opacity:70%;">Cash on delivery

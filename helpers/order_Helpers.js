@@ -1,4 +1,5 @@
 const { default: mongoose } = require("mongoose")
+const coupn_Model = require("../models/coupen_schema")
 const orders_Model = require("../models/order-schema")
 const productModel = require("../models/product-schema")
 const usermodel = require("../models/user-schema")
@@ -19,8 +20,7 @@ exports.OrderPush = (userId, orderId, total, payment) => {
     return new Promise(async (resolve, reject) => {
         let x = {};
         x.OrderId = orderId;
-        OrderDetails = await usermodel.findById(userId, { _id: -1, cart: 1 })
-        console.log(OrderDetails)
+        OrderDetails = await usermodel.findById(userId, { _id: 0, cart: 1, cartDiscout: 1 })
         for (let i = 0; i < OrderDetails.cart.length; i++) {
             let id = OrderDetails.cart[i].product_id
             let qty = OrderDetails.cart[i].quantity
@@ -34,7 +34,21 @@ exports.OrderPush = (userId, orderId, total, payment) => {
         ])
         x.DeliverAddress = DeliverAddress[0].address[0]
         x.TotalPrice = total;
+        x.finalPrice = total;
         x.Payment = payment
+        if (OrderDetails.cartDiscout) {
+            x.coupenapplied = true
+            let discountPercentage = await coupn_Model.findOne({ code: OrderDetails.cartDiscout }, { _id: 0, discount: 1 })
+            x.discountPercentage = discountPercentage.discount
+            x.cartDiscout = OrderDetails.cartDiscout
+            await this.coupenCheck(OrderDetails.cartDiscout, userId).then(resp => {
+                x.discountPrice = resp.discout
+                x.finalPrice = resp.subtotal
+            }).catch(err => {
+                console.log(err)
+            })
+            await coupn_Model.findOneAndUpdate({ coupenCode: OrderDetails.cartDiscout }, { $push: { users: { user: userId } } })
+        }
         orders_Model.create(x).then(() => {
             usermodel.findByIdAndUpdate(userId, { $set: { cart: [] } }).then((e) => {
                 resolve()
@@ -49,7 +63,6 @@ exports.OrderPush = (userId, orderId, total, payment) => {
 
 exports.inventory = (productId, qntity) => {
     return new Promise((resolve, reject) => {
-        console.log(productId)
         productModel.findByIdAndUpdate(productId, { $inc: { quantity: -qntity } }).then(() => {
             resolve()
         })
@@ -58,12 +71,39 @@ exports.inventory = (productId, qntity) => {
 
 
 exports.percentage = (pV, total) => {
-    return (total * pV) / 100;
+    let per = (total * pV) / 100;
+    return (Math.round(per))
 }
-// exports.qntXprice = (id, qnt) => {
-//     return new Promise(async (resolve, reject) => {
-//         let product = await productModel.findById(id);
-//         let total = product.shopPrice * qnt
-//         resolve(total)
-//     })
-// }
+
+
+exports.coupenCheck = (code, userId) => {
+    return new Promise((resolve, reject) => {
+        let response = null
+        coupn_Model.findOne({ coupenCode: code, coupen_status: true }, { _id: 0, coupenCode: 0 }).then(async (coup) => {
+            if (coup) {
+                let { discount, starting_Date, Ending_Date, discount_limit } = coup
+                const x = new Date(starting_Date);
+                const y = new Date(Ending_Date);
+                const now = new Date(Date.now());
+                if (now >= x) {
+                    if (now <= y) {
+                        let user = await coupn_Model.findOne({ coupenCode: code, 'users.user': userId })
+                        if (!user) {
+                            let Discount = {}
+                            this.subTotal(userId).then((Total) => {
+                                let reduced = this.percentage(discount, Total)
+                                if (reduced > discount_limit) reduced = discount_limit
+                                Total = Total - reduced
+                                Discount.subtotal = Total
+                                Discount.discout = reduced
+                                resolve(Discount)
+                            })
+                        } else response = "You are already used the coupen"
+                    } else response = 'Coupen is expired'
+                } else response = "The offer didin't started yet"
+            } else response = "The coupen is not valid"
+            if (response) reject(response)
+        })
+
+    })
+}

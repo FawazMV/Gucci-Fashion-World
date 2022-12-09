@@ -9,7 +9,7 @@ const { default: mongoose } = require('mongoose');
 const { payment, verifyPayment } = require('../config/payment');
 const { OrderID } = require('../config/orderId');
 const orders_Model = require('../models/order-schema');
-const { subTotal, OrderPush } = require('../helpers/order_Helpers');
+const { subTotal, OrderPush, coupenCheck } = require('../helpers/order_Helpers');
 const review_model = require('../models/review_schema');
 const accoutnSID = process.env.accoutnSID
 const serviceSID = process.env.serviceSID
@@ -35,7 +35,8 @@ exports.home = async (req, res) => {
     let Products = []
     genderModel.find({}).lean().then(async (catagories) => {
         for (let i = 0; i < 3; i++) {
-            let products = await productModel.find({ deleteProduct: false, gender: catagories[i]._id }, { imagesDetails: 1, brandName: 1, gender: 1, shopPrice: 1 }).populate('brandName').populate('gender').lean()
+            let products = await productModel.find({ deleteProduct: false, gender: catagories[i]._id, quantity: { $gt: 1 } }, { imagesDetails: 1, brandName: 1, gender: 1, shopPrice: 1, rating: 1 })
+                .populate('brandName').populate('gender').lean()
             Products.push(products)
         }
         catagories.splice(4)
@@ -47,10 +48,13 @@ exports.otppage = (req, res) => {
     if (req.session.otp) res.render('userSide/otp', { includes: true, userNumber })
     else res.redirect('/login')
 }
-exports.singleProduct = (req, res) => {
+exports.singleProduct = async (req, res) => {
     let id = req.params.id
-    productModel.findById(id).populate('brandName').populate('gender').lean().then(product => {
-        res.render('userSide/singleProduct', { product, user })
+    let review = [] = await review_model.find({ product: id }).populate('user', 'name').sort({ _id: -1 })
+    productModel.findById(id).populate('brandName').populate('gender').lean().then(async product => {
+        let similiar = [] = await productModel.find({ deleteProduct: false, gender: product.gender._id, type: product.type, _id: { $ne: id }, quantity: { $gt: 1 } }, { imagesDetails: 1, brandName: 1, gender: 1, shopPrice: 1, review: 1, rating: 1 })
+            .populate('brandName').populate('gender').lean()
+        res.render('userSide/singleProduct', { product, user, review, similiar })
     })
 }
 exports.getCart = (req, res) => {
@@ -64,10 +68,13 @@ exports.getCart = (req, res) => {
 }
 exports.checkout = (req, res) => {
     let userId = req.session.user._id
-    usermodel.findById(userId, { cart: 1 }).populate({ path: 'cart.product_id', model: 'Products', populate: { path: 'brandName', model: 'brandName' } })
+    usermodel.findById(userId, { cart: 1, cartDiscout: 1 }).populate({ path: 'cart.product_id', model: 'Products', populate: { path: 'brandName', model: 'brandName' } })
         .then(async (result) => {
             let cartproduct = result.cart
+            let disc = result.cartDiscout
             let total = await subTotal(userId)
+            let aftTotal = total
+            let discount = "00";
             usermodel.aggregate([
                 { $match: { _id: mongoose.Types.ObjectId(userId) } },
                 {
@@ -79,7 +86,14 @@ exports.checkout = (req, res) => {
                             }
                         }
                     }
-                }]).then(result => res.render('userSide/checkout', { cartproduct, total, user, address: result[0].address[0] }))
+                }]).then(async result => {
+                    if (disc) {
+                     let resp =   await coupenCheck(disc, userId)
+                            aftTotal = resp.subtotal
+                            discount = resp.discout
+                    }
+                    res.render('userSide/checkout', { cartproduct, total, discount, aftTotal, user, address: result[0].address[0] })
+                })
         })
 }
 exports.product = (req, res) => {
@@ -116,9 +130,9 @@ exports.success = (req, res) => {
 
 exports.orderPage = ((req, res) => {
     let userId = req.session.user._id
-    orders_Model.find({ user: userId }, { OrderDetails: 1, Order_date: 1, Order_Status: 1, OrderId: 1, _id: -1, Payment: 1, TotalPrice: 1 }).populate('OrderDetails.product_id').sort({ _id: -1 })
+    orders_Model.find({ user: userId }, { OrderDetails: 1, Order_date: 1, Order_Status: 1, OrderId: 1, _id: -1, Payment: 1, finalPrice: 1 }).populate('OrderDetails.product_id').sort({ _id: -1 })
         .then((order) => res.render('userSide/orders', { user, order }))
-        .catch((error) => res.redirect('/404'))
+        .catch((error) => console.log(error))
 })
 
 exports.singleOrder = (async (req, res) => {
@@ -218,7 +232,6 @@ exports.forgetemail = (req, res) => {
     let response = null
     usermodel.findOne({ email: req.body.email }, { _id: 0, mobile: 1 }).then(user => {
         if (user) {
-            console.log(user)
             otpcallin(user.mobile)
             res.json({ mobile: user.mobile })
         } else {
@@ -230,7 +243,6 @@ exports.forgetemail = (req, res) => {
 exports.otpForget = (req, res) => {
     let { otp, userNumber } = req.body;
     otpVeryfication(otp, userNumber).then((response) => {
-        console.log(response)
         if (response) {
             res.json({ response: true })
         } else {
@@ -244,7 +256,6 @@ exports.changePassword = async (req, res) => {
     let { password, email } = req.body
     password = await bcrypt.hash(password, 10)
     usermodel.updateOne({ email: email }, { $set: { password: password } }).then((e) => {
-        console.log(e)
         res.json()
     })
 }
@@ -287,7 +298,6 @@ exports.addCart = async (req, res) => {
                 usermodel.findByIdAndUpdate(userId, { $push: { cart: { product_id: req.body.id, total: total } } })
                     .then(() => res.json({ response: false }))
                     .catch((error) => {
-                        console.log(error)
                         res.json({ response: error.message })
                     })
             } else res.json({ response: "The Product is out of stock" })
@@ -489,15 +499,18 @@ exports.verification = (req, res) => {
 
 exports.review = (req, res) => {
     let userId = req.session.user._id
-    let { rating, review, id } = req.body
+    let { rating, review, id, title } = req.body
     rating = rating * 20
     const reviews = {}
     reviews.rating = rating
     reviews.product = id
     reviews.user = userId
     reviews.review = review
-    console.log(reviews)
-    review_model.create(reviews).then(()=>{
+    reviews.title = title
+    review_model.create(reviews).then(async () => {
+        let rat = {} = await productModel.findById(id, { _id: 0, rating: 1 })
+        if (rat.rating) rating = (rating + rat.rating) / 2
+        await productModel.findByIdAndUpdate(id, { $inc: { review: 1, }, $set: { rating: rating } })
         res.json()
     })
 }

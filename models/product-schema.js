@@ -53,6 +53,14 @@ const productSchema = new mongoose.Schema(
         }, deleteProduct: {
             type: Boolean,
             default: false
+        },
+        review:{
+            type:Number,
+            default:0
+        },
+        rating:{
+            type:Number,
+            default:0
         }
 
     },

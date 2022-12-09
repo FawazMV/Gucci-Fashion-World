@@ -21,7 +21,7 @@ router.get('/Products', admin.productsView)
 
 router.get('/addProduct', admin.addProduct)
 
-router.post('/addProduct', fileUpload.upload.array('image', 5), admin.addProductPost)
+router.post('/addProduct', fileUpload.upload.array('image', 4), admin.addProductPost)
 
 router.get('/addBrandName', admin.addBrandName)
 
@@ -35,7 +35,7 @@ router.get('/deleteProduct/:id', admin.deleteProduct)
 
 router.get('/editProduct/:id', admin.editPage)
 
-router.post('/editProduct', fileUpload.upload.array('image', 4), admin.updateProduct)
+router.patch('/editProduct', fileUpload.upload.array('image', 4), admin.updateProduct)
 
 router.get('/genderType', admin.genderType)
 
@@ -60,7 +60,7 @@ router.patch('/coupenStatus',admin.coupenStatus)
 
 
 
-router.post('/upload_file', fileUpload.upload.single('image'), (req, res) => {
-    console.log(req.file)
-})
+// router.post('/upload_file', fileUpload.upload.array('image',3), (req, res) => {
+//     console.log(req.files)
+// })
 module.exports = router    

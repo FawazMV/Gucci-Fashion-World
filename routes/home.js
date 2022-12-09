@@ -2,7 +2,7 @@ const { default: axios } = require('axios')
 const express = require('express')
 const router = express.Router()
 const { verifyPayment } = require('../config/payment')
-const { placeOrder, cancelOrder, coupenApply } = require('../controller/orderControllers')
+const { placeOrder, cancelOrder, coupenApply, coupenSave } = require('../controller/orderControllers')
 const { login, signup, home, orderPage, otppage, singleProduct, getCart, checkout, product, allProduct, success, loginPost, doSignup, otppageverify, OTPResend, logout, addCart, quantityPlus, cartDelete, addAddress, getAddress, dafaultAddress, deleteAddress, getEditAddress, updateAddress, productFilter, verification, singleOrder, forgetPassword, forgetemail, changePassword, otpForget, review } = require('../controller/userControllers')
 const { getWishlist, addWishlist, deleteWishlist } = require('../controller/wishlistControllers.js')
 const { sessionCheck, sessionCheckAxios, loginCheck } = require('../middlewears/sessioncheck')
@@ -114,6 +114,8 @@ router.patch('/cancelOrder', sessionCheckAxios, cancelOrder)
 router.post('/review', sessionCheckAxios, review)
 
 router.put('/coupenApply', sessionCheckAxios, coupenApply)
+
+router.patch('/coupenSave', sessionCheckAxios, coupenSave)
 
 
 

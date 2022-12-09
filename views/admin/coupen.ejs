@@ -154,7 +154,7 @@
 <script>
     
     addCoupen = async () => {
-        event.preventDefault()
+        
         const formData = new FormData(event.target);
         const formProps = await Object.fromEntries(formData);
         axios.post('/admin/addCoupen', formProps).then(() => {

@@ -51,7 +51,7 @@ const orders_Schema = new mongoose.Schema(
         Delivery_Expected_date: {
             type: String,
             default: moment(dateee.setDate(dateee.getDate() + 7)).format('DD-MM-YYYY')
-               
+
         },
         Out_for_delivery_date: {
             type: String
@@ -65,8 +65,25 @@ const orders_Schema = new mongoose.Schema(
             type: String,
             default: "Pending"
         },
-        Shipped_Date:{
-            type:String
+        Shipped_Date: {
+            type: String
+        },
+        coupenapplied: {
+            type: Boolean,
+            default: false
+        },
+        cartDiscout: {
+            type: String
+        },
+        finalPrice: {
+            type: Number
+        },
+        discountPrice: {
+            type: Number,
+            default: 0
+        },
+        discountPercentage: {
+            type: Number
         }
 
     }

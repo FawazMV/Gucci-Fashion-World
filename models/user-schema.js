@@ -46,8 +46,7 @@ const userSchema = new mongoose.Schema
                 }
             ],
             cartDiscout:{
-                type:Number,
-                default:00
+                type:String
             },
             wishlist: [
                 {

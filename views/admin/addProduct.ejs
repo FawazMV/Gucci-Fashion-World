@@ -1,404 +1,377 @@
 <head>
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"> -->
-    <link rel="stylesheet" href="https://foliotek.github.io/Croppie/croppie.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"> -->
+  <link rel="stylesheet" href="https://foliotek.github.io/Croppie/croppie.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <style>
-        label.cabinet {
-            display: block;
-            cursor: pointer;
-        }
+  <style>
+    label.cabinet {
+      display: block;
+      cursor: pointer;
+    }
 
-        label.cabinet input.file {
-            position: relative;
-            height: 100%;
-            width: auto;
-            opacity: 0;
-            -moz-opacity: 0;
-            filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
-            margin-top: -30px;
-        }
+    label.cabinet input.file {
+      position: relative;
+      height: 100%;
+      width: auto;
+      opacity: 0;
+      -moz-opacity: 0;
+      filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+      margin-top: -30px;
+    }
 
-        #upload-demo {
-            width: 250px;
-            height: 250px;
-            padding-bottom: 25px;
-        }
+    #upload-demo {
+      width: 250px;
+      height: 250px;
+      padding-bottom: 25px;
+    }
 
-        figure figcaption {
-            position: absolute;
-            bottom: 0;
-            color: #fff;
-            width: 100%;
-            padding-left: 9px;
-            padding-bottom: 5px;
-            text-shadow: 0 0 10px #000;
-        }
-    </style>
+    figure figcaption {
+      position: absolute;
+      bottom: 0;
+      color: #fff;
+      width: 100%;
+      padding-left: 9px;
+      padding-bottom: 5px;
+      text-shadow: 0 0 10px #000;
+    }
+  </style>
 </head>
 <div class="app-wrapper">
-    <div class="app-content pt-3 p-md-3 p-lg-4">
-        <a href="/admin/Products " class=" float-end btn-link text-info fw-normal">
-            All Products
-        </a>
-        <section>
-            <div class="container mt-4">
-                <div class="row">
+  <div class="app-content pt-3 p-md-3 p-lg-4">
+    <a href="/admin/Products " class=" float-end btn-link text-info fw-normal">
+      All Products
+    </a>
+    <section>
+      <div class="container mt-4">
+        <div class="row">
 
-                    <div class="col-md-11 ">
-                        <form action="/admin/addProduct" method="post" enctype="multipart/form-data" class="mt-4"
-                            onsubmit="return validate()">
+          <div class="col-md-11 ">
+            <form class="mt-4" onsubmit="addProduct()">
 
-                            <div class="d-flex justify-content-around" style="width:100%;">
-                                <div>
-                                    <div class="d-flex">
-                                        <div class="me-5" style="width:60%;">
-                                            <label for="brandnameId">Brand Name</label> <a href="/admin/addBrandName"
-                                                class="float-end btn-link text-info fw-light">add Brands</a>
-                                            <select name="brandName" id="brandnameId" required="true"
-                                                class="form-select">
-                                                <option value="" disabled selected>Choose...</option>
-                                                <% for( let i=0; i < brandName.length; i++ ) { %>
-                                                    <option value="<%= brandName[i]._id %>">
-                                                        <%= brandName[i].brandName %>
-                                                    </option>
-                                                    <% } %>
-                                            </select>
-                                        </div>
-                                        <div style="width:30%;">
-                                            <label for="genderType">Gender Type :</label>
-                                            <select name="gender" id="genderType" required="true" class="form-select">
-                                                <option value="" disabled selected>Choose...</option>
-                                                <% for( let i=0; i < gender.length; i++ ) { %>
-                                                    <option value="<%= gender[i]._id %>">
-                                                        <%= gender[i].gender %>
-                                                    </option>
-                                                    <% } %>
-                                            </select>
-                                        </div>
-
-                                    </div>
-
-
-                                    <br>
-                                    <div class="d-flex">
-                                        <div class="me-5" style="width:50%;">
-                                            <label for="productType">Product Type :</label>
-                                            <select name="type" id="productType" required="true" class="form-select">
-                                                <option value="" disabled selected>Choose...</option>
-                                                <option value="Shirt">Shirt</option>
-                                                <option value="T-Shirt">T-Shirt</option>
-                                                <option value="Jeans">Jeans</option>
-                                                <option value="CottonPants">Cotton Pants</option>
-                                                <option value="Churidar">Churidar</option>
-                                                <option value="Maxi">Maxi</option>
-                                                <option value="Bottomwear">Bottomwear</option>
-                                                <option value="Saree">Saree</option>
-                                                <option value="Kurtas">Kurtas</option>
-                                                <option value="Top">Top</option>
-                                                <option value="Pants">Pants</option>
-                                                <option value="Jacket">Jacket</option>
-                                                <option value="Other">Other</option>
-
-                                            </select>
-                                        </div>
-                                        <div style="width:50%;">
-                                            <label for="category">Category :</label>
-                                            <select name="category" id="category" required="true" class="form-select">
-                                                <option value="" disabled selected>Choose...</option>
-                                                <option value="Formals">Formals</option>
-                                                <option value="Casuals">Casuals</option>
-                                                <option value="Innerwear">Innerwear</option>
-                                                <option value="Partywear">Partywear</option>
-                                                <option value="Other">Other</option>
-                                            </select>
-                                        </div>
-
-                                    </div>
-
-                                    <br>
-                                    <div class="d-flex">
-                                        <div class="me-5" style="width:50%;">
-                                            <label for="retailPriceId">Retail Price</label>
-                                            <input type="phone" onkeypress="return isNumberKey(event)" maxlength="10"
-                                                size="10" name="retailPrice" class="form-control" id="retailPriceId"
-                                                required>
-                                        </div>
-                                        <div style="width:50%;">
-                                            <label for="shopPriceId">Shop Price</label>
-                                            <input type="phone" onkeypress="return isNumberKey(event)" maxlength="10"
-                                                size="10" name="shopPrice" class="form-control" id="shopPriceId"
-                                                required>
-                                        </div>
-                                    </div>
-                                    <br>
-                                    <div class="d-flex">
-                                        <div class="me-4" style="width:45%;">
-                                            <label for="sizeId">Size :</label>
-                                            <select name="size" id="sizeId" required="true" class="form-select">
-                                                <option value="" disabled selected>Choose...</option>
-                                                <option value="X-Small">X-Small</option>
-                                                <option value="Small">Small</option>
-                                                <option value="Medium">Medium</option>
-                                                <option value="Large">Large</option>
-                                                <option value="X Large">X Large</option>
-                                                <option value="XX Large">XX Large</option>
-
-                                            </select>
-                                        </div>
-                                        <div style="width:30%;" class="me-3">
-                                            <label for="color1Id">Color 1 :</label>
-                                            <select name="color1" id="color1Id" required="true" class="form-select">
-                                                <option value="" disabled selected>Choose...</option>
-                                                <option value="Black">Black</option>
-                                                <option value="White">White</option>
-                                                <option value="Green">Green</option>
-                                                <option value="Blue">Blue</option>
-                                                <option value="Orange">Orange</option>
-                                                <option value="Yellow">Yellow</option>
-                                                <option value="Chocolate">Chocolate</option>
-                                                <option value="Rose">Rose</option>
-                                                <option value="Navy">Navy</option>
-                                                <option value="Aqua">Aqua</option>
-                                                <option value="Brown">Brown</option>
-                                                <option value="Other">Other</option>
-                                            </select>
-                                        </div>
-                                        <div style="width:30%;">
-                                            <label for="color2">Color 2 :</label>
-                                            <select name="color2" id="color2" class="form-select">
-                                                <option value="" disabled selected>Choose...</option>
-                                                <option value="Black">Black</option>
-                                                <option value="White">White</option>
-                                                <option value="Green">Green</option>
-                                                <option value="Blue">Blue</option>
-                                                <option value="Orange">Orange</option>
-                                                <option value="Yellow">Yellow</option>
-                                                <option value="Chocolate">Chocolate</option>
-                                                <option value="Rose">Rose</option>
-                                                <option value="Navy">Navy</option>
-                                                <option value="Aqua">Aqua</option>
-                                                <option value="Brown">Brown</option>
-                                                <option value="Other">Other</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <br>
-                                    <label for="descriptionId">Description</label>
-
-                                    <textarea id="descriptionId" class="form-control" name="description" cols="40"
-                                        required rows="4"></textarea>
-
-
-
-
-                                </div>
-                                <div class="">
-                                    <div class="me-5" style="width:50%;">
-                                        <label for="quantityId"> Quantity</label>
-                                        <input type="number" maxlength="10" size="10" required name="quantity"
-                                            class="form-control" id="quantityId">
-                                        <br>
-                                    </div>
-
-
-
-                                    <label for="formFileLg">Image <span class="fw-light fs-6 text-black-50"> ( You can
-                                            choose multiple images)</span></label><br>
-                                    <input type="file" class="form-control item-img file center-block" name="file_photo"
-                                        id="abcdefa" />
-                                    <!-- <input type="file" style="display:none;" onchange="previewMultiple(event)"
-                                        name="image" accept="image/*" class="form-control" id="formFileLg" multiple
-                                        required> -->
-
-                                    <div class="container">
-                                        <div class="row">
-                                            <div class="col-xs-12">
-                                                <label class=" center-block">
-                                                    <!-- <figure>
-                                                        <img src="" style="height:100px;"
-                                                            class="gambar img-responsive img-thumbnail"
-                                                            id="item-img-output" />
-                                                        - <figcaption><i class="fa fa-camera"></i></figcaption> 
-                                                    </figure> -->
-
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                    <div class="modal fade" id="cropImagePop" tabindex="-1" role="dialog"
-                                        aria-labelledby="myModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal"
-                                                        aria-label="Close"><span
-                                                            aria-hidden="true">&times;</span></button>
-                                                    <h4 class="modal-title" id="myModalLabel">
-                                                        <?=multiLanguage( "Edit Foto" , "Edit Photo" )?>
-                                                    </h4>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div id="upload-demo" class="center-block"></div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-default"
-                                                        data-dismiss="modal">Close</button>
-                                                    <button type="button" id="cropImageBtn"
-                                                        class="btn btn-primary">Crop</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                    <div id="galeria" class="mt-2 d-flex"></div>
-                                    <br>
-
-                                    <button type="submit"
-                                        class="btn btn-warning px-5 py-2 mt-5 float-end ">Submit</button>
-                                </div>
-
-                            </div>
-
-                        </form>
+              <div class="d-flex justify-content-around" style="width:100%;">
+                <div>
+                  <div class="d-flex">
+                    <div class="me-5" style="width:60%;">
+                      <label for="brandnameId">Brand Name</label> <a href="/admin/addBrandName" class="float-end btn-link text-info fw-light">add Brands</a>
+                      <select required name="brandName" id="brandnameId" class="form-select">
+                        <option value="" disabled selected>Choose...</option>
+                        <% for( let i=0; i < brandName.length; i++ ) { %>
+                        <option value="<%= brandName[i]._id %>">
+                          <%= brandName[i].brandName %>
+                        </option>
+                        <% } %>
+                      </select>
                     </div>
+                    <div style="width:30%;">
+                      <label for="genderType">Gender Type :</label>
+                      <select required name="gender" id="genderType" class="form-select">
+                        <option value="" disabled selected>Choose...</option>
+                        <% for( let i=0; i < gender.length; i++ ) { %>
+                        <option value="<%= gender[i]._id %>">
+                          <%= gender[i].gender %>
+                        </option>
+                        <% } %>
+                      </select>
+                    </div>
+
+                  </div>
+
+
+                  <br>
+                  <div class="d-flex">
+                    <div class="me-5" style="width:50%;">
+                      <label for="productType">Product Type :</label>
+                      <select required name="type" id="productType" class="form-select">
+                        <option value="" disabled selected>Choose...</option>
+                        <option value="Shirt">Shirt</option>
+                        <option value="T-Shirt">T-Shirt</option>
+                        <option value="Jeans">Jeans</option>
+                        <option value="CottonPants">Cotton Pants</option>
+                        <option value="Churidar">Churidar</option>
+                        <option value="Maxi">Maxi</option>
+                        <option value="Bottomwear">Bottomwear</option>
+                        <option value="Saree">Saree</option>
+                        <option value="Kurtas">Kurtas</option>
+                        <option value="Top">Top</option>
+                        <option value="Pants">Pants</option>
+                        <option value="Jacket">Jacket</option>
+                        <option value="Other">Other</option>
+
+                      </select>
+                    </div>
+                    <div style="width:50%;">
+                      <label for="category">Category :</label>
+                      <select required name="category" id="category" class="form-select">
+                        <option value="" disabled selected>Choose...</option>
+                        <option value="Formals">Formals</option>
+                        <option value="Casuals">Casuals</option>
+                        <option value="Innerwear">Innerwear</option>
+                        <option value="Partywear">Partywear</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+
+                  </div>
+
+                  <br>
+                  <div class="d-flex">
+                    <div class="me-5" style="width:50%;">
+                      <label for="retailPriceId">Retail Price</label>
+                      <input required  type="phone" onkeypress="return isNumberKey(event)" maxlength="10" size="10" name="retailPrice" class="form-control" id="retailPriceId">
+                    </div>
+                    <div style="width:50%;">
+                      <label for="shopPriceId">Shop Price</label>
+                      <input required type="phone" onkeypress="return isNumberKey(event)" maxlength="10" size="10" name="shopPrice" class="form-control" id="shopPriceId">
+                    </div>
+                  </div>
+                  <br>
+                  <div class="d-flex">
+                    <div class="me-4" style="width:45%;">
+                      <label for="sizeId">Size :</label>
+                      <select required name="size" id="sizeId" class="form-select">
+                        <option value="" disabled selected>Choose...</option>
+                        <option value="X-Small">X-Small</option>
+                        <option value="Small">Small</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Large">Large</option>
+                        <option value="X Large">X Large</option>
+                        <option value="XX Large">XX Large</option>
+
+                      </select>
+                    </div>
+                    <div style="width:30%;" class="me-3">
+                      <label for="color1Id">Color 1 :</label>
+                      <select required name="color1" id="color1Id" class="form-select">
+                        <option value="" disabled selected>Choose...</option>
+                        <option value="Black">Black</option>
+                        <option value="White">White</option>
+                        <option value="Green">Green</option>
+                        <option value="Blue">Blue</option>
+                        <option value="Orange">Orange</option>
+                        <option value="Yellow">Yellow</option>
+                        <option value="Chocolate">Chocolate</option>
+                        <option value="Rose">Rose</option>
+                        <option value="Navy">Navy</option>
+                        <option value="Aqua">Aqua</option>
+                        <option value="Brown">Brown</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+                    <div style="width:30%;">
+                      <label for="color2">Color 2 :</label>
+                      <select required name="color2" id="color2" class="form-select">
+                        <option value="" disabled selected>Choose...</option>
+                        <option value="Black">Black</option>
+                        <option value="White">White</option>
+                        <option value="Green">Green</option>
+                        <option value="Blue">Blue</option>
+                        <option value="Orange">Orange</option>
+                        <option value="Yellow">Yellow</option>
+                        <option value="Chocolate">Chocolate</option>
+                        <option value="Rose">Rose</option>
+                        <option value="Navy">Navy</option>
+                        <option value="Aqua">Aqua</option>
+                        <option value="Brown">Brown</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+                  </div>
+                  <br>
+                  <label for="descriptionId">Description</label>
+                  <textarea id="descriptionId" class="form-control" name="description" cols="40" rows="4"></textarea>
                 </div>
-            </div>
-        </section>
-    </div>
+                <div class="">
+                  <div class="me-5" style="width:50%;">
+                    <label for="quantityId"> Quantity</label>
+                    <input required type="number" maxlength="10" size="10" name="quantity" class="form-control" id="quantityId">
+                    <br>
+                  </div>
+                  <label for="abcdefa">Image <span class="fw-light fs-6 text-black-50"> ( You can choose images up to 4)</span></label><br>
+                  <input required type="file" class="form-control item-img file center-block" name="" id="abcdefa" />
+                  <div class="container">
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <label class=" center-block">
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal fade" id="cropImagePop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                          <h4 class="modal-title" id="myModalLabel">
+                            <?=multiLanguage( "Edit Foto" , "Edit Photo" )?>
+                          </h4>
+                        </div>
+                        <div class="modal-body">
+                          <div id="upload-demo" class="center-block"></div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                          <button type="button" id="cropImageBtn" class="btn btn-primary">Crop</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  <div id="galeria" class="mt-2 d-flex"></div>
+                  <br>
+
+                  <button type="submit" class="btn btn-warning px-5 py-2 mt-5 float-end ">Submit</button>
+                </div>
+
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <script src="https://foliotek.github.io/Croppie/croppie.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+
+
 <script>
-    $(".gambar").attr("src", "https://user.gadjian.com/static/images/personnel_boy.png");
-    var $uploadCrop,
-        tempFilename,
-        rawImg,
-        imageId;
-    function readFile(input) {
-        console.log('jaksljfl;aksdjflksj')
-        console.log(input)
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                $('.upload-demo').addClass('ready');
-                $('#cropImagePop').modal('show');
-                rawImg = e.target.result;
-            }
-            reader.readAsDataURL(input.files[0]);
-        }
-        else {
-            swal("Sorry - you're browser doesn't support the FileReader API");
-        }
+  let count = 0
+  $(".gambar").attr("src", "https://user.gadjian.com/static/images/personnel_boy.png");
+  var $uploadCrop, tempFilename, rawImg, imageId;
+
+  function readFile(input) {
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        $('.upload-demo').addClass('ready');
+        $('#cropImagePop').modal('show');
+        rawImg = e.target.result;
+      }
+      reader.readAsDataURL(input.files[0]);
+    } else {
+      swal("Sorry - you're browser doesn't support the FileReader API");
     }
+  }
+  $uploadCrop = $('#upload-demo').croppie({
+    viewport: {
+      width: 160,
+      height: 200,
+    },
+    enforceBoundary: false,
+    enableExif: true
+  });
+  $('#cropImagePop').on('shown.bs.modal', function() {
+    // alert('Shown pop');
+    $uploadCrop.croppie('bind', {
+      url: rawImg
+    }).then(function() {
+      console.log('jQuery bind complete');
+    });
+  });
+  $('.item-img').on('change', function() {
+    imageId = $(this).data('id');
+    tempFilename = $(this).val();
+    $('#cancelCropBtn').data('id', imageId);
+    readFile(this);
+  });
+  $('#cropImageBtn').on('click', function(ev) {
+    $uploadCrop.croppie('result', {
+      type: 'base64',
+      format: 'jpeg',
+      size: {
+        width: 150,
+        height: 200
+      }
+    }).then(function(resp) {
+      console.log(resp)
+      let imageFile = urltofile(resp)
+      uploadImage(imageFile)
+      previewMultiple(resp, count)
+      count++
+      if (count == 4) document.getElementById('abcdefa').disabled = true
+      $('#item-img-output').attr('src', resp);
+      $('#cropImagePop').modal('hide');
+    });
+  });
 
-    $uploadCrop = $('#upload-demo').croppie({
-        viewport: {
-            width: 160,
-            height: 200,
-        },
-        enforceBoundary: false,
-        enableExif: true
-    });
-    $('#cropImagePop').on('shown.bs.modal', function () {
-        // alert('Shown pop');
-        $uploadCrop.croppie('bind', {
-            url: rawImg
-        }).then(function () {
-            console.log('jQuery bind complete');
-        });
-    });
-
-    $('.item-img').on('change', function () {
-        imageId = $(this).data('id'); tempFilename = $(this).val();
-        $('#cancelCropBtn').data('id', imageId); readFile(this);
-    });
-    $('#cropImageBtn').on('click', function (ev) {
-        $uploadCrop.croppie('result', {
-            type: 'base64',
-            format: 'jpeg',
-            size: { width: 150, height: 200 }
-        }).then(function (resp) {
-            console.log(resp)
-            let imageFile = urltofile(resp)
-            uploadImage(imageFile)
-            $('#item-img-output').attr('src', resp);
-            $('#cropImagePop').modal('hide');
-        });
-    });
-
-    urltofile = (url) => {
-        let arr = url.split(',');
-        let mime = arr[0].match(/:(.*?);/)[1]
-        let data = arr[1]
-        let dataStr = atob(data)
-        let n = dataStr.length
-        let dataArr = new Uint8Array(n)
-        while (n--) {
-            dataArr[n] = dataStr.charCodeAt(n)
-        }
-        let file = new File([dataArr], 'File.jpg', { type: mime })
-        return file
+  urltofile = (url) => {
+    let arr = url.split(',');
+    let mime = arr[0].match(/:(.*?);/)[1]
+    let data = arr[1]
+    let dataStr = atob(data)
+    let n = dataStr.length
+    let dataArr = new Uint8Array(n)
+    while (n--) {
+      dataArr[n] = dataStr.charCodeAt(n)
     }
-    let uploadImage = (file) => {
-        let formData = new FormData()
-        var imagefile = document.querySelector('#abcdefa');
-        formData.append("image", imagefile.files[0]);
-        axios.post('/admin/upload_file', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
+    let file = new File([dataArr], 'File.jpg', {
+      type: mime
+    })
+    return file
+  }
+
+
+
+
+  let formData = new FormData()
+  var imagefile = document.querySelector('#abcdefa');
+
+  let uploadImage = (file) => {
+    formData.append("image", imagefile.files[0]);
+  }
+
+  addProduct = async () => {
+    event.preventDefault()
+    const formvalues = new FormData(event.target);
+    for (var pair of formvalues.entries()) {
+      formData.append(pair[0], pair[1]);
+    }
+    axios.post('/admin/addProduct', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    }).then(async (e) => {
+      if (e.data.success) {
+        await Swal.fire({
+          icon: 'success',
+          title: 'Product added successfully',
+          showConfirmButton: false,
+          timer: 1500
         })
-    }           
+        location.reload()
+      }
+    })
+  }
 </script>
 
 
-
-
-<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> -->
-
 <script>
-    function previewMultiple(event) {
-        var images = document.getElementById('formFileLg');
-        var length = images.files.length
-        document.getElementById("galeria").innerHTML = '';
-        for (i = 0; i < 4; i++) {
-            var urls = URL.createObjectURL(event.target.files[i]);
-            document.getElementById('galeria').innerHTML += `<div><img style="width:90px;" id="${urls}" class="ml-1" src="${urls}"></div>`
-        }
+  function previewMultiple(src, ct) {
+    var images = document.getElementById('formFileLg');
+    document.getElementById("galeria").innerHTML += `<div><img style="width:80px;" id="id${ct}" class="p-2" src="${src}"></div>`;
+  }
 
-    }
-    function isNumberKey(evt) {
-        var charCode = (evt.which) ? evt.which : evt.keyCode
-        if (charCode > 31 && (charCode < 48 || charCode > 57))
-            return false;
-        return true;
-    }
+  function isNumberKey(evt) {
+    var charCode = (evt.which) ? evt.which : evt.keyCode
+    if (charCode > 31 && (charCode < 48 || charCode > 57))
+      return false;
+    return true;
+  }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<% if (locals.msg) { %>
-    <script>
-        Swal.fire({
-            icon: 'success',
-            title: 'Product added successfully',
-            showConfirmButton: false,
-            timer: 3500
-        })
-    </script>
-
-    <% } %>
 
 
 
 
-        <!-- <script>
+<!-- <script>
             function validate() {
                 // if (document.getElementById("brandnameId").value === "" || document.getElementById("genderType").value === "" || document.getElementById('productType').value === "" || document.getElementById('category').value === "" || document.getElementById('retailPriceId').value === "" || document.getElementById('color1Id').value === "" || document.getElementById('shopPriceId').value === "" || document.getElementById('sizeId').value === "" || document.getElementById('imageId').value === "" || document.getElementById('descriptionId').value === "" || document.getElementById('quantityId').value === "") {
                 //     alert('Fill the essential columns')
