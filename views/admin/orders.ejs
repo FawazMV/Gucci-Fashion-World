@@ -1,160 +1,99 @@
 <div class="app-wrapper">
-    <div class="app-content pt-3 p-md-3 p-lg-4">
+  <div class="app-content pt-3 p-md-3 p-lg-4">
 
-        <div class="container-xl  ">
+    <div class="container-xl  ">
 
-
-        </div>
-        <br><br>
-        <section>
-            <div class="container">
-                <table class="table table-striped table-bordered" id="example" style="width:100%;">
-                    <thead class="table-dark text-center">
-                        <tr>
-                            <th scope="col">Order Id</th>
-                            <th scope="col">User</th>
-                            <th scope="col">Order Date</th>
-                            <th scope="col">Payment</th>
-                            <th scope="col">Price</th>
-                            <th scope="col">Delivery Status</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-center">
-                        <% for( let i=0; i < order.length; i ++ ) { %>
-
-                            <tr>
-
-                                <td>
-                                    <%= order[i].OrderId %>
-                                </td>
-                                <td>
-                                    <%= order[i].User.email %>
-                                </td>
-                                <td>
-                                    <%= order[i].Order_date %>
-                                </td>
-                                <td>
-                                    <%= order[i].Payment %>
-                                </td>
-                                <td>
-                                    ₹ <%= order[i].TotalPrice %>
-                                </td>
-                                <td>
-                                    <select onchange="deliveryStatus('<%= order[i]._id %>')" name="Delivery_status"
-                                        class="form-select" id="Delivery_status<%= order[i]._id %>">
-                                        <option value="" disabled selected>
-                                            <%= order[i].Delivery_status %>
-                                        </option>
-                                        <% if (order[i].Delivery_status==="Pending" ) { %>
-                                            <option value="Shipped">Shipped</option>
-                                            <option value="Out_for_Delivery">Out for delivery</option>
-                                            <option value="Delivered">Delivered</option>
-                                            <option value="Cancelled">Cancel</option>
-                                            <% } else if (order[i].Delivery_status==="Shipped" ) { %>
-                                                <option value="Out_for_Delivery">Out for delivery</option>
-                                                <option value="Delivered">Delivered</option>
-                                                <option class=" " value="Cancelled">Cancel</option>
-                                                <% } else if (order[i].Delivery_status==="Delivered" ) { %>
-                                                    <% } else if (order[i].Delivery_status==="Out_for_Delivery" ) { %>
-                                                        <option value="Delivered">Delivered</option>
-                                                        <option value="Cancelled">Cancel</option>
-                                                        <% } %>
-                                                            <!-- <option value="Out_for_Delivery">Out for delivery</option>
-                                        <option value="Delivered">Delivered</option>
-                                        <option class=" " value="Cancelled">Cancel</option> -->
-                                    </select>
-                                </td>
-                                <td>
-                                    <p>
-                                      <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample<%= order[i]._id %>" role="button" aria-expanded="false" aria-controls="collapseExample">
-                                        Link with href
-                                      </a>
-                                      <!-- <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                                        Button with data-target
-                                      </button> -->
-                                    </p>
-                                </td>
-
-                            </tr>
-                            <tr>
-                            <td colspan="9">
-                            <div class="collapse" id="collapseExample<%= order[i]._id %>">
-                              <div class="card card-body">
-                                 <div class="row">
-                                   <div class="col-md-8 col-sm-6">
-                                     <div class="px-3 mt-4 mb-3">
-                                       <span style="opacity:60%;font-size:15px;">Order Id :</span> <span class="fw-bold" style="font-size:18px;">
-                                         <%= locals.order.OrderId %>
-                                       </span>
-                                       <div class="mt-4 ">
-                                         <span style="opacity:60%;font-size:14px;">Delivery Address :</span>
-                                         <div class="mt-1"><span class="fw-bold">
-                                              order.DeliverAddress.firstname 
-                                              order.DeliverAddress.lastname 
-                                           </span> <br>
-                                           <span style="font-size:14px;">
-                                              order.DeliverAddress.address 
-                                           </span> <br>
-                                           <span style="font-size:14px;">
-                                              order.DeliverAddress.city  , 
-                                                     order.DeliverAddress.state
-                                           </span> <br>
-                                           <span style="font-size:15px;font-weight:600;">
-                                              order.DeliverAddress.pincode 
-                                           </span>
-                                           <span class="ml-4"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-telephone-fill" viewBox="0 0 20 20">
-                                               <path fill-rule="evenodd" d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z" />
-                                             </svg></span> <span class="fw-bold">
-                                              order.DeliverAddress.phone %>
-                                           </span>
-                                         </div>
-
-                                       </div>
-                                     </div>
-                                   </div>
-                                   <div class="col-md-4 col-sm-6">
-                                     <div class="mb-3">
-                                       <div class="card" style="width:18rem;background-color: rgba(225, 214, 199, 0.716);">
-                                         <div class="card-body">
-                                           <h5 class="card-title fw-bold">Order Payment Details</h5>
-                                           <hr style="height:1px;border:none;color:#333;background-color:#333;" />
-                                           <p class="card-text my-2">Order amount : <span class="float-end">₹ <span id="totalPrice"> <%= order.TotalPrice %></span>.00</span> </p>
-                                           <p class="card-text my-2">Coupen Saving : <span class="float-end">- ₹ <span id="discid"><%= order.discountPrice %></span>.00</span> </p>
-                                           <p class="card-text my-2">Shipping charge : <span class="float-end">
-                                               Free</span> </p>
-                                           <hr style="height:1px;border:none;color:#333;background-color:#333;" />
-                                           <p class="card-text my-2 fw-bold">Order Total : <span class="float-end">₹ <span id="PriceTOTAL"><%= order.finalPrice %></span></span> </p>
-                                           <hr style="height:1px;border:none;color:#333;background-color:#333;" />
-                                           <div style="width:100%;" class="ml-4">
-                                             <p class="card-text mt-4 fw-bold text-primary h6 ">Payment type : <span class=""> <%= order.Payment %></span> </p>
-                                             <% if (order.coupenapplied) { %>
-                                             <p class="card-text mt-3 fw-bold text-primary h6">Coupen NO : <span class=""> <%= order.cartDiscout %></span> </p>
-                                             <% } %>
-                                           </div>
-                                           <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
-                                         </div>
-                                       </div>
-                                     </div>
-                                   </div>
-                                 </div>
-
-                              </div>
-                            </div>
-                            </td>
-                            </tr>
-                            <% } %>
-
-
-                    </tbody>
-                </table>
-            </div>
-
-
-
-        </section>
 
     </div>
+    <br><br>
+    <section>
+      <div class="container">
+        <table class="table table-striped table-bordered" id="example" style="width:100%;">
+          <thead class="table-dark text-center">
+            <tr>
+              <th scope="col">Order Id</th>
+
+              <th scope="col">Order Date</th>
+              <th scope="col">Payment</th>
+              <th scope="col">Price</th>
+              <th scope="col">Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody class="text-center">
+            <% for( let i=0; i < order.length; i ++ ) { %>
+
+            <tr>
+
+              <td>
+                <%= order[i].OrderId %>
+              </td>
+              <td>
+                <%= order[i].Order_date %>
+              </td>
+              <td>
+                <%= order[i].Payment %>
+              </td>
+              <td>
+                ₹ <%= order[i].TotalPrice %>
+              </td>
+              <td>
+                <select onchange="deliveryStatus('<%= order[i]._id %>')" name="Delivery_status" class="form-select px-2" id="Delivery_status<%= order[i]._id %>">
+                  <option value="" disabled selected>
+                    <%= order[i].Delivery_status %>
+                  </option>
+                  <% if (order[i].Delivery_status==="Pending" ) { %>
+                  <option value="Shipped">Shipped</option>
+                  <option value="Out_for_Delivery">Out for delivery</option>
+                  <option value="Delivered">Delivered</option>
+                  <option value="Cancelled">Cancel</option>
+                  <% } else if (order[i].Delivery_status==="Shipped" ) { %>
+                  <option value="Out_for_Delivery">Out for delivery</option>
+                  <option value="Delivered">Delivered</option>
+                  <option class=" " value="Cancelled">Cancel</option>
+                  <% } else if (order[i].Delivery_status==="Delivered" ) { %>
+                  <% } else if (order[i].Delivery_status==="Out_for_Delivery" ) { %>
+                  <option value="Delivered">Delivered</option>
+                  <option value="Cancelled">Cancel</option>
+                  <% } %>
+                  <!-- <option value="Out_for_Delivery">Out for delivery</option>
+                                        <option value="Delivered">Delivered</option>
+                                        <option class=" " value="Cancelled">Cancel</option> -->
+                </select>
+              </td>
+              <td>
+                <p>
+                  <a class="btn btn-primary" data-toggle="collapse" onclick="orderDetail('<%= order[i]._id %>')" href="#collapseExample<%= order[i]._id %>" role="button" aria-expanded="false" aria-controls="collapseExample">
+                    View
+                  </a>
+                  <!-- <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                                        Button with data-target
+                                      </button> -->
+                </p>
+              </td>
+
+            </tr>
+            <tr>
+              <td colspan="9">
+                <div class="collapse" id="collapseExample<%= order[i]._id %>">
+                  <div class="card card-body" id="cardBody<%= order[i]._id %>">
+                   
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <% } %>
+
+
+          </tbody>
+        </table>
+      </div>
+
+
+
+    </section>
+
+  </div>
 </div>
 
 
@@ -163,16 +102,133 @@
 <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
 <script>
-    $(document).ready(function () {
-        $('#example').DataTable();
-    });
+  $(document).ready(function() {
+    $('#example').DataTable();
+  });
 </script>
 
 <script>
-    deliveryStatus = (id) => {
-        let value = document.getElementById('Delivery_status' + id).value
-        axios.patch('/admin/deliveryStatus',{ id: id, value: value }).then((e) => {
-            location.href = "/admin/orders"
-        })
-    }
+  deliveryStatus = (id) => {
+    let value = document.getElementById('Delivery_status' + id).value
+    axios.patch('/admin/deliveryStatus', {
+      id: id,
+      value: value
+    }).then((e) => {
+      location.href = "/admin/orders"
+    })
+  }
+
+  orderDetail = (id) => {
+    axios.get('/admin/orderDetail', {
+      params: {
+        id: id
+      }
+    }).then((e) => {
+      console.log(e.data)
+      let orderDetail = e.data
+      let OrderDetails = orderDetail.OrderDetails
+     let html = "" 
+       html+= `<div class="row">
+          <div class="col-12 col-lg-8">
+            <table style="width:100%;">
+              <thead>
+                <tr>
+                  <th colspan="2" class="text-center">User :</th>
+                  <th colspan="7" class="text-center">${orderDetail.User.email}</th>
+                </tr>
+                <tr>
+                  <th>Image</th>
+                  <th>Product</th>
+                  <th>Qty</th>
+                  <th>Size</th>
+                  <th>Color</th>
+                  <th>Price</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>`
+               for(let i=0;i<OrderDetails.length;i++){
+                   html+= `<tr>
+                     <td>
+                       <img src="${OrderDetails[i].product_id.imagesDetails[0].Location}" class="p-0 m-0" style="width:60px;" alt="">
+                     </td>
+                     <td>
+                       ${OrderDetails[i].product_id.brandName.brandName}
+                     </td>
+                     <td>
+                       ${OrderDetails[i].quantity}
+                     </td>
+                     <td>
+                       ${OrderDetails[i].product_id.size}
+                     </td>
+                     <td>
+                       ${OrderDetails[i].product_id.color1}
+                     </td>
+                     <td>
+                       ${OrderDetails[i].product_id.shopPrice}
+                     </td>
+                     <td> ${OrderDetails[i].total}</td>
+                     <td>cancelled</td>
+                   </tr>`
+                }
+                
+             html+= ` </tbody>
+            </table>
+          </div>
+          <div class="col-12 col-lg-3">
+            <div class="row mt-3">
+              <div class="col-12 col-sm-6 col-md-6 col-lg-12 ">
+                <h5 class="card-title fw-bold">Order Payment Details</h5>
+                <hr style="height:1px;border:none;color:#333;background-color:#333;" />
+                <p class="card-text my-2">Order amount : <span class="float-end">₹ <span id="totalPrice"> ${ orderDetail.TotalPrice}</span>.00</span> </p>
+                <p class="card-text my-2">Coupen Saving : <span class="float-end">- ₹ <span id="discid">${ orderDetail.discountPrice}</span>.00</span> </p>
+                <p class="card-text my-2">Shipping charge : <span class="float-end">
+                    Free</span> </p>
+                <hr style="height:1px;border:none;color:#333;background-color:#333;" />
+                <p class="card-text my-2 fw-bold">Order Total : <span class="float-end">₹ <span id="PriceTOTAL">${ orderDetail.finalPrice}</span></span> </p>
+                <hr style="height:1px;border:none;color:#333;background-color:#333;" />
+                <div style="width:100%;" class="ml-4">`
+
+                  if (orderDetail.coupenapplied) { 
+                 html+= `<p class="card-text mt-3 fw-bold text-primary h6">Coupen NO : <span class=""> ${orderDetail.cartDiscout}</span> </p>`
+                  } 
+             html+= ` </div>
+              </div>
+              <div class="col-12 col-sm-6 col-md-6 col-lg-12 ">
+                <div class="">
+                  <span style="opacity:60%;font-size:14px;">Delivery Address :</span>
+                  <div class="mt-1"><span class="fw-bold">
+                      ${orderDetail.DeliverAddress.firstname}
+                      ${orderDetail.DeliverAddress.lastname}
+                    </span> <br>
+                    <span style="font-size:14px;">
+                      ${orderDetail.DeliverAddress.address}
+                    </span> <br>
+                    <span style="font-size:14px;">
+                      ${orderDetail.DeliverAddress.city} ,
+                      ${orderDetail.DeliverAddress.state}
+                    </span> <br>
+                    <span style="font-size:15px;font-weight:600;">
+                      ${orderDetail.DeliverAddress.pincode}
+                    </span>
+                    <span class="ml-4"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-telephone-fill" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z" />
+                      </svg></span> <span class="fw-bold">
+                      ${orderDetail.DeliverAddress.phone}
+                    </span>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div><button class="btn btn-secondary float-left"  type="button" data-toggle="collapse" data-target="#collapseExample${id}" aria-expanded="false" aria-controls="collapseExample">
+          Close
+        </button>
+        </div>`
+        document.getElementById('cardBody'+id).innerHTML = html
+    })
+  }
 </script>

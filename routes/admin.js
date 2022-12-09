@@ -57,6 +57,8 @@ router.post('/addCoupen', admin.addCoupen)
 
 router.patch('/coupenStatus',admin.coupenStatus)
 
+router.get('/orderDetail', admin.orderDetail)
+
 
 
 

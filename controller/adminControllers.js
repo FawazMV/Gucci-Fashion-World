@@ -194,7 +194,7 @@ module.exports = {
         })
     },
     orders: async (req, res) => {
-        let order = await orders_Model.find().populate('User', "email")
+        let order = await orders_Model.find().populate('User', "email").sort({ _id: -1 })
         let heading = 'Orders'
         res.render('admin/orders', { admin: true, Orders: "active", heading, order })
     },
@@ -258,5 +258,13 @@ module.exports = {
     coupenStatus: (req, res) => {
         coupn_Model.findByIdAndUpdate(req.body.id, { $set: { coupen_status: req.body.value } })
             .then(() => res.json())
+    },
+    orderDetail: (req, res) => {
+        console.log(req.query.id)
+        orders_Model.findById(req.query.id).populate({ path: 'OrderDetails.product_id', model: 'Products', populate: { path: 'brandName', model: 'brandName' } }).populate('User', 'email')
+            .then(orderDetail => {
+                console.log(orderDetail)
+                res.json(orderDetail)
+            })
     }
-}                            
+}                                       
