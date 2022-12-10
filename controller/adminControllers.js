@@ -267,4 +267,4 @@ module.exports = {
                 res.json(orderDetail)
             })
     }
-}                                       
+}                                        

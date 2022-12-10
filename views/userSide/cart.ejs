@@ -38,7 +38,7 @@
 
 
             <div class="alert alert-warning mt-2 mb-0 text-center" id="alertBox" style="display:none;" role="alert">
-              Remove out of stock items to checkout ! ! !
+              Remove or reduce quantity of out of stock items to checkout ! ! !
             </div>
             <section class="shopping-cart spad ">
 
@@ -69,7 +69,7 @@
 
 
                               <div class="product__cart__item__pic">
-                                <% if (cartproduct[i].product_id.quantity==0) { %>
+                                <% if (cartproduct[i].product_id.quantity< cartproduct[i].quantity ) { %>
                                 <span class="badge badge-danger me-3" style="position:absolute;margin-top:30px;left: 8px; z-index:1;">Out
                                   of
                                   stock</span>
@@ -93,9 +93,16 @@
 
                               <div class="input-group quantity mx-auto" style="width: 100px;">
                                 <div class="input-group-btn">
-                                  <button id="minusbutton<%= cartproduct[i]._id %>" onclick="quantityminus('<%= cartproduct[i]._id %>','<%= cartproduct[i].product_id._id %>')" class="btn btn-sm btn-primary btn-minus">
+                                  <% if (cartproduct[i].product_id.quantity< cartproduct[i].quantity ) { %>
+                                  <button id="minusbutton<%= cartproduct[i]._id %>" onclick="quantityminus('<%= cartproduct[i]._id %>','<%= cartproduct[i].product_id._id %>',true)" class="btn btn-sm btn-primary btn-minus">
                                     <i class="fa fa-minus"></i>
                                   </button>
+                                  <% } else { %>
+                                  <button id="minusbutton<%= cartproduct[i]._id %>" onclick="quantityminus('<%= cartproduct[i]._id %>','<%= cartproduct[i].product_id._id %>',false)" class="btn btn-sm btn-primary btn-minus">
+                                    <i class="fa fa-minus"></i>
+                                  </button>
+                                  <% } %>
+
                                 </div>
                                 <input type="text" class="form-control form-control-sm border-0 text-center" name="quantity" value="<%= cartproduct[i].quantity %>" id="quantity<%= cartproduct[i]._id %>">
                                 <div class="input-group-btn">
@@ -186,7 +193,7 @@
   </div>
 </div>
 <% for( let i=0; i < cartproduct.length; i++ ) { %>
-<% if (cartproduct[i].product_id.quantity==0) { %>
+<% if (cartproduct[i].product_id.quantity<cartproduct[i].quantity ) { %>
 <script>
   document.getElementById('checkoutId').disabled = true
   document.getElementById('alertBox').style.display = "block"
@@ -239,12 +246,11 @@
     document.getElementById('coupenCodeId').value = ''
     document.getElementById('coupendiscount').innerHTML = "00.00"
     count = ++document.getElementById('quantity' + id).value
-    axios.post('/quantityPlus', {
+    axios.patch('/quantityPlus', {
       id: product,
       count: count,
       cartid: id
     }).then((e) => {
-
       if (e.data.response === "login") location.href = "/login"
       else if (e.data.response) {
         document.getElementById('totalPrice' + id).innerHTML = document.getElementById('price' + id).innerHTML * count
@@ -266,7 +272,7 @@
 
   }
 
-  function quantityminus(id, product) {
+  function quantityminus(id, product, check) {
     document.getElementById('coupenCodeId').value = ''
     document.getElementById('coupendiscount').innerHTML = "00.00"
     document.querySelector('#plusButton' + id).disabled = false;
@@ -276,15 +282,19 @@
       ++document.getElementById('quantity' + id).value
     } else {
       document.getElementById('totalPrice' + id).innerHTML = document.getElementById('price' + id).innerHTML * count
-      axios.post('/quantityPlus', {
+      axios.patch('/quantityPlus', {
         id: product,
         count: count,
         cartid: id
       }).then(e => {
         if (e.data.response === 'login') location.href = "/login"
         else {
-          document.getElementById('subTotalId').innerHTML = e.data.total + ".00"
-          document.getElementById('totalId').innerHTML = e.data.total + ".00"
+          if (check) location.reload()
+          else {
+            document.getElementById('subTotalId').innerHTML = e.data.total + ".00"
+            document.getElementById('totalId').innerHTML = e.data.total + ".00"
+          }
+
         }
       })
     }

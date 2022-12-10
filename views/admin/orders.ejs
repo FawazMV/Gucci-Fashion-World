@@ -35,7 +35,7 @@
                 <%= order[i].Payment %>
               </td>
               <td>
-                ₹ <%= order[i].TotalPrice %>
+                ₹ <%= order[i].finalPrice %>
               </td>
               <td>
                 <select onchange="deliveryStatus('<%= order[i]._id %>')" name="Delivery_status" class="form-select px-2" id="Delivery_status<%= order[i]._id %>">
@@ -169,7 +169,7 @@
                        ${OrderDetails[i].product_id.shopPrice}
                      </td>
                      <td> ${OrderDetails[i].total}</td>
-                     <td>cancelled</td>
+                     <td>${OrderDetails[i].Order_Status}</td>
                    </tr>`
                 }
                 

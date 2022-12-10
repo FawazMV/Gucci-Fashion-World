@@ -4,108 +4,110 @@
 
 
 
-    <section>
-        <div id="top">
-            <div class="container pt-5 mb-5">
-                <div class="page-wrapper">
-                    <main class="main pt-5 mb-5">
-                        <div class="page-header text-center p-5"
-                            style="background-image: url('/singlePro/assets/images/page-header-bg.jpg')">
-                            <div class="container">
-                                <h1 class="page-title">Orders</h1>
-                            </div><!-- End .container -->
-                        </div><!-- End .page-header -->
+<section style="min-height:60vh;">
+  <div id="top">
+    <div class="container pt-5 mb-5">
+      <div class="page-wrapper">
+        <main class="main pt-5 mb-5">
+          <div class="page-header text-center p-5" style="background-image: url('/singlePro/assets/images/page-header-bg.jpg')">
+            <div class="container">
+              <h1 class="page-title">Orders</h1>
+            </div><!-- End .container -->
+          </div><!-- End .page-header -->
 
 
-                        <div class="page-content mt-5">
-                            <div class="container">
-                                <% for( let i=0; i < order.length; i++ ) { %>
-                                 <a href="/singleOrder/<%= order[i]._id %>">   <table class="table table-wishlist table-mobile">
-                                        <thead>
-                                            <tr>
-                                                <th>
-                                                    <%= order[i].OrderId %>
-                                                </th>
-                                                <th>
-                                                    ₹ <%= order[i].finalPrice %>
-                                                </th>
-                                            </tr>
-                                        </thead>
+          <div class="page-content mt-5">
+            <div class="container">
 
-                                        <tbody>
+              <% for( let i=0; i < order.length; i++ ) { %>
+              <a href="/singleOrder/<%= order[i]._id %>">
+                <table class="table table-wishlist table-mobile">
+                  <thead>
+                    <tr>
+                      <th>
+                        <%= order[i].OrderId %>
+                      </th>
+                      <th>
+                        ₹ <%= order[i].finalPrice %>
+                      </th>
+                    </tr>
+                  </thead>
 
-                                            <% for( let k=0; k < order[i].OrderDetails.length; k++ ) { %>
+                  <tbody>
 
-                                                <div id="">
-                                                    <tr id="t %>">
-                                                        <td class="product-col">
-                                                            <div class="product d-flex">
-                                                                <figure class="product-media">
-                                                                    <a
-                                                                        href="/singelProduct/<%= order[i].OrderDetails[k].quantity%> ">
-                                                                        <img src="<%= order[i].OrderDetails[k].product_id.imagesDetails[0].Location %>"
-                                                                            class="pe-4" style="width:80px;"
-                                                                            alt="Product image">
-                                                                    </a>
+                    <% for( let k=0; k < order[i].OrderDetails.length; k++ ) { %>
 
-                                                                </figure>
-                                                                <div>
-                                                                    <% if (order[i].OrderDetails[k].Order_Status==="Pending" ) { %>
-                                                                        <p class="mt-1 mb-0 fw-bold">Confirmed</p>
-                                                                        <p class="m-0">Ordered on <%=
+                    <div id="">
+                      <tr id="t %>">
+                        <td class="product-col">
+                          <div class="product d-flex">
+                            <figure class="product-media">
+                              <a href="/singelProduct/<%= order[i].OrderDetails[k].quantity%> ">
+                                <img src="<%= order[i].OrderDetails[k].product_id.imagesDetails[0].Location %>" class="pe-4" style="width:80px;" alt="Product image">
+                              </a>
+
+                            </figure>
+                            <div>
+                              <% if (order[i].OrderDetails[k].Order_Status==="Pending" ) { %>
+                              <p class="mt-1 mb-0 fw-bold">Confirmed</p>
+                              <p class="m-0">Ordered on <%=
                                                                                 order[i].Order_date %>
-                                                                        </p>
-                                                                        <% if (order[i].Payment=="Online") { %>
-                                                                            <p style="opacity:70%;">Paid</p>
-                                                                            <% } else { %>
-                                                                                <p style="opacity:70%;">Cash on delivery
-                                                                                </p>
+                              </p>
+                              <% if (order[i].Payment=="Online") { %>
+                              <p style="opacity:70%;">Paid</p>
+                              <% } else { %>
+                              <p style="opacity:70%;">Cash on delivery
+                              </p>
 
-                                                                                <% } %>
+                              <% } %>
 
-                                                                                    <% } else if (order[i].OrderDetails[k].Order_Status==="Delivered") { %>
-                                                                                        <p class="text-success">
-                                                                                            Delivered</p>
-                                                                                        <p class="m-0">Delivered on <%= order[i].Order_date %></p>
-                                                                                        <% } else if (order[i].OrderDetails[k].Order_Status==="Cancelled") { %>
-                                                                                            <p class="text-danger mt-3 fw-bold">  Cancelled </p>
-                                                                                        <% } %>
-                                                                </div>
-                                                        </td>
-                                                        <td>
-                                                            <!-- <button type="button" class="btn btn-primary bg-blue-500"
+                              <% } else if (order[i].OrderDetails[k].Order_Status==="Delivered") { %>
+                              <p class="text-success">
+                                Delivered</p>
+                              <p class="m-0">Delivered on <%= order[i].Order_date %></p>
+                              <% } else if (order[i].OrderDetails[k].Order_Status==="Cancelled") { %>
+                              <p class="text-danger mt-3 fw-bold"> Cancelled </p>
+                              <% } %>
+                            </div>
+                        </td>
+                        <td>
+                          <!-- <button type="button" class="btn btn-primary bg-blue-500"
                                                                 data-bs-toggle="modal" data-bs-target="#exampleModal">
                                                                 Track your order
                                                             </button> -->
-                                                        </td>
+                        </td>
 
-                                                </div>
-                                                <% } %>
-
-
-                                        </tbody>
-
-                                    </table></a>
-                                    <% } %>
-
-                            </div>
-                        </div>
-
-                        <!-- 
-                                <h4 class="text-primary text-center mt-2" style="opacity:50%;">
-                                    Ohoo... Your
-                                    wishlist is empty !!</h4> -->
+                    </div>
+                    <% } %>
 
 
-                    </main>
-                </div>
+                  </tbody>
+
+                </table>
+              </a>
+              <% } %>
+
             </div>
-        </div>
-    </section>
+          </div>
+          <% if (!order.length) { %>
+
+          <h3 class="text-primary fw-bold text-center mt-5" style="opacity:50%;">
+            Ohoo... You didn't ordered anything yet !!</h3>
+               
+          <% } %>
 
 
-    <!-- Modal -->
-    <!-- <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+
+        </main>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Modal -->
+<!-- <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-body text-start px-4 pt-0 pb-4">
                 <div class="container py-5 h-100">
@@ -174,9 +176,13 @@
     </div> -->
 
 
-    <script>
-        getOrder = (id)=>{
-            confirm(id)
-            axios.get('/singleOrder',{params:{id:id}})
-        }
-    </script>
+<script>
+  getOrder = (id) => {
+    confirm(id)
+    axios.get('/singleOrder', {
+      params: {
+        id: id
+      }
+    })
+  }
+</script>

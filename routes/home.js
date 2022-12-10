@@ -3,7 +3,7 @@ const express = require('express')
 const router = express.Router()
 const { verifyPayment } = require('../config/payment')
 const { placeOrder, cancelOrder, coupenApply, coupenSave } = require('../controller/orderControllers')
-const { login, signup, home, orderPage, otppage, singleProduct, getCart, checkout, product, allProduct, success, loginPost, doSignup, otppageverify, OTPResend, logout, addCart, quantityPlus, cartDelete, addAddress, getAddress, dafaultAddress, deleteAddress, getEditAddress, updateAddress, productFilter, verification, singleOrder, forgetPassword, forgetemail, changePassword, otpForget, review } = require('../controller/userControllers')
+const { login, signup, home, orderPage, otppage, singleProduct, getCart, checkout, product, allProduct, success, loginPost, doSignup, otppageverify, OTPResend, logout, addCart, quantityPlus, cartDelete, addAddress, getAddress, dafaultAddress, deleteAddress, getEditAddress, updateAddress, productFilter, verification, singleOrder, forgetPassword, forgetemail, changePassword, otpForget, review, myAccount } = require('../controller/userControllers')
 const { getWishlist, addWishlist, deleteWishlist } = require('../controller/wishlistControllers.js')
 const { sessionCheck, sessionCheckAxios, loginCheck } = require('../middlewears/sessioncheck')
 
@@ -37,7 +37,7 @@ router.get('/orders', sessionCheck, orderPage)
 
 router.get('/singleOrder/:id', sessionCheck, singleOrder)
 
-
+router.get('/myAccount', sessionCheck, myAccount)
 
 
 //--------<<</END-Page rendering routes----END/>-------------/////
@@ -65,7 +65,7 @@ router.patch('/changePassword', changePassword)
 
 router.post('/addCart', sessionCheckAxios, addCart)
 
-router.post('/quantityPlus', sessionCheckAxios, quantityPlus)
+router.patch('/quantityPlus', sessionCheckAxios, quantityPlus)
 
 router.post('/cartDelete', sessionCheckAxios, cartDelete)
 

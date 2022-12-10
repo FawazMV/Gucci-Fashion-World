@@ -88,9 +88,9 @@ exports.checkout = (req, res) => {
                     }
                 }]).then(async result => {
                     if (disc) {
-                     let resp =   await coupenCheck(disc, userId)
-                            aftTotal = resp.subtotal
-                            discount = resp.discout
+                        let resp = await coupenCheck(disc, userId)
+                        aftTotal = resp.subtotal
+                        discount = resp.discout
                     }
                     res.render('userSide/checkout', { cartproduct, total, discount, aftTotal, user, address: result[0].address[0] })
                 })
@@ -140,6 +140,28 @@ exports.singleOrder = (async (req, res) => {
     res.render('userSide/singleOrder', { user, order })
 })
 
+exports.myAccount = (req, res) => {
+    let userId = req.session.user._id
+    usermodel.findById(userId, { name: 1, email: 1, mobile: 1, _id: 0 }).then(async (userDetails) => {
+        console.log(userDetails)
+        let address = []=  await usermodel.aggregate([
+            { $match: { _id: mongoose.Types.ObjectId(userId) } },
+            {
+                $project: {
+                    _id:0,
+                    "address": {
+                        $filter: {
+                            input: "$address",
+                            cond: { $eq: ["$$this.default", true] }
+                        }
+                    }
+                }                                     
+            }])
+        console.log(address) 
+        address = address[0].address
+        res.render('userSide/myAccount', { user, userDetails, address})
+    })
+}
 
 
 
@@ -316,7 +338,13 @@ exports.quantityPlus = (req, res) => {
                 subTotal(userId).then(async (total) => res.json({ response: true, total: total }))
             })
         }
-        else res.json({ response: false })
+        else {
+            totalsing = price * quantity
+            usermodel.updateOne({ _id: userId, 'cart._id': req.body.cartid }, { $set: { 'cart.$.quantity': quantity, 'cart.$.total': totalsing } }).then(() => {
+                res.json({ response: false })
+            })
+
+        }
     })
 }
 exports.cartDelete = (req, res) => {
