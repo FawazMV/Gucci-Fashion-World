@@ -3,13 +3,14 @@ const serviceSID = process.env.serviceSID
 const authToken = process.env.authToken
 const client = require("twilio")(accoutnSID, authToken);
 exports.otpcallin = (number) => {
-
+    console.log(number)
     client.verify.services(serviceSID).verifications.create({
         to: `+91${number}`,
         channel: "sms",
     })
 }
 exports.otpVeryfication = (otp, userNumber) => {
+    console.log(otp)
     return new Promise((resolve, reject) => {
         client.verify.v2.services(serviceSID)
             .verificationChecks

@@ -144,22 +144,22 @@ exports.myAccount = (req, res) => {
     let userId = req.session.user._id
     usermodel.findById(userId, { name: 1, email: 1, mobile: 1, _id: 0 }).then(async (userDetails) => {
         console.log(userDetails)
-        let address = []=  await usermodel.aggregate([
+        let address = [] = await usermodel.aggregate([
             { $match: { _id: mongoose.Types.ObjectId(userId) } },
             {
                 $project: {
-                    _id:0,
+                    _id: 0,
                     "address": {
                         $filter: {
                             input: "$address",
                             cond: { $eq: ["$$this.default", true] }
                         }
                     }
-                }                                     
+                }
             }])
-        console.log(address) 
+        console.log(address)
         address = address[0].address
-        res.render('userSide/myAccount', { user, userDetails, address})
+        res.render('userSide/myAccount', { user, userDetails, address })
     })
 }
 
@@ -382,30 +382,24 @@ exports.dafaultAddress = (req, res) => {
     let response = null
     usermodel.updateOne({ _id: userId, 'address.default': true }, { $set: { 'address.$.default': false } }).then(() => {
         usermodel.updateOne({ _id: userId, 'address._id': req.body.id }, { $set: { 'address.$.default': true } }).then(() => {
-            res.json({ response: false })
-            // usermodel.aggregate([
-            //     {
-            //         $match: {
-            //             _id: mongoose.Types.ObjectId(userId)
-            //         }
-            //     },
-            //     {
-            //         $project: {
-            //             "address": {
-            //                 $filter: {
-            //                     input: "$address",
-            //                     cond: {
-            //                         $eq: [
-            //                             "$$this._id",
-            //                             mongoose.Types.ObjectId(req.body.id)
-            //                         ]
-            //                     }
-            //                 }
-            //             }
-            //         }
-            //     }
-            // ]).then((result) => {
-            //  })
+            
+            usermodel.aggregate([
+                { $match: { _id: mongoose.Types.ObjectId(userId) } },
+                {
+                    $project: {
+                        "address": {
+                            $filter: {
+                                input: "$address",
+                                cond: {
+                                    $eq: [ "$$this._id", mongoose.Types.ObjectId(req.body.id) ]
+                                }
+                            }
+                        }
+                    }
+                }
+            ]).then((result) => {
+                res.json({ response: false , address:result[0]})
+            })
         })
     }).catch(error => res.json({ response: error.message }))
 }

@@ -24,7 +24,7 @@
                         <a class="nav-link active" id="tab-dashboard-link" data-toggle="tab" href="#tab-dashboard" role="tab" aria-controls="tab-dashboard" aria-selected="true">Dashboard</a>
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" id="tab-orders-link"  href="/orders" role="tab" aria-controls="tab-orders" aria-selected="false">Orders</a>
+                        <a class="nav-link" id="tab-orders-link" href="/orders" role="tab" aria-controls="tab-orders" aria-selected="false">Orders</a>
                       </li>
                       <li class="nav-item">
                         <a class="nav-link" id="tab-downloads-link" data-toggle="tab" href="#tab-downloads" role="tab" aria-controls="tab-downloads" aria-selected="false">Wallet</a>
@@ -43,37 +43,37 @@
                   <div class="col-md-8 col-lg-9">
                     <div class="tab-content">
                       <div class="tab-pane fade show active" id="tab-dashboard" role="tabpanel" aria-labelledby="tab-dashboard-link">
-                        <p>Hello <span class="font-weight-normal text-dark"><%= userDetails.name %> </span> 
+                        <p>Hello <span class="font-weight-normal text-dark"><%= userDetails.name %> </span>
                           <br>
-                          From your account dashboard you can view your <a href="/orders" class=" link-underline">recent orders</a> , manage your <a href="#tab-address" class="tab-trigger-link"> addresses</a> , <a href="#tab-downloads" class="tab-trigger-link"> wallet</a>, and <a href="#tab-account" class="tab-trigger-link">edit your password and account details</a>.
+                          From your account dashboard you can view your <a href="/orders" class="link-underline">recent orders</a> , manage your <a href="#tab-address" class="tab-trigger-link"> addresses</a> , <a href="#tab-downloads" class="tab-trigger-link"> wallet</a>, and <a href="#tab-account" class="tab-trigger-link">edit your password and account details</a>.
                         </p>
                         <div class="continer mt-4">
-                            <div class="row">
-                                <div class="col-sm-2 col-4">
-                                    <p>Username <span class="float-end"> : </span></p>
-                                    <p>Mobile <span class="float-end"> : </span></p>
-                                    <p>Email <span class="float-end"> : </span></p>
-                                </div>
-                                <div class="col-sm-5 col-8">
-                                    <p><%= userDetails.name %></p>
-                                    <p><%= userDetails.mobile %></p>
-                                    <p><%= userDetails.email %></p>
-                                </div>
-                                <% if (address.length) { %>
-                                 <div class="col-sm-5">
-                                   <div class="card">
-                                     <div class="card-body">
-                                       <h5 class="card-title"></h5>
-                                       <h6 class="card-subtitle mt-3 mb-2 text-muted">Default Address</h6>
-                                       <p class="card-text"><%= address[0].firstname %> <%= address[0].lastname %> <br><%= address[0].address %> <br><%= address[0].city %>, <%= address[0].state %> <br> Pin : <%= address[0].pincode %> <br> Mobile : <%= address[0].phone %></p>
-                                       <a href="#tab-address" class="tab-trigger-link card-link">Manage address</a>
-                                       <!-- <a href="#" class="card-link">Another link</a> -->
-                                     </div>
-                                   </div>
-                                 </div>
-                                <% } %>
-                                
+                          <div class="row">
+                            <div class="col-sm-2 col-4">
+                              <p>Username <span class="float-end"> : </span></p>
+                              <p>Mobile <span class="float-end"> : </span></p>
+                              <p>Email <span class="float-end"> : </span></p>
                             </div>
+                            <div class="col-sm-5 col-8">
+                              <p><%= userDetails.name %></p>
+                              <p><%= userDetails.mobile %></p>
+                              <p><%= userDetails.email %></p>
+                            </div>
+                            <% if (address.length) { %>
+                            <div class="col-sm-5">
+                              <div class="card">
+                                <div class="card-body">
+                                  <h5 class="card-title"></h5>
+                                  <h6 class="card-subtitle mt-3 mb-2 text-muted">Default Address</h6>
+                                  <p class="card-text"><%= address[0].firstname %> <%= address[0].lastname %> <br><%= address[0].address %> <br><%= address[0].city %>, <%= address[0].state %> <br> Pin : <%= address[0].pincode %> <br> Mobile : <%= address[0].phone %></p>
+                                  <a href="#tab-address" class="tab-trigger-link card-link">Manage address</a>
+                                  <!-- <a href="#" class="card-link">Another link</a> -->
+                                </div>
+                              </div>
+                            </div>
+                            <% } %>
+
+                          </div>
                         </div>
                       </div>
                       <!-- <div class="tab-pane fade" id="tab-orders" role="tabpanel" aria-labelledby="tab-orders-link">
@@ -85,6 +85,7 @@
                         <a href="category.html" class="btn btn-outline-primary-2"><span>GO SHOP</span><i class="icon-long-arrow-right"></i></a>
                       </div>
                       <div class="tab-pane fade" id="tab-address" role="tabpanel" aria-labelledby="tab-address-link">
+                        <% if (address.length) { %>
                         <p>The following addresses will be used on the checkout page by default.</p>
 
                         <div class="row">
@@ -92,31 +93,29 @@
                             <div class="card card-dashboard">
                               <div class="card-body">
                                 <h3 class="card-title">Default Address</h3>
-                                <p>User Name<br>
-                                  User Company<br>
-                                  John str<br>
-                                  New York, NY 10001<br>
-                                  1-234-987-6543<br>
-                                  yourmail@mail.com<br>
-                                  <a href="#">Edit <i class="icon-edit"></i></a>
+                                <p id="defaultAddressId" class="card-text"><%= address[0].firstname %> <%= address[0].lastname %> <br><%= address[0].address %> <br><%= address[0].city %>, <%= address[0].state %> <br> Pin : <%= address[0].pincode %> <br> Mobile : <%= address[0].phone %></p>
+                                <a onclick="changeaddress()" href="#">Change Address <i class="icon-edit"></i></a>
                                 </p>
                               </div>
                             </div>
                           </div>
+                          <% } else { %>
                           <div class="col-lg-6">
                             <div class="card card-dashboard">
                               <div class="card-body">
-                                <h3 class="card-title">Shipping Address</h3>
-                                <p>You have not set up this type of address yet.<br>
-                                  <a href="#">Edit <i class="icon-edit"></i></a>
+                                <h3 class="card-title">Add Address</h3>
+                                <p>You have not added any default address yet<br>
+                                  <a class="" onclick="modalOpen()" href="" data-toggle="modal"> <i class="icon-plus"> Add</i></a>
                                 </p>
                               </div>
                             </div>
                           </div>
+                          <% } %>
+
                         </div>
                       </div>
                       <div class="tab-pane fade" id="tab-account" role="tabpanel" aria-labelledby="tab-account-link">
-                        <form action="#">
+                        <form class="addReview" onsubmit="editProfile()">
                           <div class="row">
                             <!-- <div class="col-sm-6">
                               <label>First Name *</label>
@@ -127,22 +126,26 @@
                               <input type="text" class="form-control" required>
                             </div> -->
                           </div> <label>Name *</label>
-                          <input type="text" class="form-control" required>
+                          <input name="name" type="text" onkeydown="return /[a-z]/i.test(event.key)" value="<%= userDetails.name %>" class="nameclass form-control" required>
                           <small class="form-text">This will be how your name will be displayed in the account section and in reviews</small>
 
                           <label>Email address *</label>
-                          <input type="email" class="form-control" required>
+                          <input name="email" type="email" class="nameclass form-control" value="<%= userDetails.email%>" required>
 
+                          <label>Mobile Number *</label>
+                          <div class="d-flex">
+                            <input type="text" id="mobilenumberID" disabled class="form-control" value="<%= userDetails.mobile %>" required> <a href="" onclick="mobileChange()" style="font-size:20px;position:relative;left:-40px;top:-2px;" class="fw-bold ml-2"><i class="icon-edit"></i></a>
+                          </div>
                           <label>Current password (leave blank to leave unchanged)</label>
-                          <input type="password" class="form-control">
+                          <input type="password" name="oldPassword" class="nameclass form-control">
 
                           <label>New password (leave blank to leave unchanged)</label>
-                          <input type="password" class="form-control">
+                          <input type="password" name="password" class="nameclass form-control">
 
                           <label>Confirm new password</label>
-                          <input type="password" class="form-control mb-2">
+                          <input type="password" name="password2" class="form-control mb-2">
 
-                          <button type="submit" class="btn btn-outline-primary-2">
+                          <button disabled type="submit" id="submitButton" class="btn btn-outline-primary-2">
                             <span>SAVE CHANGES</span>
                             <i class="icon-long-arrow-right"></i>
                           </button>
@@ -164,16 +167,578 @@
 </section>
 
 
+<!-- add address -->
+<div class="modal fade" id="addBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-body">
+    <div class="container-fluid">
+      <div class="row">
+
+        <div class="col-md-6 ml-auto">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Address</h5>
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="px-3">
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="checkout__input">
+
+                        <form id="addFormid" onsubmit="addAddress()">
+                          <p>Fist Name<span>*</span></p>
+                          <input name="firstname" class="text-dark" onkeydown="return /[a-z]/i.test(event.key)" type="text" required>
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="checkout__input">
+                        <p>Last Name<span>*</span></p>
+                        <input name="lastname" class="text-dark" onkeydown="return /[a-z]/i.test(event.key)" type="text" required>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="checkout__input">
+                    <p>Country<span></span></p>
+                    <input type="text" name="country" class="text-dark" value="India" disabled>
+                  </div>
+                  <div class="checkout__input">
+                    <p>Address<span>*</span></p>
+                    <textarea name="address" id="" class="text-dark" required style="width:90%;" rows="3"></textarea>
+                  </div>
+                  <div class="checkout__input">
+                    <p>Town/City<span>*</span></p>
+                    <input name="city" class="text-dark" onkeydown="return /[a-z]/i.test(event.key)" required type="text">
+                  </div>
+                  <div class="checkout__input">
+                    <p>State<span>*</span></p>
+                    <input name="state" class="text-dark" onkeydown="return /[a-z]/i.test(event.key)" required type="text">
+                  </div>
+
+                  <div class="row">
+                    <div class="col-lg-5">
+                      <div class="checkout__input">
+                        <p>Pincode<span>*</span></p>
+                        <input name="pincode" class="text-dark" onkeypress="return isNumberKey(event)" required type="text">
+                      </div>
+                    </div>
+                    <div class="col-lg-7">
+                      <div class="checkout__input">
+                        <p>Phone<span>*</span></p>
+                        <input name="phone" class="text-dark" onkeypress="return isNumberKey(event)" required type="text">
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" id="addButton" class="btn btn-secondary" onclick="modalclose('addBackdrop')">Close</button>
+                <button type="submit" class="btn btn-primary">Add</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- address show modal -->
+<div class="modal fade" id="addressShowmodal" role="dialog" tabindex="-1" aria-labelledby="addressShowmodalLabel" aria-hidden="true">
+  <div class="modal-body">
+    <div class="container-fluid">
+      <div class="row">
+
+        <div class="col-md-6 ml-auto">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Change Address</h5>
+                <button type="button" class="btn btn-link p-0 fw-bold" onclick="newfucntion()"> Add address
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="p-3" id="addressshow">
+                </div>
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" id="changeAddressbtnclose" class="btn btn-secondary" onclick="modalclose('addressShowmodal')">Close</button>
+                <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-body">
+    <div class="container-fluid">
+      <div class="row">
+
+        <div class="col-md-6 ml-auto">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit Address</h5>
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="px-3">
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="checkout__input">
+
+                        <form onsubmit="updateAddress()">
+                          <p>Fist Name<span>*</span></p>
+                          <input name="firstname" class="text-dark" id="firstnameId" onkeydown="return /[a-z]/i.test(event.key)" type="text" required>
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="checkout__input">
+                        <p>Last Name<span>*</span></p>
+                        <input name="lastname" class="text-dark" id="lastnameId" onkeydown="return /[a-z]/i.test(event.key)" type="text" required>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="checkout__input">
+                    <p>Country<span></span></p>
+                    <input type="text" name="country" class="text-dark" value="India" disabled>
+                  </div>
+                  <div class="checkout__input">
+                    <p>Address<span>*</span></p>
+                    <textarea name="address" id="addressId" class=" text-dark" required style="width:90%;" rows="3"></textarea>
+                  </div>
+                  <div class="checkout__input">
+                    <p>Town/City<span>*</span></p>
+                    <input name="city" id="cityId" class="text-dark" onkeydown="return /[a-z]/i.test(event.key)" required type="text">
+                  </div>
+                  <div class="checkout__input">
+                    <p>State<span>*</span></p>
+                    <input name="state" id="stateId" class="text-dark" onkeydown="return /[a-z]/i.test(event.key)" required type="text">
+                  </div>
+
+                  <div class="row">
+                    <div class="col-lg-5">
+                      <div class="checkout__input">
+                        <p>Pincode<span>*</span></p>
+                        <input name="pincode" id="pincodeid" class="text-dark" onkeypress="return isNumberKey(event)" required type="text">
+                      </div>
+                    </div>
+                    <div class="col-lg-7">
+                      <div class="checkout__input">
+                        <p>Phone<span>*</span></p>
+                        <input name="phone" class="text-dark" id="phoneid" onkeypress="return isNumberKey(event)" required type="text">
+                      </div>
+                    </div>
+                    <input type="text" name="id" id="idsid" style="display:none;">
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="modalclose('staticBackdrop')">Close</button>
+                <button type="submit" class="btn btn-primary">Update</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button data-toggle="modal" id="hidebutton" style="display:none" data-target="#staticBackdrop"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="mobileChange" tabindex="-1" role="dialog" aria-labelledby="mobileChangeTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Change Mobile Numbe</h5>
+        <button type="button" class="close" onclick="modalclose('mobileChange')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="px-5 ml-4 mt-3">
+          <label>Mobile Number *</label>
+          <div class="d-flex">
+            <input type="text" id="newNumber" onkeypress="return isNumberKey(event)" class="form-control" required> <a onclick="newNumber()" style="font-size:18px;position:relative;left:-120px;top:4px;" class="fw-bold ml-2"><span>Send</span><span>OTP</span></a>
+          </div>
+          <div class="row">
+            <div class="col-sm-6">
+              <label>OTP</label>
+              <input type="text" disabled id="otpclm" onkeypress="return isNumberKey(event)" class="form-control" required>
+            </div>
+
+            <div class="col-sm-4">
+              <div style="margin-top:37px;">
+                <button type="button" id="otpId" disabled onclick="otpconfirm()" class="btn btn-secondary px-4">Confirm</button>
+              </div>
+            </div>
+          </div>
+          <p class="text-danger" id="errormsg"></p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary" onclick="modalclose('mobileChange')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  $('.nameclass').keyup(function() {
+    document.getElementById('submitButton').disabled = false
+  });
+
+
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 1500,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener('mouseenter', Swal.stopTimer)
+      toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+  })
+
+  mobileChange = () => {
+    event.preventDefault();
+    $('#mobileChange').modal('show')
+  }
+  newNumber = () => {
+    let mobile = document.getElementById('newNumber').value
+    document.getElementById('newNumber').disabled = true
+    let error = document.getElementById('errormsg')
+    error.innerHTML = ""
+    axios.post('/mobileChange', {
+      mobile: mobile
+    }).then(e => {
+      if (e.data.response) {
+        document.getElementById('otpId').disabled = false
+        document.getElementById('otpclm').disabled = false
+      } else {
+        error.innerHTML = "Number already registered"
+        document.getElementById('newNumber').disabled = false
+      }
+    })
+  }
+  otpconfirm = () => {
+    document.getElementById('otpclm').disabled = true
+    document.getElementById('otpId').disabled = true
+    let error = document.getElementById('errormsg')
+    error.innerHTML = ""
+    let otp = document.getElementById('otpclm').value
+    let mobile = document.getElementById('newNumber').value
+    axios.post('/cofirmotp', {
+      otp: otp,
+      userNumber: mobile
+    }).then(async (e) => {
+      alert('heol')
+      if (e.data.response === "login") location.href = "/login"
+      else if (e.data.response) {
+        await Toast.fire({
+          icon: 'success',
+          title: 'Mobile number updated successfully'
+        })
+        document.getElementById('mobilenumberID').value = mobile
+        $('#mobileChange').modal('hide')
+      } else {
+        error.innerHTML = "OTP verificatin failed"
+        document.getElementById('otpclm').disabled = false
+        document.getElementById('otpId').disabled = false
+      }
+
+    })
+
+  }
+
+  editProfile = async () => {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const formProps = await Object.fromEntries(formData);
+    console.log(formProps)
+    if (formProps.oldPassword === "" && formProps.password == "") {
+      let status = emailcheck(formProps.email)
+      if (status) {
+        axios.patch('/updateProfile', formProps).then((e) => {
+          if (e.data.response === "login") location.href = "/login"
+          else if (e.data.response) {
+            Toast.fire({
+              icon: 'success',
+              title: 'Your details updated successfully'
+            })
+            document.getElementById('submitButton').disabled = true
+          } else {
+            Toast.fire({
+              icon: 'error',
+              title: 'Email id already exist'
+            })
+          }
+        })
+      } else {
+        Toast.fire({
+          icon: 'error',
+          title: 'Email is not valid format'
+        })
+      }
+    } else {
+      let status = emailcheck(formProps.email)
+      if (status) {
+        let res = passwordcheck(formProps.password, formProps.password2)
+        if (res.validation) {
+          axios.put('/passwordUpdate', formProps).then((e) => {
+            if (e.data.response === "login") location.href = "/login"
+            else {
+              Toast.fire({
+                icon: 'success',
+                title: 'Your details updated successfully'
+              })
+            }
+          })
+        } else {
+          Toast.fire({
+            icon: 'error',
+            title: res.response
+          })
+        }
+      } else {
+        Toast.fire({
+          icon: 'error',
+          title: 'Email is not valid format'
+        })
+      }
+
+
+
+    }
+
+  }
+  passwordcheck = (password, password2) => {
+    let resp = {}
+    let validation = true
+    let response
+    if (password.length < 6 || password.length > 12) {
+      response = "Password should be between 6 to 12 letters"
+      validation = false
+    } else if (password2 === "") {
+      response = "Please confirm your password"
+      validation = false
+    } else if (password != password2) {
+      response = "Password confirmation is failed"
+      validation = false
+    }
+    resp.response = response;
+    resp.validation = validation;
+    return resp
+  }
+
+  function emailcheck(email) {
+    let validation = true
+    var validRegex = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    if (!email.match(validRegex) || email.length > 20) {
+      validation = false
+    } else {
+      let check = email.split("")
+      if (!isNaN(check[0])) {
+        validation = false
+      }
+    }
+    return validation
+  }
+
+  function newfucntion() {
+    $('#addressShowmodal').modal('hide')
+    $('#addBackdrop').modal('show')
+  }
+
+  function modalclose(id) {
+    $('#' + id).modal('hide')
+  }
+
+  function modalOpen() {
+    $('#addressShowmodal').modal('show')
+  }
+
+  function changeaddress() {
+    try {
+      axios.get('/getAddress').then(e => {
+        if (e.data.response) {
+          document.getElementById('addressshow').innerHTML = e.data.response
+        } else {
+          let address = e.data.address
+          let div = ``
+          for (let i = 0; i < address.length; i++) {
+            div += ` <div class="mt-2" id="deleteDiv${address[i]._id}">`
+            if (!address[i].default) {
+
+              div += `<a onclick="deleteAddress('${address[i]._id}')"> <span class="float-end"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+        <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z" />
+      </svg> </span> </a>`
+            }
+            div +=
+              `
+  <h6 class="fw-bold">${address[i].firstname} ${address[i].lastname}</h6>
+  <p style="opacity:70%;">${address[i].address}
+    <br> ${address[i].city}, ${address[i].state} <br>
+    India - ${address[i].pincode} <br>
+    Phone : ${address[i].phone}
+  </p>
+  <div class="d-flex justify-content-between">`
+            if (address[i].default) {
+              div += ` <button onclick="select('${address[i]._id}')" class="btn btn-success" disabled>Selected</button>`
+            } else {
+
+              div += ` <button data-dismiss="modal" onclick="select('${address[i]._id}')" class="btn btn-warning">Select</button>`
+            }
+            div += `
+    <button type="button" class="btn btn-link pl-0 fw-bold float-end" <span class="text-black" style="opacity:70%;"> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-vector-pen" viewBox="0 0 18 18">
+        <path fill-rule="evenodd" d="M10.646.646a.5.5 0 0 1 .708 0l4 4a.5.5 0 0 1 0 .708l-1.902 1.902-.829 3.313a1.5 1.5 0 0 1-1.024 1.073L1.254 14.746 4.358 4.4A1.5 1.5 0 0 1 5.43 3.377l3.313-.828L10.646.646zm-1.8 2.908-3.173.793a.5.5 0 0 0-.358.342l-2.57 8.565 8.567-2.57a.5.5 0 0 0 .34-.357l.794-3.174-3.6-3.6z" />
+        <path fill-rule="evenodd" d="M2.832 13.228 8 9a1 1 0 1 0-1-1l-4.228 5.168-.026.086.086-.026z" />
+      </svg></span>
+      <span style="opacity:80%;" onclick="editaddress('${address[i]._id}')" class="text-black"> Edit </span>
+    </button>
+  </div>
+  </div>
+
+  <hr>`
+          }
+
+          document.getElementById('addressshow').innerHTML = div
+          $('#addressShowmodal').modal('show')
+        }
+
+      })
+
+    } catch (error) {
+
+    }
+  }
+
+
+
+
+  addAddress = async () => {
+    $('#addBackdrop').modal('hide')
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const formProps = await Object.fromEntries(formData);
+    try {
+      axios.post('/addAddress', formProps).then(e => {
+        if (e.data.response === "login") location.href = "/login"
+        else if (e.data.response) {
+          alert(e.data.response)
+          console.log('error')
+        } else {
+          document.getElementById('addFormid').reset()
+          changeaddress()
+        }
+      })
+    } catch (error) {
+
+    }
+  }
+
+
+  updateAddress = async () => {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const formProps = await Object.fromEntries(formData);
+    try {
+      axios.post('/updateAddress', formProps).then(e => {
+        if (e.data.response === "login") location.href = "/login"
+        else if (e.data.response) {} else {
+          $('#staticBackdrop').modal('hide')
+          changeaddress()
+        }
+      })
+    } catch (error) {}
+  }
+
+  function deleteAddress(id) {
+    axios.patch('/deleteAddress', {
+      id: id
+    }).then(() => {
+      document.getElementById('deleteDiv' + id).style.display = 'none'
+    })
+  }
+
+  function editaddress(id) {
+    $('#addressShowmodal').modal('hide')
+    axios.get('/getEditAddress', {
+      params: {
+        id: id
+      }
+    }).then(e => {
+      let address = e.data.address
+      document.getElementById('firstnameId').value = address.firstname
+      document.getElementById('lastnameId').value = address.lastname
+      document.getElementById('addressId').value = address.address
+      document.getElementById('cityId').value = address.city
+      document.getElementById('stateId').value = address.state
+      document.getElementById('pincodeid').value = address.pincode
+      document.getElementById('phoneid').value = address.phone
+      document.getElementById('idsid').value = address._id
+      //document.getElementById('hidebutton').click()
+      $('#staticBackdrop').modal('show')
+    })
+  }
+
+
+
+  function select(id) {
+    axios.put('/default', {
+      id: id
+    }).then(e => {
+      if (e.data.response === "login") location.href = "/login"
+      else if (e.response) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops....!',
+          text: 'Something went wrong!',
+        })
+      } else {
+        let address = e.data.address.address
+        document.getElementById('defaultAddressId').innerHTML = `${ address[0].firstname } ${ address[0].lastname } <br>${ address[0].address } <br>${ address[0].city }, ${ address[0].state } <br> Pin : ${ address[0].pincode } <br> Mobile : ${ address[0].phone }`
+        $('#addressShowmodal').modal('hide')
+        location.href = "/myAccount#tab-address"
+      }
+    })
+  }
+
+  function isNumberKey(evt) {
+    var charCode = (evt.which) ? evt.which : evt.keyCode
+    if (charCode > 31 && (charCode < 48 || charCode > 57))
+      return false;
+    return true;
+  }
+</script>
 
 
 
 
 
-
-
-
-  <!-- Sign in / Register Modal -->
-  <!-- <div class="modal fade" id="signin-modal" tabindex="-1" role="dialog" aria-hidden="true">
+<!-- Sign in / Register Modal -->
+<!-- <div class="modal fade" id="signin-modal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-body">

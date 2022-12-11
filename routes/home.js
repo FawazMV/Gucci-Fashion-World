@@ -3,6 +3,7 @@ const express = require('express')
 const router = express.Router()
 const { verifyPayment } = require('../config/payment')
 const { placeOrder, cancelOrder, coupenApply, coupenSave } = require('../controller/orderControllers')
+const { mobileChange, cofirmotp, updateProfile } = require('../controller/profileControllers')
 const { login, signup, home, orderPage, otppage, singleProduct, getCart, checkout, product, allProduct, success, loginPost, doSignup, otppageverify, OTPResend, logout, addCart, quantityPlus, cartDelete, addAddress, getAddress, dafaultAddress, deleteAddress, getEditAddress, updateAddress, productFilter, verification, singleOrder, forgetPassword, forgetemail, changePassword, otpForget, review, myAccount } = require('../controller/userControllers')
 const { getWishlist, addWishlist, deleteWishlist } = require('../controller/wishlistControllers.js')
 const { sessionCheck, sessionCheckAxios, loginCheck } = require('../middlewears/sessioncheck')
@@ -120,6 +121,10 @@ router.patch('/coupenSave', sessionCheckAxios, coupenSave)
 
 
 
+router.post('/mobileChange', sessionCheckAxios, mobileChange)
 
+router.post('/cofirmotp', sessionCheckAxios, cofirmotp)
 
-module.exports = router
+router.patch('/updateProfile', sessionCheckAxios, updateProfile)
+
+module.exports = router 
