@@ -343,9 +343,9 @@ exports.productFilter = (req, res) => {
                         res.json({ Products: Products })
                     })
             }
-        } catch (error) {
-            console.log(error)
         }
+    } catch (error) {
+        console.log(error) 
     }
 }
 exports.verification = (req, res) => {
