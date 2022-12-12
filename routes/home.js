@@ -2,9 +2,10 @@ const { default: axios } = require('axios')
 const express = require('express')
 const router = express.Router()
 const { verifyPayment } = require('../config/payment')
-const { placeOrder, cancelOrder, coupenApply, coupenSave } = require('../controller/orderControllers')
-const { mobileChange, cofirmotp, updateProfile } = require('../controller/profileControllers')
-const { login, signup, home, orderPage, otppage, singleProduct, getCart, checkout, product, allProduct, success, loginPost, doSignup, otppageverify, OTPResend, logout, addCart, quantityPlus, cartDelete, addAddress, getAddress, dafaultAddress, deleteAddress, getEditAddress, updateAddress, productFilter, verification, singleOrder, forgetPassword, forgetemail, changePassword, otpForget, review, myAccount } = require('../controller/userControllers')
+const { getCart, addCart, quantityPlus, cartDelete } = require('../controller/cartcontrollers')
+const { orderPage, singleOrder, placeOrder, cancelOrder, coupenApply, coupenSave } = require('../controller/orderControllers')
+const { addAddress, getAddress, dafaultAddress, deleteAddress, getEditAddress, updateAddress, mobileChange, cofirmotp, updateProfile, passwordUpdate } = require('../controller/profileControllers')
+const { login, signup, home, otppage, singleProduct, checkout, product, allProduct, success, loginPost, doSignup, otppageverify, OTPResend, logout, productFilter, verification, forgetPassword, forgetemail, changePassword, otpForget, review, myAccount } = require('../controller/userControllers')
 const { getWishlist, addWishlist, deleteWishlist } = require('../controller/wishlistControllers.js')
 const { sessionCheck, sessionCheckAxios, loginCheck } = require('../middlewears/sessioncheck')
 
@@ -127,4 +128,6 @@ router.post('/cofirmotp', sessionCheckAxios, cofirmotp)
 
 router.patch('/updateProfile', sessionCheckAxios, updateProfile)
 
-module.exports = router 
+router.put('/passwordUpdate', sessionCheckAxios, passwordUpdate)
+
+module.exports = router  

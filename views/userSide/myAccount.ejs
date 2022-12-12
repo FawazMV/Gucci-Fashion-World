@@ -403,7 +403,24 @@
 </div>
 
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- <script src="../../node_modules/axios/dist/axios.js"> </script>
+<script src="../../node_modules/axios/dist/axios.js.map"> </script>
+<script src="../../node_modules/axios/dist/axios.min.js"> </script>
+<script src="../../node_modules/axios/dist/axios.min.js.map"> </script>
+<script src="../../node_modules/axios/dist/"> </script>
+<script src="../../node_modules/axios/dist/"> </script>
+
+<script src="../../node_modules/sweetalert2/dist/sweetalert2.all.js"></script>
+<script src="../../node_modules/sweetalert2/dist/sweetalert2.all.min.js"></script>
+<script src="../../node_modules/sweetalert2/dist/sweetalert2.js"></script>
+<script src="../../node_modules/sweetalert2/dist/sweetalert2.min.js"></script>
+<script src="../../node_modules/sweetalert2/src/sweetalert2.js"></script>
+<script src="../../node_modules/sweetalert2/README.md"></script> -->
+
 <script>
+
+
+
   $('.nameclass').keyup(function() {
     document.getElementById('submitButton').disabled = false
   });
@@ -506,6 +523,7 @@
       if (status) {
         let res = passwordcheck(formProps.password, formProps.password2)
         if (res.validation) {
+            confirm('helo')
           axios.put('/passwordUpdate', formProps).then((e) => {
             if (e.data.response === "login") location.href = "/login"
             else {
