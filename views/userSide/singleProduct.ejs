@@ -219,10 +219,10 @@
                   <div class="reviews">
                     <h3>Reviews ( <%= review.length %> )</h3>
                     <% for( let i = 0; i < review.length; i++ ) { %>
-                    <div class="review">
+                    <div class="reviews">
                       <div class="row no-gutters">
                         <div class="col-auto">
-                          <h4><a href="#"><%= review[i].user.name %></a></h4>
+                          <h5><a href="#"><%= review[i].user.name %> &nbsp &nbsp &nbsp</a></h5>
                           <div class="ratings-container">
                             <div class="ratings">
                               <div class="ratings-val" style="width:<%= review[i].rating %>%;"></div>
@@ -232,7 +232,7 @@
                           <span class="review-date"><%= review[i].date %></span>
                         </div><!-- End .col -->
                         <div class="col">
-                          <h4><%= review[i].title %></h4>
+                          <h5> <%= review[i].title %></h5>
 
                           <div class="review-content">
                             <p><%= review[i].review %>

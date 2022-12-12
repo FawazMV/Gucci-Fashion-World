@@ -1,3 +1,5 @@
+const { default: mongoose } = require("mongoose")
+const { subTotal } = require("../helpers/order_Helpers")
 const productModel = require("../models/product-schema")
 const usermodel = require("../models/user-schema")
 
@@ -12,9 +14,9 @@ exports.getCart = (req, res) => {
                 res.render('userSide/cart', { cartproduct, total, user })
             })
     } catch (error) {
-        console.log(error)
+        console.log(error)  
     }
-}
+} 
 
 exports.addCart = async (req, res) => {
     try {

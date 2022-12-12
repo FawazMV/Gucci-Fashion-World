@@ -1,0 +1,115 @@
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.dataTables.min.css">
+
+<script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+
+<body class="app">
+
+  <div class="app-wrapper">
+
+    <div class="app-content pt-3 p-md-3 p-lg-4">
+      <div class="container-xl">
+        <!-- <nav id="orders-table-tab" class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
+          <a class="flex-sm-fill text-sm-center nav-link active" id="orders-all-tab" data-bs-toggle="tab" href="#orders-all" role="tab" aria-controls="orders-all" aria-selected="true">All</a>
+          <a class="flex-sm-fill text-sm-center nav-link" id="orders-paid-tab" data-bs-toggle="tab" href="#orders-paid" role="tab" aria-controls="orders-paid" aria-selected="false">Paid</a>
+          <a class="flex-sm-fill text-sm-center nav-link" id="orders-pending-tab" data-bs-toggle="tab" href="#orders-pending" role="tab" aria-controls="orders-pending" aria-selected="false">Pending</a>
+          <a class="flex-sm-fill text-sm-center nav-link" id="orders-cancelled-tab" data-bs-toggle="tab" href="#orders-cancelled" role="tab" aria-controls="orders-cancelled" aria-selected="false">Cancelled</a>
+        </nav> -->
+        <div class="tab-content" id="orders-table-tab-content">
+          <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
+            <div class="app-card app-card-orders-table shadow-sm mb-5">
+              <div class="app-card-body">
+                <div class="table-responsive">
+                  <table id="example" class="items-center justify-center w-full mb-0 ml-5 align-top border-collapse dark:border-white/40 text-slate-500 display nowrap" style="width:100%;padding-bottom:25vh;">
+                    <thead class="align-bottom">
+                      <tr>
+                        <th class="px-6 py-3 font-semibold capitalize align-middle bg-transparent border-b border-solid shadow-none dark:border-white/40 dark:text-white tracking-none whitespace-nowrap">
+                          Date</th>
+                        <th class="px-6 py-3 font-semibold capitalize align-middle bg-transparent border-b border-solid shadow-none dark:border-white/40 dark:text-white tracking-none whitespace-nowrap">
+                          Total Price</th>
+                        <th class="px-6 py-3 font-semibold capitalize align-middle bg-transparent border-b border-solid shadow-none dark:border-white/40 dark:text-white tracking-none whitespace-nowrap">
+                          Profit</th>
+                        <th class="px-6 py-3 font-semibold capitalize align-middle bg-transparent border-b border-solid shadow-none dark:border-white/40 dark:text-white tracking-none whitespace-nowrap">
+                          Order Count</th>
+                      </tr>
+                    </thead>
+                    <tbody class="border-t ">
+                      <% saleReport.forEach(report=> { %>
+                      <tr>
+                        <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
+                          <h6 class="mb-0 text-sm leading-normal dark:text-white">
+                            <%= report._id %>
+                          </h6>
+                        </td>
+                        <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
+                          <p class="mb-0 text-sm font-semibold leading-normal dark:text-white dark:opacity-60">
+                            <%= report.totalPrice %>
+                          </p>
+                        </td>
+                        <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
+                          <p class="mb-0 text-sm font-semibold leading-normal dark:text-white dark:opacity-60">
+                            ₹ <%=parseFloat(report.totalPrice*5/100).toFixed(1)%>
+                          </p>
+                        </td>
+                        <td class="p-2 align-middle  border-b  whitespace-nowrap shadow-transparent">
+                          <span class="text-xs font-semibold  dark:text-white dark:opacity-60">
+                            <%= report.count %>
+                          </span>
+                        </td>
+                      </tr>
+                      <% }) %>
+                    </tbody>
+                  </table>
+                </div>
+                <!--//table-responsive-->
+
+              </div>
+              <!--//app-card-body-->
+            </div>
+            <!--//app-card-->
+
+
+          </div>
+          <!--//tab-pane-->
+
+
+
+          <!--//tab-pane-->
+        </div>
+        <!--//tab-content-->
+      </div>
+      <!--//container-fluid-->
+    </div>
+    <!--//app-content-->
+  </div>
+  <!--//app-wrapper-->
+  <!-- Javascript -->
+  <script src="assets/plugins/popper.min.js"></script>
+  <script src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+
+  <!-- Page Specific JS -->
+  <script src="assets/js/app.js"></script>
+
+</body>
+
+
+
+
+
+<script>
+  $(document).ready(function() {
+    $('#example').DataTable({
+      dom: 'Bfrtip',
+      buttons: [
+        'copy', 'csv', 'excel', 'pdf', 'print'
+      ]
+    });
+  });
+</script>

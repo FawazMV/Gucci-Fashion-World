@@ -51,16 +51,17 @@ router.get('/orders', admin.orders)
 
 router.patch('/deliveryStatus', admin.deliveryStatus)
 
-router.get('/coupen',admin.coupen)
+router.get('/coupen', admin.coupen)
 
 router.post('/addCoupen', admin.addCoupen)
 
-router.patch('/coupenStatus',admin.coupenStatus)
+router.patch('/coupenStatus', admin.coupenStatus)
 
 router.get('/orderDetail', admin.orderDetail)
 
+router.get('/salesReport', admin.salesReport)
 
-
+router.get('/getDetails',admin.getDetails)
 
 // router.post('/upload_file', fileUpload.upload.array('image',3), (req, res) => {
 //     console.log(req.files)

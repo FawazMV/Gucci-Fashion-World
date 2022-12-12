@@ -1,6 +1,8 @@
 const { default: axios } = require("axios")
+const { default: mongoose } = require("mongoose")
 const { otpcallin, otpVeryfication } = require("../config/otp")
 const usermodel = require("../models/user-schema")
+const bcrypt = require('bcrypt');
 
 
 
@@ -154,12 +156,22 @@ exports.updateProfile = async (req, res) => {
         console.log(error)
     }
 }
-
-exports.passwordUpdate = (req, res) => {
+exports.passwordUpdate = async (req, res) => {
     try {
-        console.log(req.body)
+        let userId = req.session.user._id
+        let { email, password } = await usermodel.findById(userId, { email: 1, password: 1 })
+        let status = await bcrypt.compare(req.body.oldPassword, password)
+        let user = await usermodel.findOne({ email: email }, { email: 1 })
+        if (!user || user.email === req.body.email) {
+            if (status) {
+                let password = await bcrypt.hash(req.body.oldPassword, 10)
+                await usermodel.findByIdAndUpdate(userId, { $set: { email: req.body.email, name: req.body.name, password: password } })
+                res.json({ response: true })
+            } else res.json({ response: false, reason: "Password is incorrect" })
+        } else res.json({ response: false, reason: "Email id already exist" })
+
     }
     catch (error) {
         console.log(error)
     }
-}
+}   

@@ -8,12 +8,16 @@ const moment = require('moment')
 const coupn_Model = require("../models/coupen_schema")
 
 
-exports.orderPage = ((req, res) => {
+exports.orderPage = (async (req, res) => {
     try {
         let user = req.session.user.name
         let userId = req.session.user._id
-        orders_Model.find({ user: userId }, { OrderDetails: 1, Order_date: 1, Order_Status: 1, OrderId: 1, _id: -1, Payment: 1, finalPrice: 1 }).populate('OrderDetails.product_id').sort({ _id: -1 })
-            .then((order) => res.render('userSide/orders', { user, order }))
+        console.log(userId)
+        await orders_Model.find({ User: mongoose.Types.ObjectId(userId) }).populate('OrderDetails.product_id').sort({ _id: -1 })
+            .then((order) => {
+                console.log(order)
+                res.render('userSide/orders', { user, order })
+            })
             .catch((error) => console.log(error))
     } catch (error) {
         console.log(error)

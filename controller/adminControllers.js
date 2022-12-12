@@ -16,10 +16,51 @@ let msg, product_id;
 
 module.exports = {
 
-    dashboard: (req, res) => {
+    dashboard: async (req, res) => {
         try {
+            let users = await usermodel.find({}).count()
+            const DaysAgo = new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000);
+            const oldmonth = new Date(new Date().getTime() - 60 * 24 * 60 * 60 * 1000);
+            console.log(moment(DaysAgo).format('DD-MM-YYYY'))
+            let sales = 0
+            let orders = 0
+            let perfomance
+            let saleReport = await orders_Model.aggregate([
+                {
+                    $match: { createdAt: { $gte: DaysAgo } },
+                },
+                {
+                    $group: {
+                        _id: { $dateToString: { format: "%m", date: "$createdAt" } },
+                        totalPrice: { $sum: "$TotalPrice" },
+                        count: { $sum: 1 },
+                    },
+                },
+            ]);  
+            console.log(saleReport)
+            if (saleReport.length) {
+                sales = saleReport[0].totalPrice      
+                orders = saleReport[0].count
+            }
+            let previous = await orders_Model.aggregate([
+                {
+                    $match: { createdAt: { $lt: DaysAgo, $gte: oldmonth } },
+                },
+                {
+                    $group: {
+                        _id: { $dateToString: { format: "%m", date: "$createdAt" } },
+                        totalPrice: { $sum: "$TotalPrice" },
+                        count: { $sum: 1 },
+                    },
+                }, 
+            ]);
+            if (previous.length && saleReport.length) {
+                let sum = (saleReport[0].totalPrice - previous[0].totalPrice) / 100
+                perfomance = Math.round(sum)
+            }
+            console.log(orders)
             heading = "Overview"
-            res.render('admin/dashboard', { admin: true, Overview: "active", heading })
+            res.render('admin/dashboard', { admin: true, users, Overview: "active", heading, sales, orders, perfomance })
         } catch (error) {
             console.log(error)
         }
@@ -51,6 +92,23 @@ module.exports = {
         } catch (error) {
             console.log(error)
         }
+    }, salesReport: async (req, res) => {
+        let saleReport = []
+        const todayDate = new Date();
+        const DaysAgo = new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000);
+        saleReport = await orders_Model.aggregate([
+            {
+                $match: { createdAt: { $gte: DaysAgo } },
+            },
+            {
+                $group: {
+                    _id: { $dateToString: { format: "%d-%m-%Y", date: "$createdAt" } },
+                    totalPrice: { $sum: "$TotalPrice" },
+                    count: { $sum: 1 },
+                },
+            },
+        ]);
+        res.render('admin/salesReport', { saleReport, admin: true,  heading: "Sales Report" })
     },
     blockUser: async (req, res) => {
         try {
@@ -278,7 +336,7 @@ module.exports = {
     },
     orders: async (req, res) => {
         try {
-            let order = await orders_Model.find().populate('User', "email").sort({ _id: -1 })
+            let order = await orders_Model.find().populate('User', "email").sort({ createdAt: -1 })
             let heading = 'Orders'
             res.render('admin/orders', { admin: true, Orders: "active", heading, order })
         } catch (error) {
@@ -373,5 +431,73 @@ module.exports = {
         } catch (error) {
             console.log(error)
         }
+    },
+    getDetails: async (req, res) => {
+        try {
+            let todayDate = new Date();
+            let DaysAgo = new Date(new Date().getTime() - 1 * 24 * 60 * 60 * 1000);
+            console.log(moment(DaysAgo).format('DD-MM-YYYY'))
+            let sales = []
+            for (let i = 1; i <= 7; i++) {
+                let abc = {}
+                let saleReport = await orders_Model.aggregate([
+                    {
+                        $match: { createdAt: { $lt: todayDate, $gte: DaysAgo } },
+                    },
+                    {
+                        $group: {
+                            _id: { $dateToString: { format: "%u", date: todayDate } },
+                            totalPrice: { $sum: "$TotalPrice" },
+                            count: { $sum: 1 },
+                        },
+                    },
+                ]);
+                if (saleReport.length) {
+                    sales.push(saleReport[0])
+                } else {
+                    abc._id = todayDate.getDay() + 1
+                    abc.totalPrice = 0
+                    abc.count = 0
+                    sales.push(abc)
+                }
+                todayDate = DaysAgo
+                DaysAgo = new Date(new Date().getTime() - (i + 1) * 24 * 60 * 60 * 1000);
+
+            }
+            let prevsales = []
+            console.log(moment(DaysAgo).format('DD-MM-YYYY'))
+            for (let i = 1; i <= 7; i++) {
+                let abc = {}
+                let saleReport = await orders_Model.aggregate([
+                    {
+                        $match: { createdAt: { $lt: todayDate, $gte: DaysAgo } },
+                    },
+                    {
+                        $group: {
+                            _id: { $dateToString: { format: "%u", date: todayDate } },
+                            totalPrice: { $sum: "$TotalPrice" },
+                            count: { $sum: 1 },
+                        },
+                    },
+                ]);
+                if (saleReport.length) {
+                    prevsales.push(saleReport[0])
+                } else {
+                    abc._id = todayDate.getDay() + 1
+                    abc.totalPrice = 0
+                    abc.count = 0
+                    prevsales.push(abc)
+                }
+                todayDate = DaysAgo
+                DaysAgo = new Date(new Date().getTime() - (i + 7) * 24 * 60 * 60 * 1000);
+            }
+            console.log(sales)
+            console.log(prevsales)
+            res.json({sales: sales, prevsales: prevsales})
+        }
+        catch (error) {
+            console.log(error)
+        }
+
     }
-}                                        
+}                                         

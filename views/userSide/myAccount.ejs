@@ -418,9 +418,6 @@
 <script src="../../node_modules/sweetalert2/README.md"></script> -->
 
 <script>
-
-
-
   $('.nameclass').keyup(function() {
     document.getElementById('submitButton').disabled = false
   });
@@ -523,13 +520,18 @@
       if (status) {
         let res = passwordcheck(formProps.password, formProps.password2)
         if (res.validation) {
-            confirm('helo')
           axios.put('/passwordUpdate', formProps).then((e) => {
             if (e.data.response === "login") location.href = "/login"
-            else {
+            else if (e.data.response) {
               Toast.fire({
                 icon: 'success',
                 title: 'Your details updated successfully'
+              })
+              document.getElementById('submitButton').disabled = true
+            } else {
+              Toast.fire({
+                icon: 'error',
+                title: e.data.reason
               })
             }
           })
