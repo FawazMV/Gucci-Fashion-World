@@ -22,28 +22,31 @@ let user;
 
 /////---------------------page rendering--------------------/////////
 
-exports.signup = (req, res) => {
+exports.signup = (req, res, next) => {
     try {
         res.render('userSide/signup', { includes: true })
     } catch (error) {
-        console.log(error)
+        next(error)
+        
     }
 }
-exports.login = (req, res) => {
+exports.login = (req, res, next) => {
     try {
         res.render('userSide/userlogin', { includes: true })
     } catch (error) {
-        console.log(error)
+        next(error)
+        
     }
 }
-exports.forgetPassword = (req, res) => {
+exports.forgetPassword = (req, res, next) => {
     try {
         res.render('userSide/forget', { includes: true })
     } catch (error) {
-        console.log(error)
+        next(error)
+        
     }
 }
-exports.home = async (req, res) => {
+exports.home = async (req, res, next) => {
     try {
         let Products = []
         genderModel.find({}).lean().then(async (catagories) => {
@@ -57,32 +60,35 @@ exports.home = async (req, res) => {
             res.render('userSide/homepage', { admin: false, Products, catagories, user })
         })
     } catch (error) {
-        console.log(error)
+        next(error)
+        
     }
 }
-exports.otppage = (req, res) => {
+exports.otppage = (req, res, next) => {
     try {
         if (req.session.otp) res.render('userSide/otp', { includes: true, userNumber })
         else res.redirect('/login')
     } catch (error) {
-        console.log(error)
+        next(error)
+        
     }
 }
-exports.singleProduct = async (req, res) => {
+exports.singleProduct = async (req, res, next) => {
     try {
         let id = req.params.id
         let review = [] = await review_model.find({ product: id }).populate('user', 'name').sort({ _id: -1 })
-        productModel.findById(id).populate('brandName').populate('gender').lean().then(async product => {
-            let similiar = [] = await productModel.find({ deleteProduct: false, gender: product.gender._id, type: product.type, _id: { $ne: id }, quantity: { $gt: 1 } }, { imagesDetails: 1, brandName: 1, gender: 1, shopPrice: 1, review: 1, rating: 1 })
-                .populate('brandName').populate('gender').lean()
-            res.render('userSide/singleProduct', { product, user, review, similiar })
-        })
+        productModel.findById(id).populate('brandName')
+            .populate('gender').lean().then(async product => {
+                let similiar = [] = await productModel.find({ deleteProduct: false, gender: product.gender._id, type: product.type, _id: { $ne: id }, quantity: { $gt: 1 } }, { imagesDetails: 1, brandName: 1, gender: 1, shopPrice: 1, review: 1, rating: 1 })
+                    .populate('brandName').populate('gender').lean()
+                res.render('userSide/singleProduct', { product, user, review, similiar })
+            })
     } catch (error) {
-        console.log(error)
+        next(error)
     }
 }
 
-exports.checkout = (req, res) => {
+exports.checkout = (req, res, next) => {
     try {
         let userId = req.session.user._id
         usermodel.findById(userId, { cart: 1, cartDiscout: 1 }).populate({ path: 'cart.product_id', model: 'Products', populate: { path: 'brandName', model: 'brandName' } })
@@ -106,10 +112,11 @@ exports.checkout = (req, res) => {
                     })
             })
     } catch (error) {
-        console.log(error)
+        next(error)
+        
     }
 }
-exports.product = (req, res) => {
+exports.product = (req, res, next) => {
     try {
         let type = req.params.name
         if (type == "Men") {
@@ -127,11 +134,13 @@ exports.product = (req, res) => {
                 res.render('userSide/productPage', { Products, gender: "Kid's", user })
             })
         }
+        else next() 
     } catch (error) {
-        console.log(error)
+        next(error) 
+        
     }
 }
-exports.allProduct = async (req, res) => {
+exports.allProduct = async (req, res, next) => {
     try {
         let gender = await genderModel.find()
         let brands = await brandModel.find()
@@ -141,14 +150,16 @@ exports.allProduct = async (req, res) => {
                 res.render('userSide/allProducts', { gender, user, brands })
             })
     } catch (error) {
-        console.log(error)
+        next(error)
+        
     }
 }
-exports.success = (req, res) => {
+exports.success = (req, res, next) => {
     try {
         res.render('userSide/success', { includes: true, user })
     } catch (error) {
-        console.log(error)
+        next(error)
+        
     }
 }
 
@@ -159,7 +170,7 @@ exports.success = (req, res) => {
 
 
 
-exports.loginPost = async (req, res) => {
+exports.loginPost = async (req, res, next) => {
     try {
         let response = null
         const user = await usermodel.findOne({ email: req.body.email })
@@ -177,10 +188,11 @@ exports.loginPost = async (req, res) => {
         } else response = "Invalid email"
         res.json({ response })
     } catch (error) {
-        console.log(error)
+        next(error)
+        
     }
 }
-exports.doSignup = async (req, res) => {
+exports.doSignup = async (req, res, next) => {
     try {
         if (req.session.user) res.redirect('/')
         else {
@@ -202,10 +214,11 @@ exports.doSignup = async (req, res) => {
             res.json({ response })
         }
     } catch (error) {
-        console.log(error)
+        next(error)
+        
     }
 }
-exports.otppageverify = async (req, res) => {
+exports.otppageverify = async (req, res, next) => {
     try {
         const { otp } = req.body;
         otpVeryfication(otp, userNumber).then(async (response) => {
@@ -222,25 +235,28 @@ exports.otppageverify = async (req, res) => {
             }
         })
     } catch (error) {
-        console.log(error)
+        next(error)
+        
     }
 }
-exports.OTPResend = (req, res) => {
+exports.OTPResend = (req, res, next) => {
     try {
         otpcallin(userNumber)
     } catch (error) {
-        console.log(error)
+        next(error)
+        
     }
 }
-exports.logout = (req, res) => {
+exports.logout = (req, res, next) => {
     try {
         req.session.user = false
         res.redirect('/')
     } catch (error) {
-        console.log(error)
+        next(error)
+        
     }
 }
-exports.forgetemail = (req, res) => {
+exports.forgetemail = (req, res, next) => {
     try {
         let response = null
         usermodel.findOne({ email: req.body.email }, { _id: 0, mobile: 1 }).then(user => {
@@ -252,10 +268,11 @@ exports.forgetemail = (req, res) => {
             }
         })
     } catch (error) {
-        console.log(error)
+        next(error)
+        
     }
 }
-exports.otpForget = (req, res) => {
+exports.otpForget = (req, res, next) => {
     try {
         let { otp, userNumber } = req.body;
         otpVeryfication(otp, userNumber).then((response) => {
@@ -266,10 +283,11 @@ exports.otpForget = (req, res) => {
             }
         })
     } catch (error) {
-        console.log(error)
+        next(error)
+        
     }
 }
-exports.changePassword = async (req, res) => {
+exports.changePassword = async (req, res, next) => {
     try {
         let { password, email } = req.body
         password = await bcrypt.hash(password, 10)
@@ -277,10 +295,11 @@ exports.changePassword = async (req, res) => {
             res.json()
         })
     } catch (error) {
-        console.log(error)
+        next(error)
+        
     }
 }
-exports.productFilter = (req, res) => {
+exports.productFilter = (req, res, next) => {
     try {
         let gender = req.query.gender
         let brand = req.query.brand
@@ -345,10 +364,11 @@ exports.productFilter = (req, res) => {
             }
         }
     } catch (error) {
-        console.log(error) 
+        next(error)
+        
     }
 }
-exports.verification = (req, res) => {
+exports.verification = (req, res, next) => {
     try {
         let userId = req.session.user._id
         let total = req.body.amount / 100
@@ -358,11 +378,12 @@ exports.verification = (req, res) => {
                 OrderPush(userId, id, total, 'Online').then(() => res.json({ status: true }))
             }).catch(error => res.json({ status: false, error: error.message }))
     } catch (error) {
-        console.log(error)
+        next(error)
+        
     }
 }
 
-exports.review = (req, res) => {
+exports.review = (req, res, next) => {
     try {
         let userId = req.session.user._id
         let { rating, review, id, title } = req.body
@@ -380,6 +401,7 @@ exports.review = (req, res) => {
             res.json()
         })
     } catch (error) {
-        console.log(error)
+        next(error)
+        
     }
 }

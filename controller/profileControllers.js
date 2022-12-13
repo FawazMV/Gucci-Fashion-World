@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 
 
 
-exports.myAccount = (req, res) => {
+exports.myAccount = (req, res, next) => {
     try {
         let user = req.session.user.name
         let userId = req.session.user._id
@@ -19,11 +19,11 @@ exports.myAccount = (req, res) => {
             res.render('userSide/myAccount', { user, userDetails, address })
         })
     } catch (error) {
-        console.log(error)
+        next(error)
     }
 }
 
-exports.addAddress = (req, res) => {
+exports.addAddress = (req, res, next) => {
     try {
         let userId = req.session.user._id
         let response = null
@@ -33,10 +33,10 @@ exports.addAddress = (req, res) => {
             })
         }).catch(error => res.json({ response: error.message }))
     } catch (error) {
-        console.log(error)
+        next(error)
     }
 }
-exports.getAddress = (req, res) => {
+exports.getAddress = (req, res, next) => {
     try {
         let userId = req.session.user._id
         let response = null
@@ -51,10 +51,10 @@ exports.getAddress = (req, res) => {
             else res.json({ response: "Please add your address" })
         }).catch(error => res.json({ response: error.message }))
     } catch (error) {
-        console.log(error)
+        next(error)
     }
 }
-exports.dafaultAddress = (req, res) => {
+exports.dafaultAddress = (req, res, next) => {
     try {
         let userId = req.session.user._id
         let address = null
@@ -71,20 +71,20 @@ exports.dafaultAddress = (req, res) => {
             })
         }).catch(error => res.json({ response: error.message }))
     } catch (error) {
-        console.log(error)
+        next(error)
     }
 }
-exports.deleteAddress = (req, res) => {
+exports.deleteAddress = (req, res, next) => {
     try {
         let userId = req.session.user._id
         usermodel.findByIdAndUpdate(userId, { $pull: { address: { _id: req.body.id } } }).then(() => {
             res.json({})
         })
     } catch (error) {
-        console.log(error)
+        next(error)
     }
 }
-exports.getEditAddress = (req, res) => {
+exports.getEditAddress = (req, res, next) => {
     try {
         let userId = req.session.user._id
         usermodel.aggregate([
@@ -94,21 +94,21 @@ exports.getEditAddress = (req, res) => {
             res.json({ address: result[0].address[0] })
         })
     } catch (error) {
-        console.log(error)
+        next(error)
     }
 }
-exports.updateAddress = (req, res) => {
+exports.updateAddress = (req, res, next) => {
     try {
         let userId = req.session.user._id
         usermodel.updateMany({ _id: mongoose.Types.ObjectId(userId), 'address._id': mongoose.Types.ObjectId(req.body.id) }, { $set: { 'address.$.firstname': req.body.firstname, 'address.$.lastname': req.body.lastname, 'address.$.address': req.body.address, 'address.$.city': req.body.city, 'address.$.state': req.body.state, 'address.$.pincode': req.body.pincode, 'address.$.phone': req.body.phone } }).then((() => {
             res.redirect('/checkout')
         }))
     } catch (error) {
-        console.log(error)
+        next(error)
     }
 }
 
-exports.mobileChange = async (req, res) => {
+exports.mobileChange = async (req, res, next) => {
     try {
         let num = await usermodel.findOne({ mobile: req.body.mobile })
         if (num) res.json({ response: false })
@@ -118,10 +118,10 @@ exports.mobileChange = async (req, res) => {
         }
     }
     catch (error) {
-        console.log(error)
+        next(error)
     }
 }
-exports.cofirmotp = (req, res) => {
+exports.cofirmotp = (req, res, next) => {
     try {
         let userId = req.session.user._id
         let { otp, userNumber } = req.body
@@ -136,11 +136,11 @@ exports.cofirmotp = (req, res) => {
         })
     }
     catch (error) {
-        console.log(error)
+        next(error)
     }
 }
 
-exports.updateProfile = async (req, res) => {
+exports.updateProfile = async (req, res, next) => {
     try {
         const { name, email } = req.body
         let userId = req.session.user._id
@@ -153,10 +153,10 @@ exports.updateProfile = async (req, res) => {
         }
     }
     catch (error) {
-        console.log(error)
+        next(error)
     }
 }
-exports.passwordUpdate = async (req, res) => {
+exports.passwordUpdate = async (req, res, next) => {
     try {
         let userId = req.session.user._id
         let { email, password } = await usermodel.findById(userId, { email: 1, password: 1 })
@@ -172,6 +172,6 @@ exports.passwordUpdate = async (req, res) => {
 
     }
     catch (error) {
-        console.log(error)
+        next(error)
     }
 }   

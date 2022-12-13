@@ -3,7 +3,7 @@ const { subTotal } = require("../helpers/order_Helpers")
 const productModel = require("../models/product-schema")
 const usermodel = require("../models/user-schema")
 
-exports.getCart = (req, res) => {
+exports.getCart = (req, res, next) => {
     try {
         let user = req.session.user.name
         let userId = req.session.user._id
@@ -14,11 +14,11 @@ exports.getCart = (req, res) => {
                 res.render('userSide/cart', { cartproduct, total, user })
             })
     } catch (error) {
-        console.log(error)  
+        next(error) 
     }
-} 
+}
 
-exports.addCart = async (req, res) => {
+exports.addCart = async (req, res, next) => {
     try {
         let userId = req.session.user._id
         let cart = await usermodel.findOne({ _id: userId, 'cart.product_id': req.body.id })
@@ -54,10 +54,10 @@ exports.addCart = async (req, res) => {
             }).catch(error => res.json({ response: error.message }))
         }
     } catch (error) {
-        console.log(error)
+        next(error)
     }
 }
-exports.quantityPlus = (req, res) => {
+exports.quantityPlus = (req, res, next) => {
     try {
         let userId = req.session.user._id
         productModel.findById(req.body.id, { quantity: 1, _id: -1, shopPrice: 1 }).then(pro => {
@@ -79,16 +79,16 @@ exports.quantityPlus = (req, res) => {
             }
         })
     } catch (error) {
-        console.log(error)
+        next(error)
     }
 }
-exports.cartDelete = (req, res) => {
+exports.cartDelete = (req, res, next) => {
     try {
         let userId = req.session.user._id
         usermodel.findByIdAndUpdate(userId, { $pull: { cart: { _id: req.body.id } } }).then(() => {
             res.json()
         })
     } catch (error) {
-        console.log(error)
+        next(error)
     }
 }

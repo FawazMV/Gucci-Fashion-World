@@ -8,7 +8,7 @@ const moment = require('moment')
 const coupn_Model = require("../models/coupen_schema")
 
 
-exports.orderPage = (async (req, res) => {
+exports.orderPage = (async (req, res, next) => {
     try {
         let user = req.session.user.name
         let userId = req.session.user._id
@@ -18,22 +18,22 @@ exports.orderPage = (async (req, res) => {
                 console.log(order)
                 res.render('userSide/orders', { user, order })
             })
-            .catch((error) => console.log(error))
+            .catch((error) => next(error))
     } catch (error) {
-        console.log(error)
+        next(error)
     }
 })
 
-exports.singleOrder = (async (req, res) => {
+exports.singleOrder = (async (req, res, next) => {
     try {
         let user = req.session.user.name
         let order = await orders_Model.findById(req.params.id).populate({ path: 'OrderDetails.product_id', model: 'Products', populate: { path: 'brandName', model: 'brandName' } }).sort({ _id: -1 })
         res.render('userSide/singleOrder', { user, order })
     } catch (error) {
-        console.log(error)
+        next(error)
     }
 })
-exports.placeOrder = async (req, res) => {
+exports.placeOrder = async (req, res, next) => {
     try {
         let userId = req.session.user._id
         let total = await subTotal(userId)
@@ -53,12 +53,12 @@ exports.placeOrder = async (req, res) => {
         }
     }
     catch (error) {
-        console.log(error)
+        next(error)
     }
 }
 
 
-exports.cancelOrder = async (req, res) => {
+exports.cancelOrder = async (req, res, next) => {
     try {
         let userId = req.session.user._id;
         let product = await orders_Model.aggregate([
@@ -94,11 +94,11 @@ exports.cancelOrder = async (req, res) => {
         res.json({ response: false, total: TotalPrice, date: C_date, finalPrice: finalPrice, discountPrice: discountPrice })
     }
     catch (error) {
-        console.log(error)
+        next(error)
     }
 }
 
-exports.coupenApply = (req, res) => {
+exports.coupenApply = (req, res, next) => {
     try {
         let userId = req.session.user._id;
         coupenCheck(req.body.code, userId).then((response) => {
@@ -110,10 +110,10 @@ exports.coupenApply = (req, res) => {
         })
     }
     catch (error) {
-        console.log(error)
+        next(error)
     }
 }
-exports.coupenSave = async (req, res) => {
+exports.coupenSave = async (req, res, next) => {
     try {
         let userId = req.session.user._id;
         if (req.body.code) {
@@ -123,6 +123,6 @@ exports.coupenSave = async (req, res) => {
         }
         res.json()
     } catch (error) {
-        console.log(error)
+        next(error)
     }
 }

@@ -32,7 +32,7 @@ router.post('/deleteBrandName', admin.deleteBrandName)
 router.put('/EditBrandName', admin.EditBrandName)
 
 router.get('/deleteProduct/:id', admin.deleteProduct)
-
+ 
 router.get('/editProduct/:id', admin.editPage)
 
 router.patch('/editProduct', fileUpload.upload.array('image', 4), admin.updateProduct)

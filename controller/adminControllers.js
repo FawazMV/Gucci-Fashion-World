@@ -16,7 +16,7 @@ let msg, product_id;
 
 module.exports = {
 
-    dashboard: async (req, res) => {
+    dashboard: async (req, res, next) => {
         try {
             let users = await usermodel.find({}).count()
             const DaysAgo = new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000);
@@ -36,10 +36,10 @@ module.exports = {
                         count: { $sum: 1 },
                     },
                 },
-            ]);  
+            ]);
             console.log(saleReport)
             if (saleReport.length) {
-                sales = saleReport[0].totalPrice      
+                sales = saleReport[0].totalPrice
                 orders = saleReport[0].count
             }
             let previous = await orders_Model.aggregate([
@@ -52,7 +52,7 @@ module.exports = {
                         totalPrice: { $sum: "$TotalPrice" },
                         count: { $sum: 1 },
                     },
-                }, 
+                },
             ]);
             if (previous.length && saleReport.length) {
                 let sum = (saleReport[0].totalPrice - previous[0].totalPrice) / 100
@@ -62,17 +62,17 @@ module.exports = {
             heading = "Overview"
             res.render('admin/dashboard', { admin: true, users, Overview: "active", heading, sales, orders, perfomance })
         } catch (error) {
-            console.log(error)
+            next(error)
         }
     },
-    adminlogin: (req, res) => {
+    adminlogin: (req, res, next) => {
         try {
             res.render('admin/adminlogin', { includes: true })
         } catch (error) {
-            console.log(error)
+            next(error)
         }
     },
-    adminloginPost: async (req, res) => {
+    adminloginPost: async (req, res, next) => {
         try {
             let response = null
             let user = await adminModel.findOne({ email: req.body.email })
@@ -82,17 +82,17 @@ module.exports = {
             } else response = true
             res.json({ response })
         } catch (error) {
-            console.log(error)
+            next(error)
         }
     },
-    userview: async (req, res) => {
+    userview: async (req, res, next) => {
         try {
             let users = await usermodel.find({})
             res.render('admin/userview', { admin: true, users, Clients: "active", heading: "Users" })
         } catch (error) {
-            console.log(error)
+            next(error)
         }
-    }, salesReport: async (req, res) => {
+    }, salesReport: async (req, res, next) => {
         let saleReport = []
         const todayDate = new Date();
         const DaysAgo = new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000);
@@ -108,43 +108,43 @@ module.exports = {
                 },
             },
         ]);
-        res.render('admin/salesReport', { saleReport, admin: true,  heading: "Sales Report" })
+        res.render('admin/salesReport', { saleReport, admin: true, heading: "Sales Report" })
     },
-    blockUser: async (req, res) => {
+    blockUser: async (req, res, next) => {
         try {
             await usermodel.findByIdAndUpdate(req.params.id, { isBanned: true }, { new: true })
             res.redirect('/admin/users')
         } catch (error) {
-            console.log(error)
+            next(error)
         }
     },
-    unblockUser: async (req, res) => {
+    unblockUser: async (req, res, next) => {
         try {
             await usermodel.findByIdAndUpdate(req.params.id, { isBanned: false }, { new: true })
             res.redirect('/admin/users')
         } catch (error) {
-            console.log(error)
+            next(error)
         }
     },
-    productsView: async (req, res) => {
+    productsView: async (req, res, next) => {
         try {
             let products = await productModel.find({ deleteProduct: false }).populate('brandName').populate('gender').lean()
             res.render('admin/products', { admin: true, products, Products: "active", heading: "Products" })
         } catch (error) {
-            console.log(error)
+            next(error)
         }
     },
-    addProduct: async (req, res) => {
+    addProduct: async (req, res, next) => {
         try {
             let brandName = await brandModel.find({}).lean()
             let gender = await genderModel.find({}).lean()
             res.render('admin/addProduct', { admin: true, heading: "Add Product", brandName, gender, msg, add: "active" })
             msg = false
         } catch (error) {
-            console.log(error)
+            next(error)
         }
     },
-    addProductPost: async (req, res) => {
+    addProductPost: async (req, res, next) => {
         try {
             // console.log(req.body)
             // console.log(req.files)
@@ -154,33 +154,33 @@ module.exports = {
             console.log(product)
             productModel.create(product).then(() => {
                 res.json({ success: true })
-            }).catch(error => console.log(error))
+            }).catch(error => next(error))
         } catch (error) {
-            console.log(error)
+            next(error)
         }
     },
-    addBrandName: async (req, res) => {
+    addBrandName: async (req, res, next) => {
         try {
             let brandName = await brandModel.find({})
             res.render('admin/BrandName', { admin: true, heading: "Brand Names", brandName })
         } catch (error) {
-            console.log(error)
+            next(error)
         }
     },
-    BrandNameUpdate: (req, res) => {
+    BrandNameUpdate: (req, res, next) => {
         try {
             brandName = req.body.brandName.toUpperCase()
             brandModel.create({ brandName: brandName }).then(() => {
-                res.redirect('/admin/addBrandName')
+                res.json()
             }).catch(error => {
-                console.log(error)
-                res.redirect('/admin/addBrandName')
+                next(error)
+                //res.redirect('/admin/addBrandName')
             })
         } catch (error) {
-            console.log(error)
+            next(error)
         }
     },
-    deleteBrandName: async (req, res) => {
+    deleteBrandName: async (req, res, next) => {
         try {
             let id = req.body.id
             let response;
@@ -189,36 +189,33 @@ module.exports = {
             else {
                 brandModel.findByIdAndDelete(id).then(() => {
                     res.json({ response: true })
-                }).catch(error => console.log(error))
+                }).catch(error => next(error))
             }
         } catch (error) {
-            console.log(error)
+            next(error)
         }
     },
-    EditBrandName: (req, res) => {
+    EditBrandName: (req, res, next) => {
         try {
             let id = req.body.id
             let brandName = req.body.brandName.toUpperCase()
             brandModel.findByIdAndUpdate(req.body.id, { brandName: brandName }).then(() => {
                 res.json({ response: true })
-            }).catch(error => {
-                console.log(error)
-                res.json({ response: false })
-            })
+            }).catch(error => next(error))
         } catch (error) {
-            console.log(error)
+            next(error)
         }
     }
     ,
-    deleteProduct: async (req, res) => {
+    deleteProduct: async (req, res, next) => {
         try {
             await productModel.findByIdAndUpdate(req.params.id, { deleteProduct: true }, { new: true })
             res.redirect('/admin/Products')
         } catch (error) {
-            console.log(error)
+            next(error)
         }
     },
-    editPage: async (req, res) => {
+    editPage: async (req, res, next) => {
         try {
             product_id = req.params.id
             let gender = await genderModel.find({}).lean()
@@ -226,10 +223,10 @@ module.exports = {
             let brandName = await brandModel.find({})
             res.render('admin/editProduct', { admin: true, heading: "Edit Product", brandName, product, gender })
         } catch (error) {
-            console.log(error)
+            next(error)
         }
     },
-    updateProduct: async (req, res) => {
+    updateProduct: async (req, res, next) => {
         try {
             let product = req.body
             console.log(product)
@@ -245,22 +242,22 @@ module.exports = {
             productModel.findByIdAndUpdate(product_id, product).then(() => {
                 res.json({ success: true })
             }).catch(error => {
-                console.log(error)
+                next(error)
                 res.redirect('/admin/Products')
             })
         } catch (error) {
-            console.log(error)
+            next(error)
         }
     },
-    genderType: async (req, res) => {
+    genderType: async (req, res, next) => {
         try {
             let gender = await genderModel.find({})
             res.render('admin/gender', { admin: true, heading: "Gender Types", gender })
         } catch (error) {
-            console.log(error)
+            next(error)
         }
     },
-    genderTypeAdd: async (req, res) => {
+    genderTypeAdd: async (req, res, next) => {
         try {
             let category = req.body
             const file = req.files[0];
@@ -269,14 +266,14 @@ module.exports = {
             genderModel.create(category).then(() => {
                 res.redirect('/admin/genderType')
             }).catch(error => {
-                console.log(error)
+                next(error)
                 res.redirect('/admin/genderType')
             })
         } catch (error) {
-            console.log(error)
+            next(error)
         }
     },
-    deleteGender: async (req, res) => {
+    deleteGender: async (req, res, next) => {
         try {
             let id = req.body.id
             let response;
@@ -290,17 +287,17 @@ module.exports = {
                     genderModel.findByIdAndDelete(id).then(() => {
                         res.json({ response: true })
                     }).catch(error => {
-                        console.log(error)
+                        next(error)
                         res.redirect('/admin/genderType')
                     })
                 })
             }
         } catch (error) {
-            console.log(error)
+            next(error)
         }
 
     },
-    editGender: async (req, res) => {
+    editGender: async (req, res, next) => {
         try {
             let category = { gender: req.body.gender }
             id = req.body.id
@@ -316,14 +313,14 @@ module.exports = {
             genderModel.findByIdAndUpdate(id, category).then(() => {
                 res.redirect('/admin/genderType')
             }).catch(error => {
-                console.log(error)
+                next(error)
                 res.redirect('/admin/genderType')
             })
         } catch (error) {
-            console.log(error)
+            next(error)
         }
     },
-    single: (req, res) => {
+    single: (req, res, next) => {
         try {
             id = req.params.id
             productModel.findById(id).populate('brandName').populate('gender').then((product) => {
@@ -331,19 +328,19 @@ module.exports = {
                 res.render('admin/viewSingle', { admin: true, product })
             })
         } catch (error) {
-            console.log(error)
+            next(error)
         }
     },
-    orders: async (req, res) => {
+    orders: async (req, res, next) => {
         try {
             let order = await orders_Model.find().populate('User', "email").sort({ createdAt: -1 })
             let heading = 'Orders'
             res.render('admin/orders', { admin: true, Orders: "active", heading, order })
         } catch (error) {
-            console.log(error)
+            next(error)
         }
     },
-    deliveryStatus: async (req, res) => {
+    deliveryStatus: async (req, res, next) => {
         try {
             let status = req.body.value
             let date = moment(Date.now()).format('DD-MM-YYYY')
@@ -392,35 +389,35 @@ module.exports = {
             }
             res.json()
         } catch (error) {
-            console.log(error)
+            next(error)
         }
     },
-    coupen: async (req, res) => {
+    coupen: async (req, res, next) => {
         try {
             heading = "Coupens"
             let coupenss = []
             coupenss = await coupn_Model.find()
             res.render('admin/coupen', { admin: true, Coupens: "active", heading, coupenss })
         } catch (error) {
-            console.log(error)
+            next(error)
         }
     },
-    addCoupen: (req, res) => {
+    addCoupen: (req, res, next) => {
         try {
             coupn_Model.create(req.body).then(() => res.json())
         } catch (error) {
-            console.log(error)
+            next(error)
         }
     },
-    coupenStatus: (req, res) => {
+    coupenStatus: (req, res, next) => {
         try {
             coupn_Model.findByIdAndUpdate(req.body.id, { $set: { coupen_status: req.body.value } })
                 .then(() => res.json())
         } catch (error) {
-            console.log(error)
+            next(error)
         }
     },
-    orderDetail: (req, res) => {
+    orderDetail: (req, res, next) => {
         try {
             console.log(req.query.id)
             orders_Model.findById(req.query.id).populate({ path: 'OrderDetails.product_id', model: 'Products', populate: { path: 'brandName', model: 'brandName' } }).populate('User', 'email')
@@ -429,10 +426,10 @@ module.exports = {
                     res.json(orderDetail)
                 })
         } catch (error) {
-            console.log(error)
+            next(error)
         }
     },
-    getDetails: async (req, res) => {
+    getDetails: async (req, res, next) => {
         try {
             let todayDate = new Date();
             let DaysAgo = new Date(new Date().getTime() - 1 * 24 * 60 * 60 * 1000);
@@ -493,10 +490,10 @@ module.exports = {
             }
             console.log(sales)
             console.log(prevsales)
-            res.json({sales: sales, prevsales: prevsales})
+            res.json({ sales: sales, prevsales: prevsales })
         }
         catch (error) {
-            console.log(error)
+            next(error)
         }
 
     }

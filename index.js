@@ -8,7 +8,7 @@ const logger = require('morgan')
 const multer = require('multer')
 //const multers3 = require('multer-s3')
 const homeRouter = require('./routes/home')
-const adminRouter = require('./routes/admin') 
+const adminRouter = require('./routes/admin')
 
 const connectDB = require('./models/connection')
 const DATABASE_URL = process.env.DATABASE_URL
@@ -38,14 +38,22 @@ app.use(express.static('public'))
 //app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-  
+
 
 app.use('/', homeRouter)
 app.use('/admin', adminRouter)
-app.use((req, res) => {
-    res.status(404).send('<h1>Page not Found <h1>')
+app.use((err, req, res, next) => {
+    // console.log(err) 
+    if (err.code === 11000) {
+        res.json({ error: 'Duplicate found' })
+    } else {
+        res.render('userSide/404', { includes: true })
+    } 
 })
-  
+app.use((req, res) => {
+    res.render('userSide/404', { includes: true })
+})
+
 
 app.listen(process.env.PORT || 4444, () => {
     console.log('Server connected successfully');
@@ -53,4 +61,3 @@ app.listen(process.env.PORT || 4444, () => {
 
 
 
-        
