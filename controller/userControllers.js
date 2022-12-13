@@ -27,7 +27,7 @@ exports.signup = (req, res, next) => {
         res.render('userSide/signup', { includes: true })
     } catch (error) {
         next(error)
-        
+
     }
 }
 exports.login = (req, res, next) => {
@@ -35,7 +35,7 @@ exports.login = (req, res, next) => {
         res.render('userSide/userlogin', { includes: true })
     } catch (error) {
         next(error)
-        
+
     }
 }
 exports.forgetPassword = (req, res, next) => {
@@ -43,7 +43,7 @@ exports.forgetPassword = (req, res, next) => {
         res.render('userSide/forget', { includes: true })
     } catch (error) {
         next(error)
-        
+
     }
 }
 exports.home = async (req, res, next) => {
@@ -58,10 +58,9 @@ exports.home = async (req, res, next) => {
             catagories.splice(4)
             user = req.session.user
             res.render('userSide/homepage', { admin: false, Products, catagories, user })
-        })
+        }).catch(error => next(error))
     } catch (error) {
         next(error)
-        
     }
 }
 exports.otppage = (req, res, next) => {
@@ -70,7 +69,7 @@ exports.otppage = (req, res, next) => {
         else res.redirect('/login')
     } catch (error) {
         next(error)
-        
+
     }
 }
 exports.singleProduct = async (req, res, next) => {
@@ -82,7 +81,7 @@ exports.singleProduct = async (req, res, next) => {
                 let similiar = [] = await productModel.find({ deleteProduct: false, gender: product.gender._id, type: product.type, _id: { $ne: id }, quantity: { $gt: 1 } }, { imagesDetails: 1, brandName: 1, gender: 1, shopPrice: 1, review: 1, rating: 1 })
                     .populate('brandName').populate('gender').lean()
                 res.render('userSide/singleProduct', { product, user, review, similiar })
-            })
+            }).catch(error => next(error))
     } catch (error) {
         next(error)
     }
@@ -110,48 +109,48 @@ exports.checkout = (req, res, next) => {
                         }
                         res.render('userSide/checkout', { cartproduct, total, discount, aftTotal, user, address: result[0].address[0] })
                     })
-            })
+            }).catch(error => next(error))
     } catch (error) {
         next(error)
-        
+
     }
 }
 exports.product = (req, res, next) => {
     try {
         let type = req.params.name
         if (type == "Men") {
-            productModel.find({ gender: "63715c17b25596686e476c80" }).populate('brandName').then(Products => {
+            productModel.find({ deleteProduct: false, gender: "63715c17b25596686e476c80" }).populate('brandName').then(Products => {
                 res.render('userSide/productPage', { Products, gender: "Men's", user })
-            })
+            }).catch(error => next(error))
         }
-        if (type == "Women") {
-            productModel.find({ gender: "637152ce800cd5eacd462106" }).populate('brandName').then(Products => {
+        else if (type == "Women") {
+            productModel.find({ deleteProduct: false, gender: "637152ce800cd5eacd462106" }).populate('brandName').then(Products => {
                 res.render('userSide/productPage', { Products, gender: "Women's", user })
-            })
+            }).catch(error => next(error))
         }
-        if (type == "Kid") {
-            productModel.find({ gender: "6371ae2419e01e8eec6e14c5" }).populate('brandName').then(Products => {
+        else if (type == "Kid") {
+            productModel.find({ deleteProduct: false, gender: "6371ae2419e01e8eec6e14c5" }).populate('brandName').then(Products => {
                 res.render('userSide/productPage', { Products, gender: "Kid's", user })
-            })
+            }).catch(error => next(error))
         }
-        else next() 
+        else next()
     } catch (error) {
-        next(error) 
-        
+        next(error)
+
     }
 }
 exports.allProduct = async (req, res, next) => {
     try {
-        let gender = await genderModel.find()
-        let brands = await brandModel.find()
-        productModel.find().populate('brandName').populate('gender').sort({ createdAt: -1 })
+        let gender = await genderModel.find().catch(error => next(error))
+        let brands = await brandModel.find().catch(error => next(error))
+        productModel.find({ deleteProduct: false }).populate('brandName').populate('gender').sort({ createdAt: -1 })
             .then(Products => {
                 res.locals.Products = Products
                 res.render('userSide/allProducts', { gender, user, brands })
-            })
+            }).catch(error => next(error))
     } catch (error) {
         next(error)
-        
+
     }
 }
 exports.success = (req, res, next) => {
@@ -159,7 +158,6 @@ exports.success = (req, res, next) => {
         res.render('userSide/success', { includes: true, user })
     } catch (error) {
         next(error)
-        
     }
 }
 
@@ -173,7 +171,7 @@ exports.success = (req, res, next) => {
 exports.loginPost = async (req, res, next) => {
     try {
         let response = null
-        const user = await usermodel.findOne({ email: req.body.email })
+        const user = await usermodel.findOne({ email: req.body.email }).catch(error => next(error))
         if (user) {
             await bcrypt.compare(req.body.password, user.password).then(status => {
                 if (status) {
@@ -184,12 +182,12 @@ exports.loginPost = async (req, res, next) => {
                     }
                 }
                 else response = "Invalid password"
-            })
+            }).catch(error => next(error))
         } else response = "Invalid email"
         res.json({ response })
     } catch (error) {
         next(error)
-        
+
     }
 }
 exports.doSignup = async (req, res, next) => {
@@ -209,13 +207,12 @@ exports.doSignup = async (req, res, next) => {
                 response = null
                 otpcallin(userNumber)
                 req.session.otp = true
-                // res.redirect('/otp')
             }
             res.json({ response })
         }
     } catch (error) {
         next(error)
-        
+
     }
 }
 exports.otppageverify = async (req, res, next) => {
@@ -233,10 +230,10 @@ exports.otppageverify = async (req, res, next) => {
             } else {
                 res.json({ response: false })
             }
-        })
+        }).catch(error => next(error))
     } catch (error) {
         next(error)
-        
+
     }
 }
 exports.OTPResend = (req, res, next) => {
@@ -244,7 +241,7 @@ exports.OTPResend = (req, res, next) => {
         otpcallin(userNumber)
     } catch (error) {
         next(error)
-        
+
     }
 }
 exports.logout = (req, res, next) => {
@@ -253,7 +250,7 @@ exports.logout = (req, res, next) => {
         res.redirect('/')
     } catch (error) {
         next(error)
-        
+
     }
 }
 exports.forgetemail = (req, res, next) => {
@@ -266,10 +263,10 @@ exports.forgetemail = (req, res, next) => {
             } else {
                 res.json({ response: 'Email id not found' })
             }
-        })
+        }).catch(error => next(error))
     } catch (error) {
         next(error)
-        
+
     }
 }
 exports.otpForget = (req, res, next) => {
@@ -281,10 +278,9 @@ exports.otpForget = (req, res, next) => {
             } else {
                 res.json({ response: false })
             }
-        })
+        }).catch(error => next(error))
     } catch (error) {
         next(error)
-        
     }
 }
 exports.changePassword = async (req, res, next) => {
@@ -292,11 +288,11 @@ exports.changePassword = async (req, res, next) => {
         let { password, email } = req.body
         password = await bcrypt.hash(password, 10)
         usermodel.updateOne({ email: email }, { $set: { password: password } }).then((e) => {
-            res.json()
-        })
+            res.json({ succ: true })
+        }).catch(error => next(error))
     } catch (error) {
         next(error)
-        
+
     }
 }
 exports.productFilter = (req, res, next) => {
@@ -306,66 +302,68 @@ exports.productFilter = (req, res, next) => {
         let sortt = req.query.sortt
         if (sortt == "shopPrice") {
             if (!gender && !brand) {
-                productModel.find({}).populate('brandName').populate('gender').sort({ shopPrice: -1, }).
+                productModel.find({ deleteProduct: false }).populate('brandName').populate('gender').sort({ shopPrice: -1, }).
                     then(Products => {
                         res.json({ Products: Products })
-                    })
+                    }).catch(error => next(error))
             } else if (!gender) {
-                productModel.find({ brandName: { $in: brand } }).populate('brandName').populate('gender').sort({ shopPrice: -1 }).
+                productModel.find({ deleteProduct: false, brandName: { $in: brand } }).populate('brandName').populate('gender').sort({ shopPrice: -1 }).
                     then(Products => {
                         res.json({ Products: Products })
-                    })
+                    }).catch(error => next(error))
             } else if (!brand) {
-                productModel.find({ gender: { $in: gender } }).populate('brandName').populate('gender').sort({ shopPrice: -1 }).
+                productModel.find({ deleteProduct: false, gender: { $in: gender } }).populate('brandName').populate('gender').sort({ shopPrice: -1 }).
                     then(Products => {
                         res.json({ Products: Products })
-                    })
+                    }).catch(error => next(error))
             }
             else {
                 productModel.find({
                     $and: [
+                        { deleteProduct: false },
                         { gender: { "$in": gender } },
                         { brandName: { "$in": brand } }
                     ]
                 }).populate('brandName').populate('gender').sort({ shopPrice: -1 }).
                     then(Products => {
                         res.json({ Products: Products })
-                    })
+                    }).catch(error => next(error))
             }
         }
         else {
             if (!gender && !brand) {
-                productModel.find({}).populate('brandName').populate('gender').sort({ createdAt: -1 }).
+                productModel.find({ deleteProduct: false }).populate('brandName').populate('gender').sort({ createdAt: -1 }).
                     then(Products => {
                         res.json({ Products: Products })
-                    })
+                    }).catch(error => next(error))
 
             } else if (!gender) {
-                productModel.find({ brandName: { $in: brand } }).populate('brandName').populate('gender').sort({ createdAt: -1 }).
+                productModel.find({ deleteProduct: false, brandName: { $in: brand } }).populate('brandName').populate('gender').sort({ createdAt: -1 }).
                     then(Products => {
                         res.json({ Products: Products })
-                    })
+                    }).catch(error => next(error))
             } else if (!brand) {
-                productModel.find({ gender: { $in: gender } }).populate('brandName').populate('gender').sort({ createdAt: -1 }).
+                productModel.find({ deleteProduct: false, gender: { $in: gender } }).populate('brandName').populate('gender').sort({ createdAt: -1 }).
                     then(Products => {
                         res.json({ Products: Products })
-                    })
+                    }).catch(error => next(error))
             }
             else {
                 productModel.find({
                     $and: [
+                        { deleteProduct: false },
                         { gender: { "$in": gender } },
                         { brandName: { "$in": brand } }
                     ]
                 }).populate('brandName').populate('gender').sort({ createdAt: -1 }).
                     then(Products => {
                         res.json({ Products: Products })
-                    })
+                    }).catch(error => next(error))
             }
         }
     } catch (error) {
         next(error)
-        
+
     }
 }
 exports.verification = (req, res, next) => {
@@ -379,7 +377,6 @@ exports.verification = (req, res, next) => {
             }).catch(error => res.json({ status: false, error: error.message }))
     } catch (error) {
         next(error)
-        
     }
 }
 
@@ -399,9 +396,9 @@ exports.review = (req, res, next) => {
             if (rat.rating) rating = (rating + rat.rating) / 2
             await productModel.findByIdAndUpdate(id, { $inc: { review: 1, }, $set: { rating: rating } })
             res.json()
-        })
+        }).catch(error => next(error))
     } catch (error) {
         next(error)
-        
+
     }
 }

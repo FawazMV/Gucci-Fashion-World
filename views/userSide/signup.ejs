@@ -2,212 +2,225 @@
 <html lang="en">
 
 <head>
-    <!-- Required meta tags-->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Colorlib Templates">
-    <meta name="author" content="Colorlib">
-    <meta name="keywords" content="Colorlib Templates">
+  <!-- Required meta tags-->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Colorlib Templates">
+  <meta name="author" content="Colorlib">
+  <meta name="keywords" content="Colorlib Templates">
 
-    <!-- Title Page-->
-    <title>Au Register Forms by Colorlib</title>
+  <!-- Title Page-->
+  <title>Au Register Forms by Colorlib</title>
 
-    <!-- Icons font CSS-->
-    <link href="vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
-    <link href="vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
-    <!-- Font special for pages-->
-    <link
-        href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
+  <!-- Icons font CSS-->
+  <link href="vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
+  <link href="vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
+  <!-- Font special for pages-->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
-    <!-- Vendor CSS-->
-    <link href="vendor/select2/select2.min.css" rel="stylesheet" media="all">
-    <link href="vendor/datepicker/daterangepicker.css" rel="stylesheet" media="all">
+  <!-- Vendor CSS-->
+  <link href="vendor/select2/select2.min.css" rel="stylesheet" media="all">
+  <link href="vendor/datepicker/daterangepicker.css" rel="stylesheet" media="all">
 
-    <!-- Main CSS-->
-    <link href="css/main.css" rel="stylesheet" media="all">
+  <!-- Main CSS-->
+  <link href="css/main.css" rel="stylesheet" media="all">
 </head>
 
 <body>
-    <%- include('../userSide/includes/navbar') %>
-        <div class="p-t-100 font-poppins ml-auto">
-            <div class="wrapper wrapper--w780 mt-4 mb-0 px-5">
-                <div class="card card-3">
-                    <div class="card-body px-5 mb-0 ">
-                        <div class="alert alert-danger mt-0 mb-2" style="display:none;" id="errmsg" role="alert">
-                        </div>
-                        <h2 class="title">Sign Up</h2>
+  <%- include('../userSide/includes/navbar') %>
+  <div class="p-t-100 font-poppins ml-auto">
+    <div class="wrapper wrapper--w780 mt-4 mb-0 px-5">
+      <div class="card card-3">
+        <div class="card-body px-5 mb-0 ">
+          <div class="alert alert-danger mt-0 mb-2" style="display:none;" id="errmsg" role="alert">
+          </div>
+          <h2 class="title">Sign Up</h2>
 
-<%- locals.abcd %> 
+          <%- locals.abcd %>
 
-                        <form method="post" action="/signup" name="validationform">
+          <form method="post" action="/signup" name="validationform">
 
-                            <div class="mb-0 input-group">
-                                <input class=" input--style-3" type="text" placeholder="Full Name" name="name"
-                                    onkeyup="onkey()" onkeydown="return /[a-z]/i.test(event.key)" id="nameid">
+            <div class="mb-0 input-group">
+              <input class=" input--style-3" type="text" placeholder="Full Name" name="name" onkeyup="onkey()" onkeydown="return /[a-z]/i.test(event.key)" id="nameid">
 
-                            </div>
-                            <p class="text-danger fw-light opacity-75" id="nameidwarning"></p>
-
-                            <div class="mt-3 mb-0 input-group">
-                                <input class="input--style-3 js-datepicker" type="email" placeholder="Email"
-                                    name="email" id="EmailId" onkeyup="emailkey()" pattern="">
-                            </div>
-
-                            <p class="text-danger fw-light opacity-75" id="emailidwarning"></p>
-
-                            <div class="mt-3 mb-0 input-group">
-                                <input class="input--style-3 js-datepicker" type="phone" placeholder="Mobile Number"
-                                    onkeypress="return isNumberKey(event)" onkeyup="mobilekey()" name="mobile"
-                                    id="mobileID">
-                            </div>
-
-                            <p class="text-danger fw-light opacity-75" id="mobileidwarning"></p>
-
-                            <div class="mt-3 mb-0 input-group">
-                                <input class="input--style-3" type="password" onkeyup="passwordkey()"
-                                    placeholder="Password" name="password" id="password1Id">
-                            </div>
-
-                            <p class="text-danger fw-light opacity-75" id="passwordidwarning"></p>
-
-                            <div class="mt-3 mb-0 input-group">
-                                <input class="input--style-3" type="password" placeholder="Confirm Password"
-                                    onkeyup="confirmkey()" id="password2Id">
-                            </div>
-
-                            <p class="text-danger fw-light opacity-75" id="password2idwarning"></p>
-
-                            <div class="mt-3 mb-0 p-t-10">
-                                <button class="btn btn--pill btn--green" onclick="validatesignup()" type="submit">Sign
-                                    Up</button>
-                            </div>
-                        </form>
-                        <p class="pb-lg-2 mb-0 mt-3" style="color: rgb(157, 154, 154);">Already have an account
-                            ? <a href="/login" style="color: #393f81;">Click here</a></p>
-
-
-                    </div>
-
-                </div>
             </div>
+            <p class="text-danger fw-light opacity-75" id="nameidwarning"></p>
+
+            <div class="mt-3 mb-0 input-group">
+              <input class="input--style-3 js-datepicker" type="email" placeholder="Email" name="email" id="EmailId" onkeyup="emailkey()" pattern="">
+            </div>
+
+            <p class="text-danger fw-light opacity-75" id="emailidwarning"></p>
+
+            <div class="mt-3 mb-0 input-group">
+              <input class="input--style-3 js-datepicker" type="phone" placeholder="Mobile Number" onkeypress="return isNumberKey(event)" onkeyup="mobilekey()" name="mobile" id="mobileID">
+            </div>
+
+            <p class="text-danger fw-light opacity-75" id="mobileidwarning"></p>
+
+            <div class="mt-3 mb-0 input-group">
+              <input class="input--style-3" type="password" onkeyup="passwordkey()" placeholder="Password" name="password" id="password1Id">
+            </div>
+
+            <p class="text-danger fw-light opacity-75" id="passwordidwarning"></p>
+
+            <div class="mt-3 mb-0 input-group">
+              <input class="input--style-3" type="password" placeholder="Confirm Password" onkeyup="confirmkey()" id="password2Id">
+            </div>
+
+            <p class="text-danger fw-light opacity-75" id="password2idwarning"></p>
+
+            <div class="mt-3 mb-0 p-t-10">
+              <button class="btn btn--pill btn--green" onclick="validatesignup()" type="submit">Sign
+                Up</button>
+            </div>
+          </form>
+          <p class="pb-lg-2 mb-0 mt-3" style="color: rgb(157, 154, 154);">Already have an account
+            ? <a href="/login" style="color: #393f81;">Click here</a></p>
+
+
         </div>
 
-        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-       
-        <script>
+      </div>
+    </div>
+  </div>
 
-            let name = document.getElementById('nameid'), email = document.getElementById('EmailId'), mobile = document.getElementById('mobileID');
-            let password = document.getElementById('password1Id'), password2 = document.getElementById('password2Id'), namewarning = document.getElementById('nameidwarning');
-            let emailwarning = document.getElementById('emailidwarning'), mobilewarning = document.getElementById('mobileidwarning');
-            let passwordwarning = document.getElementById('passwordidwarning'), password2warning = document.getElementById('password2idwarning');
-            function validatesignup() {
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
-                namewarning.innerHTML = ""; emailwarning.innerHTML = ""; mobilewarning.innerHTML = "";
-                passwordwarning.innerHTML = ""; password2warning.innerHTML = "";
-                event.preventDefault();
-                let form = event.target.form;
-                let validation = true;
+  <script>
+    let name = document.getElementById('nameid'),
+      email = document.getElementById('EmailId'),
+      mobile = document.getElementById('mobileID');
+    let password = document.getElementById('password1Id'),
+      password2 = document.getElementById('password2Id'),
+      namewarning = document.getElementById('nameidwarning');
+    let emailwarning = document.getElementById('emailidwarning'),
+      mobilewarning = document.getElementById('mobileidwarning');
+    let passwordwarning = document.getElementById('passwordidwarning'),
+      password2warning = document.getElementById('password2idwarning');
 
-                if (name.value === "") {
-                    namewarning.innerHTML = "Please enter your name"
-                    validation = false
-                } else if (name.value.length < 4 || name.value.length > 20) {
-                    namewarning.innerHTML = "Please enter your full name"
-                    validation = false
-                }
-                if (email.value === "") {
-                    emailwarning.innerHTML = "Please enter your email id"
-                    validation = false
-                } else {
-                    var validRegex = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-                    if (!email.value.match(validRegex) || email.value.length > 20) {
-                        emailwarning.innerHTML = "email id is not in valid format"
-                        validation = false
-                    } else {
-                        let check = email.value.split("")
-                        if (!isNaN(check[0])) {
-                            emailwarning.innerHTML = "email id is not in valid format"
-                            validation = false
-                        }
-                    }
-                }
-                if (mobile.value === "") {
-                    mobilewarning.innerHTML = "Please enter your mobile number"
-                    validation = false
-                } else if (mobile.value.length != 10) {
-                    mobilewarning.innerHTML = "Mobile number is not in valid format"
-                    validation = false
-                }
+    function validatesignup() {
 
-                if (password.value === "") {
-                    passwordwarning.innerHTML = "Please enter a password"
-                    validation = false
-                } else if (password.value.length < 6 || password.value.length > 12) {
-                    passwordwarning.innerHTML = "Password should be between 6 to 12 letters"
-                    validation = false
-                } else if (password2.value === "") {
-                    password2warning.innerHTML = "Please confirm your password"
-                    validation = false
-                } else if (password.value != password2.value) {
-                    password2warning.innerHTML = "Password confirmation is failed"
-                    validation = false
-                } if (validation) {
-                    try {
-                        axios.post('/signup', { email: email.value, mobile: mobile.value,password:password.value, name:name.value }).then((e) => {
-                            if (!e.data.response) {
-                                form.submit();
-                                location.href = "/otp"
-                            } else {
-                                errmsg.style.display = "block"
-                                document.getElementById("errmsg").innerHTML = e.data.response
-                            }
-                        })  
-                    } catch (error) {
-                        console.log(error)
-                    }
-                }
+      namewarning.innerHTML = "";
+      emailwarning.innerHTML = "";
+      mobilewarning.innerHTML = "";
+      passwordwarning.innerHTML = "";
+      password2warning.innerHTML = "";
+      event.preventDefault();
+      let form = event.target.form;
+      let validation = true;
 
+      if (name.value === "") {
+        namewarning.innerHTML = "Please enter your name"
+        validation = false
+      } else if (name.value.length < 4 || name.value.length > 20) {
+        namewarning.innerHTML = "Please enter your full name"
+        validation = false
+      }
+      if (email.value === "") {
+        emailwarning.innerHTML = "Please enter your email id"
+        validation = false
+      } else {
+        var validRegex = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+        if (!email.value.match(validRegex) || email.value.length > 20) {
+          emailwarning.innerHTML = "email id is not in valid format"
+          validation = false
+        } else {
+          let check = email.value.split("")
+          if (!isNaN(check[0])) {
+            emailwarning.innerHTML = "email id is not in valid format"
+            validation = false
+          }
+        }
+      }
+      if (mobile.value === "") {
+        mobilewarning.innerHTML = "Please enter your mobile number"
+        validation = false
+      } else if (mobile.value.length != 10) {
+        mobilewarning.innerHTML = "Mobile number is not in valid format"
+        validation = false
+      }
+
+      if (password.value === "") {
+        passwordwarning.innerHTML = "Please enter a password"
+        validation = false
+      } else if (password.value.length < 6 || password.value.length > 12) {
+        passwordwarning.innerHTML = "Password should be between 6 to 12 letters"
+        validation = false
+      } else if (password2.value === "") {
+        password2warning.innerHTML = "Please confirm your password"
+        validation = false
+      } else if (password.value != password2.value) {
+        password2warning.innerHTML = "Password confirmation is failed"
+        validation = false
+      }
+      if (validation) {
+        try {
+          axios.post('/signup', {
+            email: email.value,
+            mobile: mobile.value,
+            password: password.value,
+            name: name.value
+          }).then((e) => {
+            if (e.data.error) {
+              document.getElementById("errmsg").innerHTML = error
             }
-
-            function emailkey() {
-                emailwarning.innerHTML = ""
+            if (!e.data.response) {
+              form.submit();
+              location.href = "/otp"
+            } else {
+              errmsg.style.display = "block"
+              document.getElementById("errmsg").innerHTML = e.data.response
             }
+          })
+        } catch (error) {
+          console.log(error)
+        }
+      }
 
-            function passwordkey() {
-                passwordwarning.innerHTML = ""
-            }
-            function confirmkey() {
-                password2warning.innerHTML = ""
-            }
-            function mobilekey() {
-                mobilewarning.innerHTML = ""
-            }
+    }
 
-            function onkey() {
-                namewarning.innerHTML = ""
-            }
-            function isNumberKey(evt) {
-                var charCode = (evt.which) ? evt.which : evt.keyCode
-                if (charCode > 31 && (charCode < 48 || charCode > 57))
-                    return false;
-                return true;
-            }
-        </script>
+    function emailkey() {
+      emailwarning.innerHTML = ""
+    }
+
+    function passwordkey() {
+      passwordwarning.innerHTML = ""
+    }
+
+    function confirmkey() {
+      password2warning.innerHTML = ""
+    }
+
+    function mobilekey() {
+      mobilewarning.innerHTML = ""
+    }
+
+    function onkey() {
+      namewarning.innerHTML = ""
+    }
+
+    function isNumberKey(evt) {
+      var charCode = (evt.which) ? evt.which : evt.keyCode
+      if (charCode > 31 && (charCode < 48 || charCode > 57))
+        return false;
+      return true;
+    }
+  </script>
 
 
 
-   
 
-        <!-- Jquery JS-->
-        <script src="vendor/jquery/jquery.min.js"></script>
-        <!-- Vendor JS-->
-        <script src="vendor/select2/select2.min.js"></script>
-        <script src="vendor/datepicker/moment.min.js"></script>
-        <script src="vendor/datepicker/daterangepicker.js"></script>
 
-        <!-- Main JS-->
-        <script src="js/global.js"></script>
+  <!-- Jquery JS-->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <!-- Vendor JS-->
+  <script src="vendor/select2/select2.min.js"></script>
+  <script src="vendor/datepicker/moment.min.js"></script>
+  <script src="vendor/datepicker/daterangepicker.js"></script>
+
+  <!-- Main JS-->
+  <script src="js/global.js"></script>
 
 </body><!-- This templates was made by Colorlib (https://colorlib.com) -->
 

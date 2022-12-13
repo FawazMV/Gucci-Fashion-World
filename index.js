@@ -43,12 +43,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/', homeRouter)
 app.use('/admin', adminRouter)
 app.use((err, req, res, next) => {
-    // console.log(err) 
+    console.log(err.name)
     if (err.code === 11000) {
         res.json({ error: 'Duplicate found' })
-    } else {
+    } else if (err.name === "ValidationError") {
+        res.json({ error: err.message })
+    }
+    else {
         res.render('userSide/404', { includes: true })
-    } 
+    }
 })
 app.use((req, res) => {
     res.render('userSide/404', { includes: true })

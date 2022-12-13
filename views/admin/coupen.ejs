@@ -1,148 +1,139 @@
 <div class="app-wrapper">
-    <div class="app-content pt-3 p-md-3 p-lg-4">
+  <div class="app-content pt-3 p-md-3 p-lg-4">
 
-        <section class="p4-5">
-            <div class="container px-5 table-responsive">
-
-
-                <div class="mb-5 ml-auto">
-                    <button data-toggle="modal" data-target="#exampleModalLong" type="submit"
-                        style="background-color:#0283f4;color:#fff;" class="btn btn-primary float-end">Add
-                        Coupen</button>
-                </div>
+    <section class="p4-5">
+      <div class="container px-5 table-responsive">
 
 
-                <table class=" mt-4 table table-striped table-bordered" id="example1" style="width:100%">
-                    <thead class="table-dark text-center">
-                        <tr>
-                            <th scope="col">No</th>
-                            <th scope="col">Coupen Code</th>
-                            <th scope="col">Discount</th>
-                            <th scope="col">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody class="">
-                        <% for( let i=0; i < coupenss.length; i ++ ) { %>
+        <div class="mb-5 ml-auto">
+          <button data-toggle="modal" data-target="#exampleModalLong" type="submit" style="background-color:#0283f4;color:#fff;" class="btn btn-primary float-end">Add
+            Coupen</button>
+        </div>
 
-                            <tr>
 
-                                <td>
-                                    <%= i+1 %>
-                                </td>
+        <table class=" mt-4 table table-striped table-bordered" id="example1" style="width:100%">
+          <thead class="table-dark text-center">
+            <tr>
+              <th scope="col">No</th>
+              <th scope="col">Coupen Code</th>
+              <th scope="col">Discount</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody class="">
+            <% for( let i=0; i < coupenss.length; i ++ ) { %>
 
-                                <td>
-                                    <%= coupenss[i].coupenCode %>
-                                </td>
-                                <td>
-                                    <%= coupenss[i].discount %> %
-                                </td>
+            <tr>
 
-                                <!-- <td class="d-flex">
+              <td>
+                <%= i+1 %>
+              </td>
+
+              <td>
+                <%= coupenss[i].coupenCode %>
+              </td>
+              <td>
+                <%= coupenss[i].discount %> %
+              </td>
+
+              <!-- <td class="d-flex">
                                     <button updatetype="" data-bs-toggle="modal" data-bs-target="#exampleModal"
                                         class="btn btn-primary mx-1 px-4 my-1"
                                         onclick="editfunction('<%= coupenss[i]._id %>')">Edit</button>
                                 </td> -->
-                                <td class="d-flex">
-                                    <select id="coupenstatusid<%= coupenss[i]._id %>"
-                                        onchange="coupen_status('<%= coupenss[i]._id %>')" class="form-select">
-                                        <% if (coupenss[i].coupen_status) { %>
-                                            <option value="true" selected>Enable</option>
-                                            <option value="false">Disable</option>
-                                            <% } else { %>
-                                                <option value="false" selected>Disable</option>
-                                                <option value="true">Enable</option>
-                                                <% } %>
-                                    </select>
-                                </td>
-                            </tr>
+              <td class="d-flex">
+                <select id="coupenstatusid<%= coupenss[i]._id %>" onchange="coupen_status('<%= coupenss[i]._id %>')" class="form-select">
+                  <% if (coupenss[i].coupen_status) { %>
+                  <option value="true" selected>Enable</option>
+                  <option value="false">Disable</option>
+                  <% } else { %>
+                  <option value="false" selected>Disable</option>
+                  <option value="true">Enable</option>
+                  <% } %>
+                </select>
+              </td>
+            </tr>
 
-                            <% } %>
-
-
-                    </tbody>
-                </table>
-            </div>
+            <% } %>
 
 
-        </section>
+          </tbody>
+        </table>
+      </div>
+
+
+    </section>
 
 
 
-    </div>
+  </div>
 </div>
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModalLong" tabindex="-1" aria-labelledby="exampleModalLong" aria-hidden="true">
-    <div class="modal-body">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-6 ml-auto">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Coupen</h5>
-                            </div>
-                            <div class="modal-body">
-                                <div class="container">
-                                    <form onsubmit="addCoupen()">
-                                        <div class="row mb-3">
-                                            <div class="col-8">
-                                                <label for="coupenCode" class="fw-bold text-dark mb-0 mt-2 ml-1">Coupen
-                                                    Code</label>
-                                                <input required type="text" id="coupenCode" name="coupenCode"
-                                                    class="form-control">
-                                            </div>
+  <div class="modal-body">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-6 ml-auto">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Coupen</h5>
+              </div>
+              <div class="modal-body">
+                <div class="container">
+                  <form onsubmit="addCoupen()">
+                    <div class="row mb-3">
+                      <div class="col-8">
+                        <label for="coupenCode" class="fw-bold text-dark mb-0 mt-2 ml-1">Coupen
+                          Code</label>
+                        <input required type="text" id="coupenCode" name="coupenCode" class="form-control">
+                      </div>
 
-                                            <div class="col-4">
-                                                <label for="discount" class="fw-bold text-dark mb-0 mt-2 ml-1">Discount
-                                                    %</label>
-                                                <input required type="text" id="discount" name="discount"
-                                                    class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="row my-3">
-                                            <div class="col-6">
-                                                <label for="starting_Date"
-                                                    class="fw-bold text-dark mb-0 mt-2 ml-1">Starting Date</label>
-                                                <input required type="date" id="starting_Date" name="starting_Date"
-                                                    class="form-control">
-                                            </div>
+                      <div class="col-4">
+                        <label for="discount" class="fw-bold text-dark mb-0 mt-2 ml-1">Discount
+                          %</label>
+                        <input required type="text" onkeypress="return isNumberKey(event)" id="discount" name="discount" class="form-control">
+                      </div>
+                    </div>
+                    <div class="row my-3">
+                      <div class="col-6">
+                        <label for="starting_Date" class="fw-bold text-dark mb-0 mt-2 ml-1">Starting Date</label>
+                        <input required type="date" id="starting_Date" name="starting_Date" class="form-control">
+                      </div>
 
-                                            <div class="col-6">
-                                                <label for="Ending_Date" class="fw-bold text-dark mb-0 mt-2 ml-1">Ending
-                                                    Date</label>
-                                                <input required type="date" id="Ending_Date" name="Ending_Date"
-                                                    class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="row my-3">
-                                            <div class="col-6">
-                                                <label for="discount_limit"
-                                                    class="fw-bold text-dark mb-0 mt-2 ml-1">Discount limit ₹</label>
-                                                <input type="tel" id="discount_limit" name="discount_limit"
-                                                    class="form-control">
-                                            </div>
+                      <div class="col-6">
+                        <label for="Ending_Date" class="fw-bold text-dark mb-0 mt-2 ml-1">Ending
+                          Date</label>
+                        <input required type="date" id="Ending_Date" name="Ending_Date" class="form-control">
+                      </div>
+                    </div>
+                    <div class="row my-3">
+                      <div class="col-6">
+                        <label for="discount_limit" class="fw-bold text-dark mb-0 mt-2 ml-1">Discount limit ₹</label>
+                        <input type="tel" id="discount_limit" name="discount_limit" class="form-control">
+                      </div>
 
-                                            <!-- <div class="col-6">
+                      <!-- <div class="col-6">
                                             <label for="Ending_Date" class="fw-bold text-dark mb-0 mt-2 ml-1">Ending Date</label>
                                             <input type="date" id="Ending_Date" name="Ending-Date" class="form-control">
                                         </div> -->
-                                        </div>
-                                </div>
-
-                            </div>
-                            <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary">Submit</button>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
-                            </div>
-                            </form>
-                        </div>
                     </div>
                 </div>
+
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+              </div>
+              </form>
             </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 
 
@@ -151,37 +142,55 @@
 
 
 <script>
-    
-    addCoupen = async () => {
-        
-        const formData = new FormData(event.target);
-        const formProps = await Object.fromEntries(formData);
-        axios.post('/admin/addCoupen', formProps).then(() => {
-            location.href = "/admin/coupen"
-        })
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 1000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener('mouseenter', Swal.stopTimer)
+      toast.addEventListener('mouseleave', Swal.resumeTimer)
     }
-    coupen_status = (id) => {
-        let value = document.getElementById('coupenstatusid' + id).value
-        axios.patch('/admin/coupenStatus',{id:id,value:value}).then(()=>{
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 1000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                }
-            })
+  })
+  addCoupen = async () => {
 
-            Toast.fire({
-                icon: 'success',
-                title: 'Coupen status updated successfully'
-            })
+    const formData = new FormData(event.target);
+    const formProps = await Object.fromEntries(formData);
+    axios.post('/admin/addCoupen', formProps).then(async (e) => {
+      if (e.data.error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: e.data.error
         })
-    }
-
+      } else if (e.data.succ) {
+        await Toast.fire({
+          icon: 'success',
+          title: 'Coupen added successfully'
+        })
+        location.reload()
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Something went wrong'
+        })
+      }
+    })
+  }
+  coupen_status = (id) => {
+    let value = document.getElementById('coupenstatusid' + id).value
+    axios.patch('/admin/coupenStatus', {
+      id: id,
+      value: value
+    }).then(() => {
+      Toast.fire({
+        icon: 'success',
+        title: 'Coupen status updated successfully'
+      })
+    })
+  }
 </script>
 
 
@@ -191,10 +200,15 @@
 <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
 
 <script>
-    $(document).ready(function () {
-        $('#example1').DataTable();
-    });
+  $(document).ready(function() {
+    $('#example1').DataTable();
+  });
 </script>
 <script>
-
+  function isNumberKey(evt) {
+    var charCode = (evt.which) ? evt.which : evt.keyCode
+    if (charCode > 31 && (charCode < 48 || charCode > 57))
+      return false;
+    return true;
+  }
 </script>

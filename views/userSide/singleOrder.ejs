@@ -100,10 +100,10 @@
                         <p class="card-text my-2 fw-bold">Order Total : <span class="float-end">₹ <span id="PriceTOTAL"><%= order.finalPrice %></span></span> </p>
                         <hr style="height:1px;border:none;color:#333;background-color:#333;" />
                         <div style="width:100%;" class="ml-4">
-                        <p class="card-text mt-4 fw-bold text-primary h6 ">Payment type : <span class=""> <%= order.Payment %></span> </p>
-                        <% if (order.coupenapplied) { %>
-                        <p class="card-text mt-3 fw-bold text-primary h6">Coupen NO : <span class=""> <%= order.cartDiscout %></span> </p>
-                        <% } %>
+                          <p class="card-text mt-4 fw-bold text-primary h6 ">Payment type : <span class=""> <%= order.Payment %></span> </p>
+                          <% if (order.coupenapplied) { %>
+                          <p class="card-text mt-3 fw-bold text-primary h6">Coupen NO : <span class=""> <%= order.cartDiscout %></span> </p>
+                          <% } %>
                         </div>
                         <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
                       </div>
@@ -142,13 +142,13 @@
                       <button class="btn btn-outline-primary" data-toggle="modal" onclick="reviewIdd('<%= order.OrderDetails[i].product_id._id %>')" data-target="#exampleModalreview">Review</button>
 
                       <% } else if(order.OrderDetails[i].Order_Status==="Cancelled" ) { %>
-                      <button onclick="reOrder('<%= order.OrderDetails[i]._id %>')" class="btn btn-primary">Re-order</button>
+                      <!-- <button onclick="reOrder('<%= order.OrderDetails[i]._id %>')" class="btn btn-primary">Re-order</button> -->
                       <% } %>
                     </div>
                   </div>
                 </div>
               </div>
-              <hr style="height:1px;border:none;color:#333;background-color:#333;"/>
+              <hr style="height:1px;border:none;color:#333;background-color:#333;" />
               <div class="container">
                 <div class="row">
                   <div class="col-md-6 col-sm-12">
@@ -300,7 +300,7 @@
       </div>
       <div class="modal-body mx-2" style="width:350px;">
         <form action="#" onsubmit="reviewww()">
-          
+
           <label for="" class="text-primary mb-0 fw-bold">Rate the product</label>
           <div class="star-rating mt-0 mb-0 d-flex justify-content-between" onclick="removewarning()" style="width:200px;">
             <input type="radio" id="5-stars" name="rating" value="5" />
@@ -349,7 +349,7 @@
         }).then((e) => {
           if (e.data.response === "login") location.href = "/login"
           else if (!e.data.response) {
-            document.getElementById(id).innerHTML = ` <button onclick="reOrder('${id}')" class="btn btn-primary">Re-order</button>`
+            // document.getElementById(id).innerHTML = ` <button onclick="reOrder('${id}')" class="btn btn-primary">Re-order</button>`
             document.getElementById('totalPrice').innerHTML = e.data.total
             document.getElementById('PriceTOTAL').innerHTML = e.data.finalPrice
             document.getElementById('discid').innerHTML = e.data.discountPrice
@@ -374,20 +374,24 @@
     formProps.id = iddd
     if (formProps.rating) {
       axios.post('/review', formProps).then(async e => {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 1000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+          }
+        })
         if (e.data.response === "login") location.href = "/login"
-        else {
-          const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 1000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.addEventListener('mouseenter', Swal.stopTimer)
-              toast.addEventListener('mouseleave', Swal.resumeTimer)
-            }
+        else if (e.data.error) {
+          await Toast.fire({
+            icon: 'error',
+            title: e.data.error
           })
-
+        } else {
           await Toast.fire({
             icon: 'success',
             title: 'Your review added successfully'
@@ -395,11 +399,11 @@
           location.reload()
         }
       })
-    }else{
+    } else {
       document.getElementById('removewarning').style.display = "block"
     }
   }
-  removewarning = ()=>{
-     document.getElementById('removewarning').style.display = "none"
+  removewarning = () => {
+    document.getElementById('removewarning').style.display = "none"
   }
 </script>

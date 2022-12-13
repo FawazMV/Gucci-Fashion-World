@@ -58,7 +58,6 @@ module.exports = {
                 let sum = (saleReport[0].totalPrice - previous[0].totalPrice) / 100
                 perfomance = Math.round(sum)
             }
-            console.log(orders)
             heading = "Overview"
             res.render('admin/dashboard', { admin: true, users, Overview: "active", heading, sales, orders, perfomance })
         } catch (error) {
@@ -77,10 +76,21 @@ module.exports = {
             let response = null
             let user = await adminModel.findOne({ email: req.body.email })
             if (user) {
-                if (req.body.password == user.password) response = false
+                if (req.body.password == user.password) {
+                    req.session.admin = true
+                    response = false
+                }
                 else response = true
             } else response = true
             res.json({ response })
+        } catch (error) {
+            next(error)
+        }
+    },
+    adminlogout: (req, res, next) => {
+        try {
+            req.session.admin = false
+            res.redirect('/admin/login')
         } catch (error) {
             next(error)
         }
@@ -146,12 +156,9 @@ module.exports = {
     },
     addProductPost: async (req, res, next) => {
         try {
-            // console.log(req.body)
-            // console.log(req.files)
             const results = await s3Uploadv3(req.files);
             let product = req.body
             product.imagesDetails = results
-            console.log(product)
             productModel.create(product).then(() => {
                 res.json({ success: true })
             }).catch(error => next(error))
@@ -229,8 +236,6 @@ module.exports = {
     updateProduct: async (req, res, next) => {
         try {
             let product = req.body
-            console.log(product)
-            console.log(req.files)
             if (req.files.length) {
                 productModel.findById(product_id).then((product) => {
                     const image = product.imagesDetails
@@ -260,15 +265,13 @@ module.exports = {
     genderTypeAdd: async (req, res, next) => {
         try {
             let category = req.body
+            category.gender = req.body.gender.toUpperCase()
             const file = req.files[0];
             const result = await s3Uploadv2(file);
             category.image = result
             genderModel.create(category).then(() => {
-                res.redirect('/admin/genderType')
-            }).catch(error => {
-                next(error)
-                res.redirect('/admin/genderType')
-            })
+                res.json({ succe: true })
+            }).catch(error => next(error))
         } catch (error) {
             next(error)
         }
@@ -299,7 +302,8 @@ module.exports = {
     },
     editGender: async (req, res, next) => {
         try {
-            let category = { gender: req.body.gender }
+            let gender = req.body.gender.toUpperCase()
+            let category = { gender: gender }
             id = req.body.id
             if (req.files.length) {
                 genderModel.findById(id).then((product) => {
@@ -311,11 +315,8 @@ module.exports = {
                 category.image = result
             }
             genderModel.findByIdAndUpdate(id, category).then(() => {
-                res.redirect('/admin/genderType')
-            }).catch(error => {
-                next(error)
-                res.redirect('/admin/genderType')
-            })
+                res.json({ succe: true })
+            }).catch(error => next(error))
         } catch (error) {
             next(error)
         }
@@ -404,7 +405,7 @@ module.exports = {
     },
     addCoupen: (req, res, next) => {
         try {
-            coupn_Model.create(req.body).then(() => res.json())
+            coupn_Model.create(req.body).then(() => res.json({succ:true})).catch((error) => next(error))
         } catch (error) {
             next(error)
         }
@@ -488,8 +489,8 @@ module.exports = {
                 todayDate = DaysAgo
                 DaysAgo = new Date(new Date().getTime() - (i + 7) * 24 * 60 * 60 * 1000);
             }
-            console.log(sales)
-            console.log(prevsales)
+            // console.log(sales)
+            // console.log(prevsales)
             res.json({ sales: sales, prevsales: prevsales })
         }
         catch (error) {

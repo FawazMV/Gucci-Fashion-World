@@ -225,7 +225,7 @@
 
                    <!-- <input type="file" onchange="previewMultiple(event)" name="image"
                                         class="form-control" id="formFileLg" multiple> -->
-                   <input  type="file" class="form-control item-img file center-block" name="" id="abcdefa" />
+                   <input type="file" class="form-control item-img file center-block" name="" id="abcdefa" />
                    <div id="galeria" class="mt-2 d-flex">
                      <div id="formFileLg">
                        <% for( let i=0; i < locals.product.imagesDetails.length; i++ ) { %>
@@ -244,7 +244,7 @@
                  <div class="ms-5">
                    <label for="descriptionId">Description</label>
                    <br>
-                   <textarea name="description" class="" id="descriptionId" rows="4" cols="70"><%= product.description %></textarea>
+                   <textarea name="description" class="" required id="descriptionId" rows="4" cols="70"><%= product.description %></textarea>
                    <br>
 
                    <button type="submit" class="btn btn-warning mt-4">Submit</button>
@@ -355,12 +355,6 @@
 
    let uploadImage = (file) => {
      formData.append("image", imagefile.files[0]);
-     console.log(formData)
-     // axios.post('/admin/upload_file', formData, {
-     //   headers: {
-     //     'Content-Type': 'multipart/form-data'
-     //   }
-     // })
    }
 
    editProduct = async () => {
@@ -374,14 +368,26 @@
          'Content-Type': 'multipart/form-data'
        }
      }).then(async (e) => {
-       if (e.data.success) {
+       if (e.data.error) {
+         Swal.fire({
+           icon: 'error',
+           title: 'Oops...',
+           text: e.data.error
+         })
+       } else if (e.data.success) {
          await Swal.fire({
            icon: 'success',
            title: 'Product Updated successfully',
            showConfirmButton: false,
            timer: 1500
          })
-         location.href='/admin/Products'
+         location.href = '/admin/Products'
+       } else {
+         Swal.fire({
+           icon: 'error',
+           title: 'Oops...',
+           text: 'Something went wrong'
+         })
        }
      })
    }

@@ -17,7 +17,7 @@ exports.myAccount = (req, res, next) => {
             ])
             address = address[0].address
             res.render('userSide/myAccount', { user, userDetails, address })
-        })
+        }).catch(error => next(error))
     } catch (error) {
         next(error)
     }

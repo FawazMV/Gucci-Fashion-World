@@ -117,7 +117,7 @@
                   <div class="d-flex">
                     <div class="me-5" style="width:50%;">
                       <label for="retailPriceId">Retail Price</label>
-                      <input required  type="phone" onkeypress="return isNumberKey(event)" maxlength="10" size="10" name="retailPrice" class="form-control" id="retailPriceId">
+                      <input required type="phone" onkeypress="return isNumberKey(event)" maxlength="10" size="10" name="retailPrice" class="form-control" id="retailPriceId">
                     </div>
                     <div style="width:50%;">
                       <label for="shopPriceId">Shop Price</label>
@@ -178,7 +178,7 @@
                   </div>
                   <br>
                   <label for="descriptionId">Description</label>
-                  <textarea id="descriptionId" class="form-control" name="description" cols="40" rows="4"></textarea>
+                  <textarea id="descriptionId" class="form-control" required name="description" cols="40" rows="4"></textarea>
                 </div>
                 <div class="">
                   <div class="me-5" style="width:50%;">
@@ -336,7 +336,13 @@
         'Content-Type': 'multipart/form-data'
       }
     }).then(async (e) => {
-      if (e.data.success) {
+      if (e.data.error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: e.data.error
+        })
+      } else if (e.data.success) {
         await Swal.fire({
           icon: 'success',
           title: 'Product added successfully',
@@ -344,6 +350,12 @@
           timer: 1500
         })
         location.reload()
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Something went wrong'
+        })
       }
     })
   }
