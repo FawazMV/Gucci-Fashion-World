@@ -3,6 +3,7 @@ const coupn_Model = require("../models/coupen_schema")
 const orders_Model = require("../models/order-schema")
 const productModel = require("../models/product-schema")
 const usermodel = require("../models/user-schema")
+const wallet_model = require("../models/wallet-schema")
 
 exports.subTotal = (user) => {
     return new Promise(async (resolve, reject) => {
@@ -105,5 +106,12 @@ exports.coupenCheck = (code, userId) => {
             if (response) reject(response)
         })
 
+    })
+}
+
+exports.walletAdd = (user, order, total) => {
+    return new Promise((resolve, reject) => {
+        console.log(user, order, total)
+        wallet_model.findOne()
     })
 }

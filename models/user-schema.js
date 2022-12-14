@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-
+var moment = require('moment');
 const userSchema = new mongoose.Schema
     (
         {
@@ -45,8 +45,8 @@ const userSchema = new mongoose.Schema
                     },
                 }
             ],
-            cartDiscout:{
-                type:String
+            cartDiscout: {
+                type: String
             },
             wishlist: [
                 {
@@ -91,7 +91,29 @@ const userSchema = new mongoose.Schema
                         required: true
                     }
                 }
-            ]
+            ],
+            wallet: {
+                balance: {
+                    type: Number,
+                    default: 0,
+                    min: 0
+                },
+
+                history: [{
+                    order: {
+                        type: mongoose.Schema.Types.ObjectId,
+                        ref: 'Orders',
+                    },
+                    date: {
+                        type: String,
+                        default: moment(Date.now()).format('DD-MM-YYYY')
+                    },
+                    refundAm: {
+                        type: Number
+                    }
+
+                }]
+            }
         },
         {
             timestamps: true

@@ -12,10 +12,8 @@ exports.orderPage = (async (req, res, next) => {
     try {
         let user = req.session.user.name
         let userId = req.session.user._id
-        console.log(userId)
         await orders_Model.find({ User: mongoose.Types.ObjectId(userId) }).populate('OrderDetails.product_id').sort({ _id: -1 })
             .then((order) => {
-                console.log(order)
                 res.render('userSide/orders', { user, order })
             })
             .catch((error) => next(error))
@@ -63,25 +61,23 @@ exports.cancelOrder = async (req, res, next) => {
         let userId = req.session.user._id;
         let product = await orders_Model.aggregate([
             { $match: { 'OrderDetails._id': mongoose.Types.ObjectId(req.body.id) } },
-            {
-                $project: {
-                    "OrderDetails": {
-                        $filter: {
-                            input: "$OrderDetails",
-                            cond: { $eq: ["$$this._id", mongoose.Types.ObjectId(req.body.id)] }
-                        }
-                    }
-                }
-            }
+            { $project: { "OrderDetails": { $filter: { input: "$OrderDetails", cond: { $eq: ["$$this._id", mongoose.Types.ObjectId(req.body.id)] } } } } }
         ])
+
+
+
+
+
+
         let total = product[0].OrderDetails[0].total
         let P_id = product[0].OrderDetails[0].product_id
         let P_qty = product[0].OrderDetails[0].quantity
         inventory(P_id, -P_qty)
         let C_date = moment(Date.now()).format('DD-MM-YYYY')
-        let { TotalPrice, coupenapplied, discountPercentage, discountPrice } = await orders_Model.findOne({ 'OrderDetails._id': req.body.id }, { _id: -1, TotalPrice: 1, coupenapplied: 1, discountPercentage: 1, discountPrice: 1 });
+        let { TotalPrice, coupenapplied, discountPercentage, discountPrice, Payment } = await orders_Model.findOne({ 'OrderDetails._id': req.body.id }, { _id: -1, TotalPrice: 1, coupenapplied: 1, discountPercentage: 1, discountPrice: 1, Payment: 1 });
         TotalPrice = TotalPrice - total
         let finalPrice = TotalPrice
+        if (Payment) walletAdd(userId, req.body.id, total)
         if (coupenapplied) {
             let disc = percentage(discountPercentage, TotalPrice)
             if (disc < discountPrice) discountPrice = disc
@@ -90,7 +86,6 @@ exports.cancelOrder = async (req, res, next) => {
         } else {
             await orders_Model.updateOne({ 'OrderDetails._id': req.body.id }, { $set: { 'OrderDetails.$.Order_Status': 'Cancelled', 'OrderDetails.$.Canceled_date': C_date }, $inc: { TotalPrice: -total, finalPrice: -total } })
         }
-        //{ TotalPrice, coupenapplied, discountPrice } = await orders_Model.findOne({ 'OrderDetails._id': req.body.id }, { _id: -1, TotalPrice: 1, coupenapplied: 1, discountPrice :1})
         res.json({ response: false, total: TotalPrice, date: C_date, finalPrice: finalPrice, discountPrice: discountPrice })
     }
     catch (error) {
