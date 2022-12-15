@@ -101,15 +101,17 @@ const userSchema = new mongoose.Schema
 
                 history: [{
                     order: {
-                        type: mongoose.Schema.Types.ObjectId,
-                        ref: 'Orders',
+                        type: String
                     },
                     date: {
                         type: String,
                         default: moment(Date.now()).format('DD-MM-YYYY')
                     },
-                    refundAm: {
+                    amount: {
                         type: Number
+                    },
+                    type: {
+                        type: String
                     }
 
                 }]

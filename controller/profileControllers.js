@@ -10,7 +10,7 @@ exports.myAccount = (req, res, next) => {
     try {
         let user = req.session.user.name
         let userId = req.session.user._id
-        usermodel.findById(userId, { name: 1, email: 1, mobile: 1, _id: 0 }).then(async (userDetails) => {
+        usermodel.findById(userId, { name: 1, email: 1, mobile: 1, _id: 0, wallet: 1 }).then(async (userDetails) => {
             let address = [] = await usermodel.aggregate([
                 { $match: { _id: mongoose.Types.ObjectId(userId) } },
                 { $project: { _id: 0, "address": { $filter: { input: "$address", cond: { $eq: ["$$this.default", true] } } } } }

@@ -9,8 +9,9 @@ const { default: mongoose } = require('mongoose');
 const { payment, verifyPayment } = require('../config/payment');
 const { OrderID } = require('../config/orderId');
 const orders_Model = require('../models/order-schema');
-const { subTotal, OrderPush, coupenCheck } = require('../helpers/order_Helpers');
+const { subTotal, OrderPush, coupenCheck, walletAdd } = require('../helpers/order_Helpers');
 const review_model = require('../models/review_schema');
+const { findByIdAndUpdate } = require('../models/user-schema');
 const accoutnSID = process.env.accoutnSID
 const serviceSID = process.env.serviceSID
 const authToken = process.env.authToken
@@ -89,30 +90,33 @@ exports.singleProduct = async (req, res, next) => {
 
 exports.checkout = (req, res, next) => {
     try {
-        let userId = req.session.user._id
-        usermodel.findById(userId, { cart: 1, cartDiscout: 1 }).populate({ path: 'cart.product_id', model: 'Products', populate: { path: 'brandName', model: 'brandName' } })
-            .then(async (result) => {
-                let cartproduct = result.cart
-                let disc = result.cartDiscout
-                let total = await subTotal(userId)
-                let aftTotal = total
-                let discount = "00";
-                usermodel.aggregate([
-                    { $match: { _id: mongoose.Types.ObjectId(userId) } },
-                    { $project: { "address": { $filter: { input: "$address", cond: { $eq: ["$$this.default", true] } } } } }
-                ])
-                    .then(async result => {
-                        if (disc) {
-                            let resp = await coupenCheck(disc, userId)
-                            aftTotal = resp.subtotal
-                            discount = resp.discout
-                        }
-                        res.render('userSide/checkout', { cartproduct, total, discount, aftTotal, user, address: result[0].address[0] })
-                    })
-            }).catch(error => next(error))
+        if (req.session.checkout) {
+            let userId = req.session.user._id
+            usermodel.findById(userId, { cart: 1, cartDiscout: 1, wallet: 1 }).populate({ path: 'cart.product_id', model: 'Products', populate: { path: 'brandName', model: 'brandName' } })
+                .then(async (result) => {
+                    let cartproduct = result.cart
+                    let disc = result.cartDiscout
+                    let total = await subTotal(userId)
+                    let aftTotal = total
+                    let discount = "00";
+                    let wallet = result.wallet.balance
+                    usermodel.aggregate([
+                        { $match: { _id: mongoose.Types.ObjectId(userId) } },
+                        { $project: { "address": { $filter: { input: "$address", cond: { $eq: ["$$this.default", true] } } } } }
+                    ])
+                        .then(async result => {
+                            if (disc) {
+                                let resp = await coupenCheck(disc, userId)
+                                aftTotal = resp.subtotal
+                                discount = resp.discout
+                            }
+                            res.render('userSide/checkout', { cartproduct, total, discount, aftTotal, user, address: result[0].address[0], wallet })
+                        })
+                }).catch(error => next(error))
+        } else res.redirect('/cart')
+        req.session.checkout = false
     } catch (error) {
         next(error)
-
     }
 }
 exports.product = (req, res, next) => {
@@ -371,10 +375,20 @@ exports.verification = (req, res, next) => {
         let userId = req.session.user._id
         let total = req.body.amount / 100
         let id = req.body.orderId
+        let wallet = req.body.wallet
+        console.log(wallet)
         verifyPayment(req.body.payment)
             .then(() => {
-                OrderPush(userId, id, total, 'Online').then(() => res.json({ status: true }))
-            }).catch(error => res.json({ status: false, error: error.message }))
+                if (wallet) {
+                    walletAdd(userId, id, -wallet, "Payment")
+                    OrderPush(userId, id, total + wallet, 'Wallet + Online').then(() => res.json({ status: true }))
+                } else {
+                    OrderPush(userId, id, total, 'Online').then(() => res.json({ status: true }))
+                }
+            }).catch(error => {
+                console.log(error)
+                res.json({ status: false, error: error.message })
+            })
     } catch (error) {
         next(error)
     }

@@ -50,10 +50,8 @@
                             <div>
                               <% if (order[i].OrderDetails[k].Order_Status==="Pending" ) { %>
                               <p class="mt-1 mb-0 fw-bold">Confirmed</p>
-                              <p class="m-0">Ordered on <%=
-                                                                                order[i].Order_date %>
-                              </p>
-                              <% if (order[i].Payment=="Online") { %>
+                              <p class="m-0">Ordered on <%= order[i].Order_date %></p>
+                              <% if (order[i].Payment=="Online"||order[i].Payment=="Wallet + Online") { %>
                               <p style="opacity:70%;">Paid</p>
                               <% } else { %>
                               <p style="opacity:70%;">Cash on delivery

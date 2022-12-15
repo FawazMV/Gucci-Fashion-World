@@ -1,4 +1,5 @@
 const { default: mongoose } = require("mongoose")
+const ObjectId = require("objectid")
 const coupn_Model = require("../models/coupen_schema")
 const orders_Model = require("../models/order-schema")
 const productModel = require("../models/product-schema")
@@ -109,9 +110,15 @@ exports.coupenCheck = (code, userId) => {
     })
 }
 
-exports.walletAdd = (user, order, total) => {
+exports.walletAdd = (user, order, total, type) => {
     return new Promise((resolve, reject) => {
-        console.log(user, order, total)
-        wallet_model.findOne()
+        let obj = {}
+        obj.order = order
+        obj.amount = Math.abs(total)
+        obj.type = type
+        usermodel.updateOne({ _id: user }, { $push: { 'wallet.history': obj }, $inc: { 'wallet.balance': total } }).then((e) => {
+            console.log(e)
+            resolve()
+        })
     })
 }

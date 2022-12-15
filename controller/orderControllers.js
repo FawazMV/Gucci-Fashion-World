@@ -1,11 +1,12 @@
 const { default: mongoose } = require("mongoose")
 const { OrderID } = require("../config/orderId")
 const { payment } = require("../config/payment")
-const { subTotal, OrderPush, inventory, percentage, coupenCheck } = require("../helpers/order_Helpers")
+const { subTotal, OrderPush, inventory, percentage, coupenCheck, walletAdd } = require("../helpers/order_Helpers")
 const orders_Model = require("../models/order-schema")
 const usermodel = require("../models/user-schema")
 const moment = require('moment')
 const coupn_Model = require("../models/coupen_schema")
+const { findById } = require("../models/user-schema")
 
 
 exports.orderPage = (async (req, res, next) => {
@@ -34,20 +35,44 @@ exports.singleOrder = (async (req, res, next) => {
 exports.placeOrder = async (req, res, next) => {
     try {
         let userId = req.session.user._id
-        let total = await subTotal(userId)
-        if (req.body.payment === "online") {
-            OrderID().then(orderId => {
-                payment(total * 100, orderId).then((response) => res.json({ response: response }))
-            })
-        }
-        else if (req.body.payment === "cod") {
-            OrderID().then(async (id) => {
-                OrderPush(userId, id, total, 'COD').then(() => {
-                    res.json({ response: "cod" })
+        let add = await usermodel.findOne({ _id: userId, 'address.default': true })
+        if (!add) res.json({ addreserrr: true })
+        else {
+            let total = await subTotal(userId)
+            if (req.body.payment === "online") {
+                OrderID().then(orderId => {
+                    payment(total * 100, orderId).then((response) => res.json({ response: response }))
                 })
-            })
-        } else {
-            console.log('something went wrong at order controlleres')
+            }
+            else if (req.body.payment === "cod") {
+                OrderID().then(async (id) => {
+                    OrderPush(userId, id, total, 'COD').then(() => {
+                        res.json({ response: "cod" })
+                    })
+                })
+            } else if (req.body.payment === "wallet") {
+                let { wallet } = await usermodel.findById(userId, { wallet: 1, _id: 0 }).catch(error => next(error))
+                wallet = wallet.balance
+                console.log(wallet)
+                if (wallet >= total) {
+                    OrderID().then(async (id) => {
+                        walletAdd(userId, id, -total, 'Payment')
+                        OrderPush(userId, id, total, 'Wallet').then(() => {
+                            res.json({ response: "Wallet" })
+                        })
+                    })
+                } else {
+                    OrderID().then(orderId => {
+                        total = total - wallet
+                        payment(total * 100, orderId).then((response) => {
+                            response.wallet = wallet
+                            res.json({ response: response })
+                        })
+                    })
+                }
+            } else {
+                console.log('something went wrong at order controlleres')
+            }
         }
     }
     catch (error) {
@@ -63,21 +88,15 @@ exports.cancelOrder = async (req, res, next) => {
             { $match: { 'OrderDetails._id': mongoose.Types.ObjectId(req.body.id) } },
             { $project: { "OrderDetails": { $filter: { input: "$OrderDetails", cond: { $eq: ["$$this._id", mongoose.Types.ObjectId(req.body.id)] } } } } }
         ])
-
-
-
-
-
-
         let total = product[0].OrderDetails[0].total
         let P_id = product[0].OrderDetails[0].product_id
         let P_qty = product[0].OrderDetails[0].quantity
         inventory(P_id, -P_qty)
         let C_date = moment(Date.now()).format('DD-MM-YYYY')
-        let { TotalPrice, coupenapplied, discountPercentage, discountPrice, Payment } = await orders_Model.findOne({ 'OrderDetails._id': req.body.id }, { _id: -1, TotalPrice: 1, coupenapplied: 1, discountPercentage: 1, discountPrice: 1, Payment: 1 });
+        let { OrderId, TotalPrice, coupenapplied, discountPercentage, discountPrice, Payment } = await orders_Model.findOne({ 'OrderDetails._id': req.body.id }, { _id: -1, OrderId: 1, TotalPrice: 1, coupenapplied: 1, discountPercentage: 1, discountPrice: 1, Payment: 1 });
         TotalPrice = TotalPrice - total
         let finalPrice = TotalPrice
-        if (Payment) walletAdd(userId, req.body.id, total)
+        if (Payment) walletAdd(userId, OrderId, total, "Refund")
         if (coupenapplied) {
             let disc = percentage(discountPercentage, TotalPrice)
             if (disc < discountPrice) discountPrice = disc
@@ -116,6 +135,7 @@ exports.coupenSave = async (req, res, next) => {
         } else {
             await usermodel.findByIdAndUpdate(userId, { $unset: { cartDiscout: 1 } }, { multi: true });
         }
+        req.session.checkout = true
         res.json()
     } catch (error) {
         next(error)

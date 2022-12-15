@@ -81,8 +81,38 @@
                         <a href="category.html" class="btn btn-outline-primary-2"><span>GO SHOP</span><i class="icon-long-arrow-right"></i></a>
                       </div> -->
                       <div class="tab-pane fade" id="tab-downloads" role="tabpanel" aria-labelledby="tab-downloads-link">
-                        <p>No downloads available yet.</p>
-                        <a href="category.html" class="btn btn-outline-primary-2"><span>GO SHOP</span><i class="icon-long-arrow-right"></i></a>
+                        <div class="container">
+                          <div class="row">
+                            <div class="col-md-4">
+                              <div class="">
+                                <p class="fw-bold">Wallet Balance</p>
+                                <a href="#" class="btn btn-outline-primary-2"><span>₹ <%= userDetails.wallet.balance %> </span></a>
+                              </div>
+                            </div>
+
+                            <div class="col-md-5">
+                              <p>Wallet History</p>
+                              <% for( let i = userDetails.wallet.history.length-1; i >=0 ; i-- ) { %>
+                              <% if (userDetails.wallet.history[i].type==="Refund") { %>
+                              <p><span class="text-success"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+                                  </svg> </span>
+                                <span class="fw-bold">&nbsp &nbsp ₹ <%= userDetails.wallet.history[i].amount %> &nbsp &nbsp</span>Credited on <%= userDetails.wallet.history[i].date %> <span style="opacity:80%;font-size:12px;"> (Order Id : <%=userDetails.wallet.history[i].order  %> )</span>
+                              </p>
+                              <% } else { %>
+
+
+                              <p><span class="text-danger"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
+                                  </svg></span>
+                                <span class="fw-bold">&nbsp &nbsp ₹ <%= userDetails.wallet.history[i].amount %> &nbsp &nbsp</span>Debited on <%= userDetails.wallet.history[i].date %> <span style="opacity:80%;font-size:12px;"> (Order Id : <%=userDetails.wallet.history[i].order  %> )</span>
+                              </p>
+                              <% } %>
+                              <% } %>
+                            </div>
+                          </div>
+
+                        </div>
                       </div>
                       <div class="tab-pane fade" id="tab-address" role="tabpanel" aria-labelledby="tab-address-link">
                         <% if (address.length) { %>
@@ -356,7 +386,6 @@
             </div>
           </div>
         </div>
-        <button data-toggle="modal" id="hidebutton" style="display:none" data-target="#staticBackdrop"></button>
       </div>
     </div>
   </div>
@@ -403,19 +432,7 @@
 </div>
 
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<!-- <script src="../../node_modules/axios/dist/axios.js"> </script>
-<script src="../../node_modules/axios/dist/axios.js.map"> </script>
-<script src="../../node_modules/axios/dist/axios.min.js"> </script>
-<script src="../../node_modules/axios/dist/axios.min.js.map"> </script>
-<script src="../../node_modules/axios/dist/"> </script>
-<script src="../../node_modules/axios/dist/"> </script>
 
-<script src="../../node_modules/sweetalert2/dist/sweetalert2.all.js"></script>
-<script src="../../node_modules/sweetalert2/dist/sweetalert2.all.min.js"></script>
-<script src="../../node_modules/sweetalert2/dist/sweetalert2.js"></script>
-<script src="../../node_modules/sweetalert2/dist/sweetalert2.min.js"></script>
-<script src="../../node_modules/sweetalert2/src/sweetalert2.js"></script>
-<script src="../../node_modules/sweetalert2/README.md"></script> -->
 
 <script>
   $('.nameclass').keyup(function() {

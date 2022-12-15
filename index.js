@@ -43,7 +43,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/', homeRouter)
 app.use('/admin', adminRouter)
 app.use((err, req, res, next) => {
-    console.log(err.name)
+    console.log(err)
     if (err.code === 11000) {
         res.json({ error: 'Duplicate found' })
     } else if (err.name === "ValidationError") {

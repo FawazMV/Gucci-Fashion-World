@@ -21,7 +21,7 @@ module.exports = {
             let users = await usermodel.find({}).count()
             const DaysAgo = new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000);
             const oldmonth = new Date(new Date().getTime() - 60 * 24 * 60 * 60 * 1000);
-            console.log(moment(DaysAgo).format('DD-MM-YYYY'))
+           // console.log(moment(DaysAgo).format('DD-MM-YYYY'))
             let sales = 0
             let orders = 0
             let perfomance
@@ -37,7 +37,7 @@ module.exports = {
                     },
                 },
             ]);
-            console.log(saleReport)
+           // console.log(saleReport)
             if (saleReport.length) {
                 sales = saleReport[0].totalPrice
                 orders = saleReport[0].count
@@ -325,7 +325,7 @@ module.exports = {
         try {
             id = req.params.id
             productModel.findById(id).populate('brandName').populate('gender').then((product) => {
-                console.log(product)
+             //   console.log(product)
                 res.render('admin/viewSingle', { admin: true, product })
             })
         } catch (error) {
@@ -379,9 +379,9 @@ module.exports = {
                 }
                 let { coupenapplied, cartDiscout, User } = await orders_Model.findById(req.body.id, { coupenapplied: 1, cartDiscout: 1, User: 1, _id: 0 })
                 if (coupenapplied) {
-                    console.log(User)
+                   // console.log(User)
                     await coupn_Model.updateOne({ coupenCode: cartDiscout }, { $pull: { users: { user: User } } }, { safe: true }).then(e => {
-                        console.log(e)
+                      //  console.log(e)
                     })
                 }
                 await orders_Model.findByIdAndUpdate(req.body.id, { $set: { Delivery_status: status, Delivery_Expected_date: date, TotalPrice: 0, finalPrice: 0, discountPrice: 0, coupenapplied: false } })
@@ -420,10 +420,10 @@ module.exports = {
     },
     orderDetail: (req, res, next) => {
         try {
-            console.log(req.query.id)
+          //  console.log(req.query.id)
             orders_Model.findById(req.query.id).populate({ path: 'OrderDetails.product_id', model: 'Products', populate: { path: 'brandName', model: 'brandName' } }).populate('User', 'email')
                 .then(orderDetail => {
-                    console.log(orderDetail)
+                  //  console.log(orderDetail)
                     res.json(orderDetail)
                 })
         } catch (error) {
@@ -434,7 +434,7 @@ module.exports = {
         try {
             let todayDate = new Date();
             let DaysAgo = new Date(new Date().getTime() - 1 * 24 * 60 * 60 * 1000);
-            console.log(moment(DaysAgo).format('DD-MM-YYYY'))
+           // console.log(moment(DaysAgo).format('DD-MM-YYYY'))
             let sales = []
             for (let i = 1; i <= 7; i++) {
                 let abc = {}
@@ -463,7 +463,7 @@ module.exports = {
 
             }
             let prevsales = []
-            console.log(moment(DaysAgo).format('DD-MM-YYYY'))
+         //   console.log(moment(DaysAgo).format('DD-MM-YYYY'))
             for (let i = 1; i <= 7; i++) {
                 let abc = {}
                 let saleReport = await orders_Model.aggregate([

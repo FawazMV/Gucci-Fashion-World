@@ -349,7 +349,7 @@
         }).then((e) => {
           if (e.data.response === "login") location.href = "/login"
           else if (!e.data.response) {
-            // document.getElementById(id).innerHTML = ` <button onclick="reOrder('${id}')" class="btn btn-primary">Re-order</button>`
+            document.getElementById(id).innerHTML = ` `
             document.getElementById('totalPrice').innerHTML = e.data.total
             document.getElementById('PriceTOTAL').innerHTML = e.data.finalPrice
             document.getElementById('discid').innerHTML = e.data.discountPrice
