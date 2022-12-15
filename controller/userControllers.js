@@ -300,13 +300,14 @@ exports.changePassword = async (req, res, next) => {
     }
 }
 exports.productFilter = (req, res, next) => {
-    try {
+    try {         
         let gender = req.query.gender
         let brand = req.query.brand
         let sortt = req.query.sortt
         if (sortt == "shopPrice") {
+            let abc = "shopPrice"   
             if (!gender && !brand) {
-                productModel.find({ deleteProduct: false }).populate('brandName').populate('gender').sort({ shopPrice: -1, }).
+                productModel.find({ deleteProduct: false }).populate('brandName').populate('gender').sort().
                     then(Products => {
                         res.json({ Products: Products })
                     }).catch(error => next(error))

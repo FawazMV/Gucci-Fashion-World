@@ -46,7 +46,7 @@
              <div class="col-md-5">
                <div>
                  <div class="row">
-                   <div class="col-6">
+                   <div class="col-sm-5 col-6">
                      <label for="brandnameId">Brand Name</label>
                      <select name="brandName" id="brandnameId" class="form-select">
                        <option disabled selected>
@@ -59,10 +59,11 @@
                        <% } %>
                      </select>
                    </div>
-                   <div class="col-6">
+                   <div class="col-md-2 d-sm-block d-none"></div>
+                   <div class="col-sm-5 col-6">
                      <label for="genderType">Gender Type :</label>
                      <select name="gender" id="genderType" class="form-select">
-                       <option disabled selected>
+                       <option selected value="<%= product.gender._id %>">
                          <%= product.gender.gender %>
                        </option>
                        <% for( let i=0; i < gender.length; i++ ) { %>
@@ -75,7 +76,7 @@
                  </div>
                  <br>
                  <div class="row">
-                   <div class="col-6">
+                   <div class="col-sm-5 col-6">
                      <label for="productType">Product Type :</label>
                      <select name="type" id="productType" class="form-select">
                        <option disabled selected>
@@ -96,7 +97,8 @@
                        <option value="Other">Other</option>
                      </select>
                    </div>
-                   <div class="col-6">
+                   <div class="col-md-2 d-sm-block d-none"></div>
+                   <div class="col-sm-5 col-6">
                      <label for="category">Category :</label>
                      <select name="category" id="category" class="form-select">
                        <option disabled selected>
@@ -113,33 +115,27 @@
                  </div>
                  <br>
                  <div class="row">
-                   <div class="col-6">
-                     <label for="retailPriceId">Retail Price</label>
+                   <div class="col-4">
+                     <label for="retailPriceId">Price ₹</label>
                      <input type="phone" maxlength="10" size="10" name="retailPrice" class="form-control" id="retailPriceId" value="<%= product.retailPrice %>">
                    </div>
-                   <div class="col-6">
-                     <label for="sizeId">Size :</label>
-                     <select name="size" id="sizeId" class="form-select">
-                       <option disabled selected>
-                         <%= product.size %>
-                       </option>
-                       <option value="X-Small">X-Small</option>
-                       <option value="Small">Small</option>
-                       <option value="Medium">Medium</option>
-                       <option value="Large">Large</option>
-                       <option value="X Large">X Large</option>
-                       <option value="XX Large">XX Large</option>
-
-                     </select>
+                   <div class="col-4">
+                     <div>
+                       <label for="discountId">Discount %</label>
+                       <input type="phone" required max="100" name="discount" class="form-control" id="discountId" value="<%= product.discount %>">
+                     </div>
                    </div>
-                   <!-- <div style="width:50%;">
-                       <label for="shopPriceId">Shop Price</label>
-                       <input type="phone" maxlength="10" size="10" name="shopPrice" class="form-control" id="shopPriceId" value="<%= product.shopPrice %>">
-                     </div> -->
+                   <div class="col-4">
+                     <div>
+                       <label for="shopPriceId">Offer Price ₹</label>
+                       <input type="phone" disabled maxlength="10" size="10" class="form-control" id="shopPriceId" value="<%= product.shopPrice %>">
+                     </div>
+                   </div>
+
                  </div>
                  <br>
                  <div class="row">
-                   <div class="col-6">
+                   <div class="col-md-5 col-6">
                      <label for="color1Id">Color 1 :</label>
                      <select name="color1" id="color1Id" class="form-select">
                        <option disabled selected>
@@ -159,7 +155,8 @@
                        <option value="Other">Other</option>
                      </select>
                    </div>
-                   <div class="col-6">
+                   <div class="col-md-2 d-sm-block d-none"></div>
+                   <div class="col-md-5 col-6">
                      <label for="color2">Color 2 :</label>
                      <select name="color2" id="color2" class="form-select">
                        <option disabled selected>
@@ -186,18 +183,35 @@
              <div class="col-md-1"></div>
              <div class="col-md-6">
                <div>
-                 <div class="col-3">
-                   <label for="quantityId"> Quantity</label>
-                   <input type="number" value="<%= product.quantity %>" maxlength="10" size="10" name="quantity" class="form-control" id="quantityId">
-                   <br>
+                 <div class="row">
+                   <div class="col-sm-3 col-6">
+                     <label for="quantityId"> Quantity</label>
+                     <input type="number" value="<%= product.quantity %>" maxlength="10" size="10" name="quantity" class="form-control" id="quantityId">
+                     <br>
+                   </div>
+                   <div class="col-sm-3 col-6">
+                     <label for="sizeId">Size :</label>
+                     <select name="size" id="sizeId" class="form-select">
+                       <option disabled selected>
+                         <%= product.size %>
+                       </option>
+                       <option value="X-Small">X-Small</option>
+                       <option value="Small">Small</option>
+                       <option value="Medium">Medium</option>
+                       <option value="Large">Large</option>
+                       <option value="X Large">X Large</option>
+                       <option value="XX Large">XX Large</option>
+
+                     </select>
+                   </div>
                  </div>
                  <div class="col-md-7">
                    <label for="abcdefa">Image <span class="fw-light fs-6 text-black-50"> ( You can choose images up to 4)</span></label><br>
-                   <input type="file" class="form-control item-img file center-block" name="" id="abcdefa" />
+                   <input style="width:85%;" type="file" class="form-control item-img file center-block" name="" id="abcdefa" />
                    <div id="galeria" class="mt-2 d-flex">
                      <div id="formFileLg">
                        <% for( let i=0; i < locals.product.imagesDetails.length; i++ ) { %>
-                       <img class="col-4" src="<%= product.imagesDetails[i].Location %>">
+                       <img class="col-4 my-1" src="<%= product.imagesDetails[i].Location %>">
                        <% } %>
                      </div>
                    </div>

@@ -42,193 +42,193 @@
       All Products
     </a>
     <section>
-      <div class="container mt-4">
-        <div class="row">
-
-          <div class="col-md-11 ">
-            <form class="mt-4" onsubmit="addProduct()">
-
-              <div class="d-flex justify-content-around" style="width:100%;">
-                <div>
-                  <div class="d-flex">
-                    <div class="me-5" style="width:60%;">
-                      <label for="brandnameId">Brand Name</label> <a href="/admin/addBrandName" class="float-end btn-link text-info fw-light">add Brands</a>
-                      <select required name="brandName" id="brandnameId" class="form-select">
-                        <option value="" disabled selected>Choose...</option>
-                        <% for( let i=0; i < brandName.length; i++ ) { %>
-                        <option value="<%= brandName[i]._id %>">
-                          <%= brandName[i].brandName %>
-                        </option>
-                        <% } %>
-                      </select>
-                    </div>
-                    <div style="width:30%;">
-                      <label for="genderType">Gender Type :</label>
-                      <select required name="gender" id="genderType" class="form-select">
-                        <option value="" disabled selected>Choose...</option>
-                        <% for( let i=0; i < gender.length; i++ ) { %>
-                        <option value="<%= gender[i]._id %>">
-                          <%= gender[i].gender %>
-                        </option>
-                        <% } %>
-                      </select>
-                    </div>
-
+      <form class="mt-4" onsubmit="addProduct()">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-5">
+              <div>
+                <div class="row">
+                  <div class="col-sm-5 col-6">
+                    <label for="brandnameId">Brand Name</label> <a href="/admin/addBrandName" class="float-end btn-link text-info fw-light">add Brands</a>
+                    <select required name="brandName" id="brandnameId" class="form-select">
+                      <option value="" disabled selected>Choose...</option>
+                      <% for( let i=0; i < brandName.length; i++ ) { %>
+                      <option value="<%= brandName[i]._id %>">
+                        <%= brandName[i].brandName %>
+                      </option>
+                      <% } %>
+                    </select>
                   </div>
-
-
-                  <br>
-                  <div class="d-flex">
-                    <div class="me-5" style="width:50%;">
-                      <label for="productType">Product Type :</label>
-                      <select required name="type" id="productType" class="form-select">
-                        <option value="" disabled selected>Choose...</option>
-                        <option value="Shirt">Shirt</option>
-                        <option value="T-Shirt">T-Shirt</option>
-                        <option value="Jeans">Jeans</option>
-                        <option value="CottonPants">Cotton Pants</option>
-                        <option value="Churidar">Churidar</option>
-                        <option value="Maxi">Maxi</option>
-                        <option value="Bottomwear">Bottomwear</option>
-                        <option value="Saree">Saree</option>
-                        <option value="Kurtas">Kurtas</option>
-                        <option value="Top">Top</option>
-                        <option value="Pants">Pants</option>
-                        <option value="Jacket">Jacket</option>
-                        <option value="Other">Other</option>
-
-                      </select>
-                    </div>
-                    <div style="width:50%;">
-                      <label for="category">Category :</label>
-                      <select required name="category" id="category" class="form-select">
-                        <option value="" disabled selected>Choose...</option>
-                        <option value="Formals">Formals</option>
-                        <option value="Casuals">Casuals</option>
-                        <option value="Innerwear">Innerwear</option>
-                        <option value="Partywear">Partywear</option>
-                        <option value="Other">Other</option>
-                      </select>
-                    </div>
-
+                  <div class="col-md-2 d-sm-block d-none"></div>
+                  <div class="col-sm-5 col-6">
+                    <label for="genderType">Gender Type :</label>
+                    <select required name="gender" id="genderType" class="form-select">
+                      <option value="" disabled selected>Choose...</option>
+                      <% for( let i=0; i < gender.length; i++ ) { %>
+                      <option value="<%= gender[i]._id %>">
+                        <%= gender[i].gender %>
+                      </option>
+                      <% } %>
+                    </select>
                   </div>
-
-                  <br>
-                  <div class="d-flex">
-                    <div class="me-5" style="width:50%;">
-                      <label for="retailPriceId">Retail Price</label>
-                      <input required type="phone" onkeypress="return isNumberKey(event)" maxlength="10" size="10" name="retailPrice" class="form-control" id="retailPriceId">
-                    </div>
-                    <!-- <div style="width:50%;">
-                      <label for="shopPriceId">Shop Price</label>
-                      <input required type="phone" onkeypress="return isNumberKey(event)" maxlength="10" size="10" name="shopPrice" class="form-control" id="shopPriceId">
-                    </div> -->
-                  </div>
-                  <br>
-                  <div class="d-flex">
-                    <div class="me-4" style="width:45%;">
-                      <label for="sizeId">Size :</label>
-                      <select required name="size" id="sizeId" class="form-select">
-                        <option value="" disabled selected>Choose...</option>
-                        <option value="X-Small">X-Small</option>
-                        <option value="Small">Small</option>
-                        <option value="Medium">Medium</option>
-                        <option value="Large">Large</option>
-                        <option value="X Large">X Large</option>
-                        <option value="XX Large">XX Large</option>
-
-                      </select>
-                    </div>
-                    <div style="width:30%;" class="me-3">
-                      <label for="color1Id">Color 1 :</label>
-                      <select required name="color1" id="color1Id" class="form-select">
-                        <option value="" disabled selected>Choose...</option>
-                        <option value="Black">Black</option>
-                        <option value="White">White</option>
-                        <option value="Green">Green</option>
-                        <option value="Blue">Blue</option>
-                        <option value="Orange">Orange</option>
-                        <option value="Yellow">Yellow</option>
-                        <option value="Chocolate">Chocolate</option>
-                        <option value="Rose">Rose</option>
-                        <option value="Navy">Navy</option>
-                        <option value="Aqua">Aqua</option>
-                        <option value="Brown">Brown</option>
-                        <option value="Other">Other</option>
-                      </select>
-                    </div>
-                    <div style="width:30%;">
-                      <label for="color2">Color 2 :</label>
-                      <select required name="color2" id="color2" class="form-select">
-                        <option value="" disabled selected>Choose...</option>
-                        <option value="Black">Black</option>
-                        <option value="White">White</option>
-                        <option value="Green">Green</option>
-                        <option value="Blue">Blue</option>
-                        <option value="Orange">Orange</option>
-                        <option value="Yellow">Yellow</option>
-                        <option value="Chocolate">Chocolate</option>
-                        <option value="Rose">Rose</option>
-                        <option value="Navy">Navy</option>
-                        <option value="Aqua">Aqua</option>
-                        <option value="Brown">Brown</option>
-                        <option value="Other">Other</option>
-                      </select>
-                    </div>
-                  </div>
-                  <br>
-                  <label for="descriptionId">Description</label>
-                  <textarea id="descriptionId" class="form-control" required name="description" cols="40" rows="4"></textarea>
                 </div>
-                <div class="">
-                  <div class="me-5" style="width:50%;">
+                <br>
+                <div class="row">
+                  <div class="col-sm-5 col-6">
+                    <label for="productType">Product Type :</label>
+                    <select required name="type" id="productType" class="form-select">
+                      <option value="" disabled selected>Choose...</option>
+                      <option value="Shirt">Shirt</option>
+                      <option value="T-Shirt">T-Shirt</option>
+                      <option value="Jeans">Jeans</option>
+                      <option value="CottonPants">Cotton Pants</option>
+                      <option value="Churidar">Churidar</option>
+                      <option value="Maxi">Maxi</option>
+                      <option value="Bottomwear">Bottomwear</option>
+                      <option value="Saree">Saree</option>
+                      <option value="Kurtas">Kurtas</option>
+                      <option value="Top">Top</option>
+                      <option value="Pants">Pants</option>
+                      <option value="Jacket">Jacket</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  <div class="col-md-2 d-sm-block d-none"></div>
+                  <div class="col-sm-5 col-6">
+                    <label for="category">Category :</label>
+                    <select required name="category" id="category" class="form-select">
+                      <option value="" disabled selected>Choose...</option>
+                      <option value="Formals">Formals</option>
+                      <option value="Casuals">Casuals</option>
+                      <option value="Innerwear">Innerwear</option>
+                      <option value="Partywear">Partywear</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+
+                </div>
+                <br>
+                <div class="row">
+                  <div class="col-md-5 col-6">
+                    <label for="retailPriceId">Price ₹</label>
+                    <input required type="text" onkeypress="return isNumberKey(event)" maxlength="10" size="10" name="retailPrice" class="form-control" id="retailPriceId">
+                  </div>
+                  <div class="col-md-2 d-sm-block d-none"></div>
+                  <div class="col-md-5 col-6">
+                    <div>
+                      <label for="discountId">Discount %</label>
+                      <input type="text" max="100" onkeypress="return isNumberKey(event)" name="shopPrice" class="form-control" id="discountId" name="discount">
+                    </div>
+                  </div>
+                  <!-- <div class="col-4">
+                    <div>
+                      <label for="shopPriceId">Offer Price ₹</label>
+                      <input type="text" disabled maxlength="10" size="10" name="shopPrice" class="form-control" id="shopPriceId">
+                    </div>
+                  </div> -->
+
+                </div>
+                <br>
+                <div class="row">
+                  <div class="col-md-5 col-6">
+                    <label for="color1Id">Color 1 :</label>
+                    <select required name="color1" id="color1Id" class="form-select">
+                      <option value="" disabled selected>Choose...</option>
+                      <option value="Black">Black</option>
+                      <option value="White">White</option>
+                      <option value="Green">Green</option>
+                      <option value="Blue">Blue</option>
+                      <option value="Orange">Orange</option>
+                      <option value="Yellow">Yellow</option>
+                      <option value="Chocolate">Chocolate</option>
+                      <option value="Rose">Rose</option>
+                      <option value="Navy">Navy</option>
+                      <option value="Aqua">Aqua</option>
+                      <option value="Brown">Brown</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  <div class="col-md-2 d-sm-block d-none"></div>
+                  <div class="col-md-5 col-6">
+                   <label for="color2">Color 2 :</label>
+                   <select required name="color2" id="color2" class="form-select">
+                     <option value="" selected>Choose...</option>
+                     <option value="Black">Black</option>
+                     <option value="White">White</option>
+                     <option value="Green">Green</option>
+                     <option value="Blue">Blue</option>
+                     <option value="Orange">Orange</option>
+                     <option value="Yellow">Yellow</option>
+                     <option value="Chocolate">Chocolate</option>
+                     <option value="Rose">Rose</option>
+                     <option value="Navy">Navy</option>
+                     <option value="Aqua">Aqua</option>
+                     <option value="Brown">Brown</option>
+                     <option value="Other">Other</option>
+                   </select>
+                  </div>
+                </div>
+                <br>
+              </div>
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-6">
+              <div>
+                <div class="row">
+                  <div class="col-sm-3 col-6">
                     <label for="quantityId"> Quantity</label>
                     <input required type="number" maxlength="10" size="10" name="quantity" class="form-control" id="quantityId">
                     <br>
                   </div>
-                  <label for="abcdefa">Image <span class="fw-light fs-6 text-black-50"> ( You can choose images up to 4)</span></label><br>
-                  <input required type="file" class="form-control item-img file center-block" name="" id="abcdefa" />
-                  <div class="container">
-                    <div class="row">
-                      <div class="col-xs-12">
-                        <label class=" center-block">
-                        </label>
-                      </div>
-                    </div>
+                  <div class="col-sm-3 col-6">
+                    <label for="sizeId">Size :</label>
+                    <select required name="size" id="sizeId" class="form-select">
+                      <option value="" disabled selected>Choose...</option>
+                      <option value="X-Small">X-Small</option>
+                      <option value="Small">Small</option>
+                      <option value="Medium">Medium</option>
+                      <option value="Large">Large</option>
+                      <option value="X Large">X Large</option>
+                      <option value="XX Large">XX Large</option>
+                    </select>
                   </div>
-                  <div class="modal fade" id="cropImagePop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                          <h4 class="modal-title" id="myModalLabel">
-                            <?=multiLanguage( "Edit Foto" , "Edit Photo" )?>
-                          </h4>
-                        </div>
-                        <div class="modal-body">
-                          <div id="upload-demo" class="center-block"></div>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                          <button type="button" id="cropImageBtn" class="btn btn-primary">Crop</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-
-                  <div id="galeria" class="mt-2 d-flex"></div>
-                  <br>
-
-                  <button type="submit" class="btn btn-warning px-5 py-2 mt-5 float-end ">Submit</button>
                 </div>
-
+                <div class="col-md-7">
+                  <label for="abcdefa">Image <span class="fw-light fs-6 text-black-50"> ( You can choose images up to 4)</span></label><br>
+                  <input style="width:85%;" type="file" class="form-control item-img file center-block" name="" id="abcdefa" />
+                  <div id="galeria" class="mt-2 d-flex"></div>
+                </div>
+                <div class="modal fade" id="cropImagePop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">
+                          <?=multiLanguage( "Edit Foto" , "Edit Photo" )?>
+                        </h4>
+                      </div>
+                      <div class="modal-body">
+                        <div id="upload-demo" class="center-block"></div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" id="cropImageBtn" class="btn btn-primary">Crop</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-
-            </form>
+            </div>
+          </div>
+          <div class="">
+            <label for="descriptionId">Description</label><br>
+            <textarea name="description" class="" required id="descriptionId" rows="4" cols="37"></textarea>
+          </div>
+          <div>
+            <button type="submit" class="btn btn-warning mt-4">Submit</button>
           </div>
         </div>
-      </div>
+      </form>
     </section>
   </div>
 </div>

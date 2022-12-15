@@ -4,7 +4,7 @@ const productSchema = new mongoose.Schema(
     {
         brandName: {
             type: mongoose.Schema.Types.ObjectId,
-            ref:'brandName',
+            ref: 'brandName',
             required: true
         },
         retailPrice: {
@@ -34,7 +34,7 @@ const productSchema = new mongoose.Schema(
             ref: 'Gender_Type',
             required: true
         },
-        category: { 
+        category: {
             type: String,
             required: true
         },
@@ -43,23 +43,27 @@ const productSchema = new mongoose.Schema(
             required: true
         },
         imagesDetails: {
-            type:Array,
-            required:true
+            type: Array,
+            required: true
         },
-        quantity:{
-            type:Number,
-            required:true
+        quantity: {
+            type: Number,
+            required: true
         }, deleteProduct: {
             type: Boolean,
             default: false
         },
-        review:{
-            type:Number,
-            default:0
+        review: {
+            type: Number,
+            default: 0
         },
-        rating:{
-            type:Number,
-            default:0
+        rating: {
+            type: Number,
+            default: 0
+        },
+        discount: {
+            type: Number,
+            default: 0
         }
 
     },
@@ -68,5 +72,5 @@ const productSchema = new mongoose.Schema(
     }
 )
 
-const productModel = mongoose.model('Products',productSchema)
+const productModel = mongoose.model('Products', productSchema)
 module.exports = productModel

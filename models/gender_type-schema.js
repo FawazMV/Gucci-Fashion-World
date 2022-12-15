@@ -7,9 +7,16 @@ const gender_typeSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    image:{
-        type:Array,
-        required:true
+    discount: {
+        type: Number,
+        default: 0,
+        max: 100,
+        min: 0,
+        required: true
+    },
+    image: {
+        type: Array,
+        required: true
     }
 }
 

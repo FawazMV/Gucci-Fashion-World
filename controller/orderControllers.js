@@ -96,7 +96,7 @@ exports.cancelOrder = async (req, res, next) => {
         let { OrderId, TotalPrice, coupenapplied, discountPercentage, discountPrice, Payment } = await orders_Model.findOne({ 'OrderDetails._id': req.body.id }, { _id: -1, OrderId: 1, TotalPrice: 1, coupenapplied: 1, discountPercentage: 1, discountPrice: 1, Payment: 1 });
         TotalPrice = TotalPrice - total
         let finalPrice = TotalPrice
-        if (Payment) walletAdd(userId, OrderId, total, "Refund")
+        if (Payment !== "COD") walletAdd(userId, OrderId, total, "Refund")
         if (coupenapplied) {
             let disc = percentage(discountPercentage, TotalPrice)
             if (disc < discountPrice) discountPrice = disc
@@ -105,7 +105,10 @@ exports.cancelOrder = async (req, res, next) => {
         } else {
             await orders_Model.updateOne({ 'OrderDetails._id': req.body.id }, { $set: { 'OrderDetails.$.Order_Status': 'Cancelled', 'OrderDetails.$.Canceled_date': C_date }, $inc: { TotalPrice: -total, finalPrice: -total } })
         }
-        res.json({ response: false, total: TotalPrice, date: C_date, finalPrice: finalPrice, discountPrice: discountPrice })
+        if (finalPrice === 0) {
+            orders_Model.findByIdAndUpdate(req.body.id, { $set: { Delivery_status: 'Cancelled', Delivery_Expected_date: C_date, TotalPrice: 0, finalPrice: 0, discountPrice: 0 } })
+        }
+            res.json({ response: false, total: TotalPrice, date: C_date, finalPrice: finalPrice, discountPrice: discountPrice })
     }
     catch (error) {
         next(error)

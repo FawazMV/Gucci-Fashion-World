@@ -16,6 +16,7 @@
               <th scope="col">No</th>
               <th scope="col">Gender Category</th>
               <th scope="col">Image</th>
+              <th scope="col">Discount %</th>
               <th scope="col">Action</th>
             </tr>
           </thead>
@@ -33,9 +34,10 @@
               </td>
 
               <td><img src="<%= gender[i].image[0].Location %>" style="height:60px;width:auto" alt=""> </td>
+              <td class="fw-bold pt-4 px-3"><%= gender[i].discount %> % </td>
               <td class="pt-3">
                 <!-- <a href="/admin/Edit-gender/ " class="btn btn-primary px-4 my-1">Edit</a> -->
-                <button type="button" class="btn btn-primary px-4 my-1" data-bs-toggle="modal" data-bs-target="#staticBackdrop" onclick="editcate('<%= gender[i].gender %>','<%= gender[i].image[0].Location %>','<%= gender[i]._id %>')">
+                <button type="button" class="btn btn-primary px-4 my-1" data-bs-toggle="modal" data-bs-target="#staticBackdrop" onclick="editcate('<%= gender[i].gender %>','<%= gender[i].image[0].Location %>','<%= gender[i]._id %>','<%= gender[i].discount %>')">
                   Edit
                 </button>
                 <button" onclick="archiveFunction('<%= gender[i]._id %>')" class="btn btn-danger my-1">Delete</button>
@@ -71,11 +73,11 @@
           <input type="text" style="display:none;" name="id" id="idhide">
           <label for="gender">Category name</label>
           <input type="text" class="form-control mb-3" onkeyup="editkey()" name="gender" id="genderEdit">
+          <label for="discountEdit">Discount %</label>
+          <input type="text" required class="form-control mb-3" onkeyup="editkey()" name="discount" id="discountEdit">
           <label for="gender">Image</label>
           <input type="file" class="form-control" aria-label="Upload" name="image" onchange="loadEditFile(event)" id="image">
-          <div class="">
-            <img id="imgedit" style="width: 65%; height:auto; margin-top: 10px;" />
-          </div>
+          <div class=""> <img id="imgedit" style="width: 65%; height:auto; margin-top: 10px;" /> </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -99,6 +101,8 @@
         <form onsubmit="genderTypeAdd()" enctype="multipart/form-data">
           <label for="gender">Gender Type</label>
           <input type="text" class="form-control mb-3" required name="gender" id="gender">
+          <label for="discountEdit">Discount %</label>
+          <input type="text" class="form-control mb-3" onkeypress="return isNumberKey(event)" name="discount">
           <label for="gender">Image</label>
           <input type="file" class="form-control" aria-label="Upload" required name="image" onchange="loadFile(event)" id="image">
           <div class="">
@@ -181,6 +185,12 @@
 
   }
 
+  function isNumberKey(evt) {
+    var charCode = (evt.which) ? evt.which : evt.keyCode
+    if (charCode > 31 && (charCode < 48 || charCode > 57))
+      return false;
+    return true;
+  }
 
 
   genderTypeAdd = async () => {
@@ -248,15 +258,12 @@
 
 <script>
   let editIdg
-  editcate = (name, src, id) => {
+  editcate = (name, src, id, disc) => {
     document.getElementById('idhide').value = id
     document.getElementById('genderEdit').value = name
     document.getElementById('imgedit').src = src
+    document.getElementById('discountEdit').value = disc
   }
-  // function get_action(form) {
-  //     alert('abc')
-  //     form.action = `/admin/Editgender${editIdg}`;
-  // }
 </script>
 <script>
   var loadEditFile = function(event) {

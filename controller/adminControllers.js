@@ -8,8 +8,9 @@ const genderModel = require('../models/gender_type-schema');
 const { s3Uploadv2, s3Uploadv3, s3delte2, s3delte3 } = require('../config/s3Service');
 const orders_Model = require('../models/order-schema');
 const moment = require('moment');
-const { inventory } = require('../helpers/order_Helpers');
+const { inventory, walletAdd } = require('../helpers/order_Helpers');
 const coupn_Model = require('../models/coupen_schema');
+const { OfferPrice } = require('../helpers/product_helper');
 let msg, product_id;
 
 
@@ -21,7 +22,7 @@ module.exports = {
             let users = await usermodel.find({}).count()
             const DaysAgo = new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000);
             const oldmonth = new Date(new Date().getTime() - 60 * 24 * 60 * 60 * 1000);
-           // console.log(moment(DaysAgo).format('DD-MM-YYYY'))
+            // console.log(moment(DaysAgo).format('DD-MM-YYYY'))
             let sales = 0
             let orders = 0
             let perfomance
@@ -37,7 +38,7 @@ module.exports = {
                     },
                 },
             ]);
-           // console.log(saleReport)
+            // console.log(saleReport)
             if (saleReport.length) {
                 sales = saleReport[0].totalPrice
                 orders = saleReport[0].count
@@ -159,6 +160,9 @@ module.exports = {
             const results = await s3Uploadv3(req.files);
             let product = req.body
             product.imagesDetails = results
+            let { discount } = await genderModel.findById(product.gender, { _id: 0, discount: 1 })
+            if (product.discount > discount) discount = product.discount
+            product.shopPrice = OfferPrice(discount, product.retailPrice)
             productModel.create(product).then(() => {
                 res.json({ success: true })
             }).catch(error => next(error))
@@ -244,6 +248,9 @@ module.exports = {
                 const results = await s3Uploadv3(req.files);
                 product.imagesDetails = results
             }
+            let { discount } = await genderModel.findById(product.gender, { _id: 0, discount: 1 })
+            if (product.discount > discount) discount = product.discount
+            product.shopPrice = OfferPrice(discount, product.retailPrice)
             productModel.findByIdAndUpdate(product_id, product).then(() => {
                 res.json({ success: true })
             }).catch(error => {
@@ -269,6 +276,7 @@ module.exports = {
             const file = req.files[0];
             const result = await s3Uploadv2(file);
             category.image = result
+            category.discount = req.body.category
             genderModel.create(category).then(() => {
                 res.json({ succe: true })
             }).catch(error => next(error))
@@ -314,6 +322,12 @@ module.exports = {
                 const result = await s3Uploadv2(file);
                 category.image = result
             }
+            category.discount = req.body.discount
+            let disc = req.body.discount
+            await productModel.updateMany(
+                { gender: id, discount: { $lt: disc } },
+                [{ "$set": { "shopPrice": { $round: [{ $sum: [{ $divide: [{ $multiply: ["$retailPrice", -disc] }, 100] }, "$retailPrice"] }, 0] } } }]
+            ).catch(error => next(error))
             genderModel.findByIdAndUpdate(id, category).then(() => {
                 res.json({ succe: true })
             }).catch(error => next(error))
@@ -325,7 +339,7 @@ module.exports = {
         try {
             id = req.params.id
             productModel.findById(id).populate('brandName').populate('gender').then((product) => {
-             //   console.log(product)
+                //   console.log(product)
                 res.render('admin/viewSingle', { admin: true, product })
             })
         } catch (error) {
@@ -362,6 +376,9 @@ module.exports = {
                     { $match: { '_id': mongoose.Types.ObjectId(req.body.id) } },
                     {
                         $project: {
+                            finalPrice: 1,
+                            OrderId: 1,
+                            Payment: 1,
                             "OrderDetails": {
                                 $filter: {
                                     input: "$OrderDetails",
@@ -371,6 +388,9 @@ module.exports = {
                         }
                     }
                 ])
+                let FinalPrice = OrderDetails[0].finalPrice
+                let OrderId = OrderDetails[0].OrderId
+                let Payment = OrderDetails[0].Payment
                 OrderDetails = OrderDetails[0].OrderDetails
                 for (let i = 0; i < OrderDetails.length; i++) {
                     let id = OrderDetails[i].product_id
@@ -379,11 +399,12 @@ module.exports = {
                 }
                 let { coupenapplied, cartDiscout, User } = await orders_Model.findById(req.body.id, { coupenapplied: 1, cartDiscout: 1, User: 1, _id: 0 })
                 if (coupenapplied) {
-                   // console.log(User)
+                    // console.log(User)
                     await coupn_Model.updateOne({ coupenCode: cartDiscout }, { $pull: { users: { user: User } } }, { safe: true }).then(e => {
-                      //  console.log(e)
+                        //  console.log(e)
                     })
                 }
+                if (Payment !== "COD" && FinalPrice) walletAdd(User, OrderId, FinalPrice, "Refund")
                 await orders_Model.findByIdAndUpdate(req.body.id, { $set: { Delivery_status: status, Delivery_Expected_date: date, TotalPrice: 0, finalPrice: 0, discountPrice: 0, coupenapplied: false } })
                 await orders_Model.updateMany({ _id: req.body.id }, { $set: { "OrderDetails.$[elem].Order_Status": 'Cancelled', 'OrderDetails.$[elem].Canceled_date': date } },
                     { arrayFilters: [{ "elem.Order_Status": 'Pending' }], multi: true });
@@ -405,7 +426,7 @@ module.exports = {
     },
     addCoupen: (req, res, next) => {
         try {
-            coupn_Model.create(req.body).then(() => res.json({succ:true})).catch((error) => next(error))
+            coupn_Model.create(req.body).then(() => res.json({ succ: true })).catch((error) => next(error))
         } catch (error) {
             next(error)
         }
@@ -420,10 +441,10 @@ module.exports = {
     },
     orderDetail: (req, res, next) => {
         try {
-          //  console.log(req.query.id)
+            //  console.log(req.query.id)
             orders_Model.findById(req.query.id).populate({ path: 'OrderDetails.product_id', model: 'Products', populate: { path: 'brandName', model: 'brandName' } }).populate('User', 'email')
                 .then(orderDetail => {
-                  //  console.log(orderDetail)
+                    //  console.log(orderDetail)
                     res.json(orderDetail)
                 })
         } catch (error) {
@@ -434,7 +455,7 @@ module.exports = {
         try {
             let todayDate = new Date();
             let DaysAgo = new Date(new Date().getTime() - 1 * 24 * 60 * 60 * 1000);
-           // console.log(moment(DaysAgo).format('DD-MM-YYYY'))
+            // console.log(moment(DaysAgo).format('DD-MM-YYYY'))
             let sales = []
             for (let i = 1; i <= 7; i++) {
                 let abc = {}
@@ -463,7 +484,7 @@ module.exports = {
 
             }
             let prevsales = []
-         //   console.log(moment(DaysAgo).format('DD-MM-YYYY'))
+            //   console.log(moment(DaysAgo).format('DD-MM-YYYY'))
             for (let i = 1; i <= 7; i++) {
                 let abc = {}
                 let saleReport = await orders_Model.aggregate([
