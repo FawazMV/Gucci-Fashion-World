@@ -188,9 +188,8 @@ window.addEventListener('load', function () {
 
 const salesChange = () => {
 	let val = document.getElementById('salesChange').value
-	var lineChart = document.getElementById('canvas-linechart').getContext('2d');
-	lineChart.clearRect(0, 0, 500, 500);
-	//getDetails(val)
+	document.getElementById('lineChartabc').innerHTML = `<canvas id="canvas-linechart"></canvas>`
+	getDetails(val)
 }
 
 const getDetails = (val) => {
