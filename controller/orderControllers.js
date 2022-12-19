@@ -40,6 +40,11 @@ exports.placeOrder = async (req, res, next) => {
         else {
             let total = await subTotal(userId)
             if (req.body.payment === "online") {
+                if (add.cartDiscout) {
+                    let resp = await coupenCheck(add.cartDiscout, userId).then(resp => {
+                        total = resp.subtotal
+                    })
+                }
                 OrderID().then(orderId => {
                     payment(total * 100, orderId).then((response) => res.json({ response: response }))
                 })
@@ -52,18 +57,28 @@ exports.placeOrder = async (req, res, next) => {
                 })
             } else if (req.body.payment === "wallet") {
                 let { wallet } = await usermodel.findById(userId, { wallet: 1, _id: 0 }).catch(error => next(error))
+                let discout = 0
                 wallet = wallet.balance
+                if (add.cartDiscout) {
+                    discout = await coupenCheck(add.cartDiscout, userId)
+                    discout = discout.discout
+                }
                 console.log(wallet)
-                if (wallet >= total) {
+                if (wallet >= total - discout) {
                     OrderID().then(async (id) => {
-                        walletAdd(userId, id, -total, 'Payment')
+                        //walletAdd(userId, id, -total, 'Payment')
                         OrderPush(userId, id, total, 'Wallet').then(() => {
                             res.json({ response: "Wallet" })
                         })
                     })
                 } else {
-                    OrderID().then(orderId => {
+                    OrderID().then(async orderId => {
+                        if (add.cartDiscout) {
+                            let resp = await coupenCheck(add.cartDiscout, userId)
+                            total = resp.subtotal
+                        }
                         total = total - wallet
+
                         payment(total * 100, orderId).then((response) => {
                             response.wallet = wallet
                             res.json({ response: response })
@@ -93,22 +108,26 @@ exports.cancelOrder = async (req, res, next) => {
         let P_qty = product[0].OrderDetails[0].quantity
         inventory(P_id, -P_qty)
         let C_date = moment(Date.now()).format('DD-MM-YYYY')
-        let { OrderId, TotalPrice, coupenapplied, discountPercentage, discountPrice, Payment } = await orders_Model.findOne({ 'OrderDetails._id': req.body.id }, { _id: -1, OrderId: 1, TotalPrice: 1, coupenapplied: 1, discountPercentage: 1, discountPrice: 1, Payment: 1 });
+        let { OrderId, TotalPrice, coupenapplied, discountPercentage, discountPrice, Payment, finalPrice } = await orders_Model.findOne({ 'OrderDetails._id': req.body.id }, { _id: -1, OrderId: 1, TotalPrice: 1, coupenapplied: 1, discountPercentage: 1, discountPrice: 1, Payment: 1, finalPrice: 1 });
+        let coptotal = TotalPrice
         TotalPrice = TotalPrice - total
-        let finalPrice = TotalPrice
-        if (Payment !== "COD") walletAdd(userId, OrderId, total, "Refund")
+        let finalPricee = TotalPrice
         if (coupenapplied) {
             let disc = percentage(discountPercentage, TotalPrice)
             if (disc < discountPrice) discountPrice = disc
-            finalPrice = TotalPrice - discountPrice
-            await orders_Model.updateOne({ 'OrderDetails._id': req.body.id }, { $set: { 'OrderDetails.$.Order_Status': 'Cancelled', 'OrderDetails.$.Canceled_date': C_date, finalPrice: finalPrice, discountPrice: disc }, $inc: { TotalPrice: -total } })
+            finalPricee = TotalPrice - discountPrice
+            await orders_Model.updateOne({ 'OrderDetails._id': req.body.id }, { $set: { 'OrderDetails.$.Order_Status': 'Cancelled', 'OrderDetails.$.Canceled_date': C_date, finalPrice: finalPricee, discountPrice: disc }, $inc: { TotalPrice: -total } })
         } else {
             await orders_Model.updateOne({ 'OrderDetails._id': req.body.id }, { $set: { 'OrderDetails.$.Order_Status': 'Cancelled', 'OrderDetails.$.Canceled_date': C_date }, $inc: { TotalPrice: -total, finalPrice: -total } })
         }
-        if (finalPrice === 0) {
-            orders_Model.findByIdAndUpdate(req.body.id, { $set: { Delivery_status: 'Cancelled', Delivery_Expected_date: C_date, TotalPrice: 0, finalPrice: 0, discountPrice: 0 } })
+        console.log(req.body.id)
+        if (finalPricee === 0) {
+            if (Payment !== "COD") walletAdd(userId, OrderId, finalPrice, "Refund")
+            orders_Model.updateOne({ 'OrderDetails._id': req.body.id }, { $set: { Delivery_status: 'Cancelled', Delivery_Expected_date: C_date, TotalPrice: 0, finalPrice: 0, discountPrice: 0 } })
+        } else {
+            if (Payment !== "COD") walletAdd(userId, OrderId, total, "Refund")
         }
-            res.json({ response: false, total: TotalPrice, date: C_date, finalPrice: finalPrice, discountPrice: discountPrice })
+        res.json({ response: false, total: TotalPrice, date: C_date, finalPrice: finalPricee, discountPrice: discountPrice })
     }
     catch (error) {
         next(error)

@@ -197,6 +197,7 @@
     event.preventDefault()
     const formData = new FormData(event.target);
     const formProps = await Object.fromEntries(formData);
+    console.log(formProps)
     axios.post('/admin/genderType', formProps, {
       headers: {
         'Content-Type': 'multipart/form-data'

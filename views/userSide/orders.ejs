@@ -51,7 +51,7 @@
                               <% if (order[i].OrderDetails[k].Order_Status==="Pending" ) { %>
                               <p class="mt-1 mb-0 fw-bold">Confirmed</p>
                               <p class="m-0">Ordered on <%= order[i].Order_date %></p>
-                              <% if (order[i].Payment=="Online"||order[i].Payment=="Wallet + Online") { %>
+                              <% if (order[i].Payment=="Online"||"Wallet + Online"||"Wallet") { %>
                               <p style="opacity:70%;">Paid</p>
                               <% } else { %>
                               <p style="opacity:70%;">Cash on delivery
@@ -91,7 +91,7 @@
 
           <h3 class="text-primary fw-bold text-center mt-5" style="opacity:50%;">
             Ohoo... You didn't ordered anything yet !!</h3>
-               
+
           <% } %>
 
 

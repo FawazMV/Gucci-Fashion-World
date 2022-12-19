@@ -300,71 +300,37 @@ exports.changePassword = async (req, res, next) => {
     }
 }
 exports.productFilter = (req, res, next) => {
-    try {         
+    try {
         let gender = req.query.gender
         let brand = req.query.brand
         let sortt = req.query.sortt
-        if (sortt == "shopPrice") {
-            let abc = "shopPrice"   
-            if (!gender && !brand) {
-                productModel.find({ deleteProduct: false }).populate('brandName').populate('gender').sort().
-                    then(Products => {
-                        res.json({ Products: Products })
-                    }).catch(error => next(error))
-            } else if (!gender) {
-                productModel.find({ deleteProduct: false, brandName: { $in: brand } }).populate('brandName').populate('gender').sort({ shopPrice: -1 }).
-                    then(Products => {
-                        res.json({ Products: Products })
-                    }).catch(error => next(error))
-            } else if (!brand) {
-                productModel.find({ deleteProduct: false, gender: { $in: gender } }).populate('brandName').populate('gender').sort({ shopPrice: -1 }).
-                    then(Products => {
-                        res.json({ Products: Products })
-                    }).catch(error => next(error))
-            }
-            else {
-                productModel.find({
-                    $and: [
-                        { deleteProduct: false },
-                        { gender: { "$in": gender } },
-                        { brandName: { "$in": brand } }
-                    ]
-                }).populate('brandName').populate('gender').sort({ shopPrice: -1 }).
-                    then(Products => {
-                        res.json({ Products: Products })
-                    }).catch(error => next(error))
-            }
+        if (!gender && !brand) {
+            productModel.find({ deleteProduct: false }).populate('brandName').populate('gender').sort({ [sortt]: -1 }).
+                then(Products => {
+                    res.json({ Products: Products })
+                }).catch(error => next(error))
+        } else if (!gender) {
+            productModel.find({ deleteProduct: false, brandName: { $in: brand } }).populate('brandName').populate('gender').sort({ [sortt]: -1 }).
+                then(Products => {
+                    res.json({ Products: Products })
+                }).catch(error => next(error))
+        } else if (!brand) {
+            productModel.find({ deleteProduct: false, gender: { $in: gender } }).populate('brandName').populate('gender').sort({ [sortt]: -1 }).
+                then(Products => {
+                    res.json({ Products: Products })
+                }).catch(error => next(error))
         }
         else {
-            if (!gender && !brand) {
-                productModel.find({ deleteProduct: false }).populate('brandName').populate('gender').sort({ createdAt: -1 }).
-                    then(Products => {
-                        res.json({ Products: Products })
-                    }).catch(error => next(error))
-
-            } else if (!gender) {
-                productModel.find({ deleteProduct: false, brandName: { $in: brand } }).populate('brandName').populate('gender').sort({ createdAt: -1 }).
-                    then(Products => {
-                        res.json({ Products: Products })
-                    }).catch(error => next(error))
-            } else if (!brand) {
-                productModel.find({ deleteProduct: false, gender: { $in: gender } }).populate('brandName').populate('gender').sort({ createdAt: -1 }).
-                    then(Products => {
-                        res.json({ Products: Products })
-                    }).catch(error => next(error))
-            }
-            else {
-                productModel.find({
-                    $and: [
-                        { deleteProduct: false },
-                        { gender: { "$in": gender } },
-                        { brandName: { "$in": brand } }
-                    ]
-                }).populate('brandName').populate('gender').sort({ createdAt: -1 }).
-                    then(Products => {
-                        res.json({ Products: Products })
-                    }).catch(error => next(error))
-            }
+            productModel.find({
+                $and: [
+                    { deleteProduct: false },
+                    { gender: { "$in": gender } },
+                    { brandName: { "$in": brand } }
+                ]
+            }).populate('brandName').populate('gender').sort({ [sortt]: -1 }).
+                then(Products => {
+                    res.json({ Products: Products })
+                }).catch(error => next(error))
         }
     } catch (error) {
         next(error)
@@ -417,3 +383,6 @@ exports.review = (req, res, next) => {
 
     }
 }
+// productModel.updateMany({}, { $set: { discount: 0, review: 0 } }).then((e)=>{
+//     console.log(e)
+// })

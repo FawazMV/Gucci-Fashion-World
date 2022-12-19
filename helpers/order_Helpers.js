@@ -47,10 +47,10 @@ exports.OrderPush = (userId, orderId, total, payment) => {
                 x.discountPrice = resp.discout
                 x.finalPrice = resp.subtotal
             }).catch(err => {
-                console.log(err)
-            })
+                console.log(err) })
             await coupn_Model.findOneAndUpdate({ coupenCode: OrderDetails.cartDiscout }, { $push: { users: { user: userId } } })
         }
+        if (payment === "Wallet") this.walletAdd(userId, orderId, -x.finalPrice, 'Payment')
         orders_Model.create(x).then(() => {
             usermodel.findByIdAndUpdate(userId, { $set: { cart: [] } }).then((e) => {
                 resolve()

@@ -70,12 +70,14 @@
                         </thead>
 
                         <tbody>
+
+                          <% for( let i=0; i < cartproduct.length; i++ ) { %>
                           <tr>
-                            <% for( let i=0; i < cartproduct.length; i++ ) { %>
                             <td><a href="#"></a><%= cartproduct[i].product_id.brandName.brandName %></td>
                             <td>₹ <%= cartproduct[i].product_id.shopPrice %>.00</td>
-                            <% } %>
                           </tr>
+                          <% } %>
+
                           <tr class="summary-subtotal">
                             <td>Subtotal:</td>
                             <td>₹ <%- total %>.00 </td>
@@ -86,7 +88,7 @@
                           </tr>
                           <tr class="summary-total">
                             <td>Total:</td>
-                            <td>₹ <%- total %>.00 </td>
+                            <td>₹ <%- total-discount %>.00 </td>
                           </tr><!-- End .summary-total -->
                         </tbody>
                       </table><!-- End .table table-summary -->

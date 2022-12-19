@@ -38,7 +38,6 @@ module.exports = {
                     },
                 },
             ]);
-            // console.log(saleReport)
             if (saleReport.length) {
                 sales = saleReport[0].totalPrice
                 orders = saleReport[0].count
@@ -276,7 +275,7 @@ module.exports = {
             const file = req.files[0];
             const result = await s3Uploadv2(file);
             category.image = result
-            category.discount = req.body.category
+            category.discount = req.body.discount
             genderModel.create(category).then(() => {
                 res.json({ succe: true })
             }).catch(error => next(error))
@@ -453,70 +452,197 @@ module.exports = {
     },
     getDetails: async (req, res, next) => {
         try {
-            let todayDate = new Date();
-            let DaysAgo = new Date(new Date().getTime() - 1 * 24 * 60 * 60 * 1000);
-            // console.log(moment(DaysAgo).format('DD-MM-YYYY'))
+            let value = req.query.value
+            var date = new Date(), y = date.getFullYear(), m = date.getMonth();
+            var firstDay = new Date(y, m, 1);
+            firstDay = new Date(firstDay.getTime() + 1 * 24 * 60 * 60 * 1000)
+            let secondDate = new Date(firstDay.getTime() + 7 * 24 * 60 * 60 * 1000);
             let sales = []
-            for (let i = 1; i <= 7; i++) {
-                let abc = {}
-                let saleReport = await orders_Model.aggregate([
+            if (value == 30) {
+                let perfomance
+                let saleFull = await orders_Model.aggregate([
                     {
-                        $match: { createdAt: { $lt: todayDate, $gte: DaysAgo } },
+                        $match: { createdAt: { $gte: firstDay } },
                     },
                     {
                         $group: {
-                            _id: { $dateToString: { format: "%u", date: todayDate } },
+                            _id: { $dateToString: { format: "%m", date: "$createdAt" } },
                             totalPrice: { $sum: "$TotalPrice" },
                             count: { $sum: 1 },
                         },
                     },
                 ]);
-                if (saleReport.length) {
-                    sales.push(saleReport[0])
-                } else {
-                    abc._id = todayDate.getDay() + 1
-                    abc.totalPrice = 0
-                    abc.count = 0
-                    sales.push(abc)
-                }
-                todayDate = DaysAgo
-                DaysAgo = new Date(new Date().getTime() - (i + 1) * 24 * 60 * 60 * 1000);
 
-            }
-            let prevsales = []
-            //   console.log(moment(DaysAgo).format('DD-MM-YYYY'))
-            for (let i = 1; i <= 7; i++) {
-                let abc = {}
-                let saleReport = await orders_Model.aggregate([
+                for (let i = 1; i <= 5; i++) {
+                    let abc = {}
+                    let saleReport = await orders_Model.aggregate([
+                        { $match: { createdAt: { $gte: firstDay, $lt: secondDate } } },
+                        {
+                            $group: {
+                                _id: moment(firstDay).format('DD-MM-YYYY'),
+                                totalPrice: { $sum: "$TotalPrice" },
+                                count: { $sum: 1 }
+                            },
+                        },
+                    ]);
+                    if (saleReport.length) {
+                        sales.push(saleReport[0])
+                    } else {
+                        abc._id = moment(firstDay).format('DD-MM-YYYY'),
+                            abc.totalPrice = 0
+                        abc.count = 0
+                        sales.push(abc)
+                    }
+                    firstDay = secondDate
+                    if (i == 4) {
+                        secondDate = new Date(firstDay.getFullYear(), firstDay.getMonth() + 1, 1)
+                    } else {
+                        secondDate = new Date(firstDay.getFullYear(), firstDay.getMonth() + 0, (i + 1) * 7)
+                    }
+                }
+                firstDay = new Date(date.getFullYear(), date.getMonth() - 1, 1)
+                let lastDate = new Date(date.getFullYear(), date.getMonth(), 0)
+                console.log(lastDate)
+                secondDate = new Date(firstDay.getTime() + 7 * 24 * 60 * 60 * 1000);
+                let PrevFull = await orders_Model.aggregate([
                     {
-                        $match: { createdAt: { $lt: todayDate, $gte: DaysAgo } },
+                        $match: { createdAt: { $gte: firstDay, $lt: lastDate } },
                     },
                     {
                         $group: {
-                            _id: { $dateToString: { format: "%u", date: todayDate } },
+                            _id: { $dateToString: { format: "%m", date: "$createdAt" } },
                             totalPrice: { $sum: "$TotalPrice" },
                             count: { $sum: 1 },
                         },
                     },
                 ]);
-                if (saleReport.length) {
-                    prevsales.push(saleReport[0])
-                } else {
-                    abc._id = todayDate.getDay() + 1
-                    abc.totalPrice = 0
-                    abc.count = 0
-                    prevsales.push(abc)
+                let prevsales = []
+                for (let i = 1; i <= 5; i++) {
+                    let abc = {}
+                    let saleReport = await orders_Model.aggregate([
+                        { $match: { createdAt: { $gte: firstDay, $lt: secondDate } } },
+                        {
+                            $group: {
+                                _id: moment(firstDay).format('DD-MM-YYYY'),
+                                totalPrice: { $sum: "$TotalPrice" },
+                                count: { $sum: 1 }
+                            }
+                        },
+                    ]);
+                    if (saleReport.length) {
+                        prevsales.push(saleReport[0])
+                    } else {
+                        abc._id = moment(firstDay).format('DD-MM-YYYY')
+                        abc.totalPrice = 0
+                        abc.count = 0
+                        prevsales.push(abc)
+                    }
+                    firstDay = secondDate
+                    if (i == 4) {
+                        secondDate = new Date(firstDay.getFullYear(), firstDay.getMonth() + 1, 1)
+                    } else {
+                        secondDate = new Date(firstDay.getFullYear(), firstDay.getMonth() + 0, (i + 1) * 7)
+                    }
                 }
-                todayDate = DaysAgo
-                DaysAgo = new Date(new Date().getTime() - (i + 7) * 24 * 60 * 60 * 1000);
+                if (saleFull.length && PrevFull.length) {
+                    let sum = (saleFull[0].totalPrice - PrevFull[0].totalPrice) / 100
+                    perfomance = Math.round(sum)
+                }
+                console.log(perfomance)
+                res.json({ sales: sales, prevsales: prevsales, saleFull, perfomance })
+
+            } else if (value == 365) {
+                let perfomance
+                y = date.getFullYear()
+                var firstDay = new Date(y, 0, 1);
+                console.log(moment(firstDay).format('DD-MM-YYYY'))
+                let saleFull = await orders_Model.aggregate([
+                    {
+                        $match: { createdAt: { $gte: firstDay } },
+                    },
+                    {
+                        $group: {
+                            _id: moment(firstDay).format('YYYY'),
+                            totalPrice: { $sum: "$TotalPrice" },
+                            count: { $sum: 1 },
+                        },
+                    },
+                ]);
+
+                let saleReport = await orders_Model.aggregate([
+                    {
+                        $match: { createdAt: { $gte: firstDay } },
+                    },
+                    {
+                        $group: {
+                            _id: { $dateToString: { format: "%m", date: "$createdAt" } },
+                            totalPrice: { $sum: "$TotalPrice" },
+                            count: { $sum: 1 },
+                        },
+                    }, { $sort: { _id: 1 } }
+                ]);
+                let sales = []
+                for (let i = 1; i <= 12; i++) {
+                    let aaa = true
+                    for (let k = 0; k < saleReport.length; k++) {
+                        aaa = false
+                        if (saleReport[k]._id == i) {
+                            sales.push(saleReport[k])
+                            break;
+                        } else aaa = true;
+                    }
+                    if (aaa) sales.push({ _id: i, totalPrice: 0, count: 0 })
+                }
+                firstDay = new Date(y - 1, 0, 1);
+                let lastDay = new Date(y, 0, 0);
+                let PrevFull = await orders_Model.aggregate([
+                    {
+                        $match: { createdAt: { $gte: firstDay, $lt: lastDay } },
+                    },
+                    {
+                        $group: {
+                            _id: moment(firstDay).format('YYYY'),
+                            totalPrice: { $sum: "$TotalPrice" },
+                            count: { $sum: 1 },
+                        },
+                    },
+                ]);
+                let PreveReport = await orders_Model.aggregate([
+                    { $match: { createdAt: { $gte: firstDay, $lt: lastDay } } },
+                    {
+                        $group: {
+                            _id: { $dateToString: { format: "%m", date: "$createdAt" } },
+                            totalPrice: { $sum: "$TotalPrice" },
+                            count: { $sum: 1 },
+                        },
+                    }, { $sort: { _id: 1 } }
+                ]);
+                let prevsales = []
+                for (let i = 1; i <= 12; i++) {
+                    let aaa = true
+                    for (let k = 0; k < PreveReport.length; k++) {
+                        aaa = false
+                        if (PreveReport[k]._id == i) {
+                            prevsales.push(PreveReport[k])
+                            break;
+                        } else aaa = true;
+                    }
+                    if (aaa) prevsales.push({ _id: i, totalPrice: 0, count: 0 })
+                }
+                if (saleFull.length && PrevFull.length) {
+                    let sum = (saleFull[0].totalPrice - PrevFull[0].totalPrice) / 100
+                    perfomance = Math.round(sum)
+                }
+                res.json({ saleFull, sales, prevsales, perfomance })
             }
-            // console.log(sales)
-            // console.log(prevsales)
-            res.json({ sales: sales, prevsales: prevsales })
         }
         catch (error) {
             next(error)
         }
 
     }
-}                                         
+}
+// var date = new Date(), y = date.getFullYear(), m = date.getMonth();
+// let firstDay = new Date(date.getFullYear(), date.getMonth() - 1, 30)
+// console.log(moment(firstDay).format('DD-MM-YYYY'))
+// moment(firstDay).format('DD-MM-YYYY')
