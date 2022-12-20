@@ -361,7 +361,8 @@
          'Content-Type': 'multipart/form-data'
        }
      }).then(async (e) => {
-       if (e.data.error) {
+       if (e.data.response === "login") location.href = "/admin/login"
+       else if (e.data.error) {
          Swal.fire({
            icon: 'error',
            title: 'Oops...',

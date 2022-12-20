@@ -158,7 +158,8 @@
     const formData = new FormData(event.target);
     const formProps = await Object.fromEntries(formData);
     axios.post('/admin/addCoupen', formProps).then(async (e) => {
-      if (e.data.error) {
+      if (e.data.response === "login") location.href = "/admin/login"
+      else if (e.data.error) {
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
@@ -184,11 +185,14 @@
     axios.patch('/admin/coupenStatus', {
       id: id,
       value: value
-    }).then(() => {
-      Toast.fire({
-        icon: 'success',
-        title: 'Coupen status updated successfully'
-      })
+    }).then((e) => {
+      if (e.data.response === "login") location.href = "/admin/login"
+      else {
+        Toast.fire({
+          icon: 'success',
+          title: 'Coupen status updated successfully'
+        })
+      }
     })
   }
 </script>

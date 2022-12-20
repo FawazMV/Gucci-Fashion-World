@@ -77,7 +77,7 @@
               <td colspan="9">
                 <div class="collapse" id="collapseExample<%= order[i]._id %>">
                   <div class="card card-body" id="cardBody<%= order[i]._id %>">
-                   
+
                   </div>
                 </div>
               </td>
@@ -114,21 +114,22 @@
       id: id,
       value: value
     }).then((e) => {
-      location.href = "/admin/orders"
+      if (e.data.response === "login") location.href = "/admin/login"
+      else location.reload()
     })
   }
-
   orderDetail = (id) => {
     axios.get('/admin/orderDetail', {
       params: {
         id: id
       }
     }).then((e) => {
-      console.log(e.data)
-      let orderDetail = e.data
-      let OrderDetails = orderDetail.OrderDetails
-     let html = "" 
-       html+= `<div class="row">
+      if (e.data.response === "login") location.href = "/admin/login"
+      else {
+        let orderDetail = e.data
+        let OrderDetails = orderDetail.OrderDetails
+        let html = ""
+        html += `<div class="row">
           <div class="col-12 col-lg-8">
             <table style="width:100%;">
               <thead>
@@ -148,8 +149,8 @@
                 </tr>
               </thead>
               <tbody>`
-               for(let i=0;i<OrderDetails.length;i++){
-                   html+= `<tr>
+        for (let i = 0; i < OrderDetails.length; i++) {
+          html += `<tr>
                      <td>
                        <img src="${OrderDetails[i].product_id.imagesDetails[0].Location}" class="p-0 m-0" style="width:60px;" alt="">
                      </td>
@@ -171,9 +172,9 @@
                      <td> ${OrderDetails[i].total}</td>
                      <td>${OrderDetails[i].Order_Status}</td>
                    </tr>`
-                }
-                
-             html+= ` </tbody>
+        }
+
+        html += ` </tbody>
             </table>
           </div>
           <div class="col-12 col-lg-3">
@@ -190,10 +191,10 @@
                 <hr style="height:1px;border:none;color:#333;background-color:#333;" />
                 <div style="width:100%;" class="ml-4">`
 
-                  if (orderDetail.coupenapplied) { 
-                 html+= `<p class="card-text mt-3 fw-bold text-primary h6">Coupen NO : <span class=""> ${orderDetail.cartDiscout}</span> </p>`
-                  } 
-             html+= ` </div>
+        if (orderDetail.coupenapplied) {
+          html += `<p class="card-text mt-3 fw-bold text-primary h6">Coupen NO : <span class=""> ${orderDetail.cartDiscout}</span> </p>`
+        }
+        html += ` </div>
               </div>
               <div class="col-12 col-sm-6 col-md-6 col-lg-12 ">
                 <div class="">
@@ -228,7 +229,8 @@
           Close
         </button>
         </div>`
-        document.getElementById('cardBody'+id).innerHTML = html
+        document.getElementById('cardBody' + id).innerHTML = html
+      }
     })
   }
 </script>

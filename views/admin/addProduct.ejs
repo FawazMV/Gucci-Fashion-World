@@ -150,22 +150,22 @@
                   </div>
                   <div class="col-md-2 d-sm-block d-none"></div>
                   <div class="col-md-5 col-6">
-                   <label for="color2">Color 2 :</label>
-                   <select required name="color2" id="color2" class="form-select">
-                     <option value="" selected>Choose...</option>
-                     <option value="Black">Black</option>
-                     <option value="White">White</option>
-                     <option value="Green">Green</option>
-                     <option value="Blue">Blue</option>
-                     <option value="Orange">Orange</option>
-                     <option value="Yellow">Yellow</option>
-                     <option value="Chocolate">Chocolate</option>
-                     <option value="Rose">Rose</option>
-                     <option value="Navy">Navy</option>
-                     <option value="Aqua">Aqua</option>
-                     <option value="Brown">Brown</option>
-                     <option value="Other">Other</option>
-                   </select>
+                    <label for="color2">Color 2 :</label>
+                    <select required name="color2" id="color2" class="form-select">
+                      <option value="" selected>Choose...</option>
+                      <option value="Black">Black</option>
+                      <option value="White">White</option>
+                      <option value="Green">Green</option>
+                      <option value="Blue">Blue</option>
+                      <option value="Orange">Orange</option>
+                      <option value="Yellow">Yellow</option>
+                      <option value="Chocolate">Chocolate</option>
+                      <option value="Rose">Rose</option>
+                      <option value="Navy">Navy</option>
+                      <option value="Aqua">Aqua</option>
+                      <option value="Brown">Brown</option>
+                      <option value="Other">Other</option>
+                    </select>
                   </div>
                 </div>
                 <br>
@@ -336,7 +336,8 @@
         'Content-Type': 'multipart/form-data'
       }
     }).then(async (e) => {
-      if (e.data.error) {
+      if (e.data.response === "login") location.href = "/admin/login"
+      else if (e.data.error) {
         Swal.fire({
           icon: 'error',
           title: 'Oops...',

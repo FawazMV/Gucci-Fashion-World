@@ -160,7 +160,8 @@
               id: id
             }
           }).then((e) => {
-            if (e.data.response) {
+            if (e.data.response === "login") location.href = "/admin/login"
+            else if (e.data.response) {
               Swal.fire({
                 icon: 'success',
                 title: 'Your file has been deleted.',
@@ -197,13 +198,13 @@
     event.preventDefault()
     const formData = new FormData(event.target);
     const formProps = await Object.fromEntries(formData);
-    console.log(formProps)
     axios.post('/admin/genderType', formProps, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
     }).then(async e => {
-      if (e.data.error) {
+      if (e.data.response === "login") location.href = "/admin/login"
+      else if (e.data.error) {
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
@@ -234,7 +235,8 @@
         'Content-Type': 'multipart/form-data'
       }
     }).then(async e => {
-      if (e.data.error) {
+      if (e.data.response === "login") location.href = "/admin/login"
+      else if (e.data.error) {
         Swal.fire({
           icon: 'error',
           title: 'Oops...',

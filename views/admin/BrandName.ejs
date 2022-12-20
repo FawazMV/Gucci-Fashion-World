@@ -111,7 +111,8 @@
             axios.post('/admin/deleteBrandName', {
               id: id
             }).then((e) => {
-              if (e.data.response) {
+              if (e.data.response === "login") location.href = "/admin/login"
+              else if (e.data.response) {
                 Swal.fire({
                   icon: 'success',
                   title: 'Your file has been deleted.',
@@ -146,7 +147,8 @@
           id: EditId,
           brandName: brandName
         }).then(async (e) => {
-          if (e.data.error) {
+          if (e.data.response === "login") location.href = "/admin/login"
+          else if (e.data.error) {
             Swal.fire({
               icon: 'error',
               title: 'Oops...',
@@ -180,7 +182,8 @@
       const formData = new FormData(event.target);
       const formProps = await Object.fromEntries(formData);
       axios.post('/admin/addBrandName', formProps).then(async (e) => {
-        if (e.data.error) {
+        if (e.data.response === "login") location.href = "/admin/login"
+        else if (e.data.error) {
           Swal.fire({
             icon: 'error',
             title: 'Oops...',
