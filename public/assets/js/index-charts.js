@@ -11,9 +11,7 @@ window.chartColors = {
 
 /* Random number generator for demo purpose */
 var randomDataPoint = function () { return Math.round(Math.random() * 10000) };
-
-
-//Chart.js Line Chart Example 
+ 
 
 var lineChartConfig = {
 	type: 'line',
@@ -104,7 +102,7 @@ var lineChartConfig = {
 				ticks: {
 					beginAtZero: true,
 					userCallback: function (value, index, values) {
-						return '₹' + value.toLocaleString();   //Ref: https://stackoverflow.com/questions/38800226/chart-js-add-commas-to-tooltip-and-y-axis
+						return value.toLocaleString(); 
 					}
 				},
 			}]
@@ -183,12 +181,13 @@ var barChartConfig = {
 
 // Generate charts on load
 window.addEventListener('load', function () {
-	getDetails(30)
+	getDetails(7)
 });
 
 const salesChange = () => {
 	let val = document.getElementById('salesChange').value
 	document.getElementById('lineChartabc').innerHTML = `<canvas id="canvas-linechart"></canvas>`
+	document.getElementById('canvasId').innerHTML = `<canvas id="canvas-barchart"></canvas>`
 	getDetails(val)
 }
 
@@ -198,47 +197,46 @@ const getDetails = (val) => {
 		if (val == 30) {
 			lineChartConfig.data.labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5']
 			barChartConfig.data.labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5']
-			document.getElementById('salesIdd').innerHTML = e.data.saleFull[0].totalPrice
-			document.getElementById('ordersId').innerHTML = e.data.saleFull[0].count
-			if (e.data.perfomance) document.getElementById('perfomanceId').innerHTML = e.data.perfomance
-			else document.getElementById('perfomanceId').innerHTML = ''
-			let data = []
-			let linedata = []
-			let linePrevdata = []
-			for (let i = 0; i < e.data.sales.length; i++) {
-				data.push(e.data.sales[i].count)
-				linedata.push(e.data.sales[i].totalPrice)
-				linePrevdata.push(e.data.prevsales[i].totalPrice)
-			}
-			barChartConfig.data.datasets[0].data = data
-			lineChartConfig.data.datasets[0].data = linedata
-			lineChartConfig.data.datasets[1].data = linePrevdata
-			var barChart = document.getElementById('canvas-barchart').getContext('2d');
-			window.myBar = new Chart(barChart, barChartConfig);
-			window.myLine = new Chart(lineChart, lineChartConfig);
+			lineChartConfig.data.datasets[0].label = "Current Month"
+			lineChartConfig.data.datasets[1].label = "Previous Month"
 		}
 		if (val == 365) {
 			lineChartConfig.data.labels = ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 			barChartConfig.data.labels = ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+			lineChartConfig.data.datasets[0].label = "Current Year"
+			lineChartConfig.data.datasets[1].label = "Previous Year"
+		}
+		if (val == 7) {
+			lineChartConfig.data.labels = ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7']
+			barChartConfig.data.labels = ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7']
+			lineChartConfig.data.datasets[0].label = "Current Week"
+			lineChartConfig.data.datasets[1].label = "Previous Week"
+		}
+		if (e.data.saleFull.length) {
 			document.getElementById('salesIdd').innerHTML = e.data.saleFull[0].totalPrice
 			document.getElementById('ordersId').innerHTML = e.data.saleFull[0].count
-			if (e.data.perfomance) document.getElementById('perfomanceId').innerHTML = e.data.perfomance
-			else document.getElementById('perfomanceId').innerHTML = ''
-			let data = []
-			let linedata = []
-			let linePrevdata = []
-			for (let i = 0; i < e.data.sales.length; i++) {
-				data.push(e.data.sales[i].count)
-				linedata.push(e.data.sales[i].totalPrice)
-				linePrevdata.push(e.data.prevsales[i].totalPrice)
-			}
-			barChartConfig.data.datasets[0].data = data
-			lineChartConfig.data.datasets[0].data = linedata
-			lineChartConfig.data.datasets[1].data = linePrevdata
-			var barChart = document.getElementById('canvas-barchart').getContext('2d');
-			window.myBar = new Chart(barChart, barChartConfig);
-			window.myLine = new Chart(lineChart, lineChartConfig);
 		}
+		else {
+			document.getElementById('salesIdd').innerHTML = 0
+			document.getElementById('ordersId').innerHTML = 0
+		}
+		if (e.data.perfomance) document.getElementById('perfomanceId').innerHTML = e.data.perfomance
+		else document.getElementById('perfomanceId').innerHTML = ''
+		document.getElementById('userId').innerHTML = e.data.users
+		let data = []
+		let linedata = []
+		let linePrevdata = []
+		for (let i = 0; i < e.data.sales.length; i++) {
+			data.push(e.data.sales[i].count)
+			linedata.push(e.data.sales[i].totalPrice)
+			linePrevdata.push(e.data.prevsales[i].totalPrice)
+		}
+		barChartConfig.data.datasets[0].data = data
+		lineChartConfig.data.datasets[0].data = linedata
+		lineChartConfig.data.datasets[1].data = linePrevdata
+		var barChart = document.getElementById('canvas-barchart').getContext('2d');
+		window.myBar = new Chart(barChart, barChartConfig);
+		window.myLine = new Chart(lineChart, lineChartConfig);
 
 	})
 }

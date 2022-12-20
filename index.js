@@ -7,7 +7,7 @@ const bodyParser = require("body-parser");
 const logger = require('morgan')
 const multer = require('multer')
 //const multers3 = require('multer-s3')
-const homeRouter = require('./routes/home')
+const homeRouter = require('./routes/home')  
 const adminRouter = require('./routes/admin')
 
 const connectDB = require('./models/connection')
