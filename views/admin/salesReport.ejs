@@ -13,20 +13,38 @@
 
   <div class="app-wrapper">
 
-    <div class="app-content pt-3 p-md-3 p-lg-4">
+
+    <div class="app-content pt-3">
       <div class="container-xl">
-        <!-- <nav id="orders-table-tab" class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
-          <a class="flex-sm-fill text-sm-center nav-link active" id="orders-all-tab" data-bs-toggle="tab" href="#orders-all" role="tab" aria-controls="orders-all" aria-selected="true">All</a>
-          <a class="flex-sm-fill text-sm-center nav-link" id="orders-paid-tab" data-bs-toggle="tab" href="#orders-paid" role="tab" aria-controls="orders-paid" aria-selected="false">Paid</a>
-          <a class="flex-sm-fill text-sm-center nav-link" id="orders-pending-tab" data-bs-toggle="tab" href="#orders-pending" role="tab" aria-controls="orders-pending" aria-selected="false">Pending</a>
-          <a class="flex-sm-fill text-sm-center nav-link" id="orders-cancelled-tab" data-bs-toggle="tab" href="#orders-cancelled" role="tab" aria-controls="orders-cancelled" aria-selected="false">Cancelled</a>
-        </nav> -->
         <div class="tab-content" id="orders-table-tab-content">
           <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
+            <div class="d-flex px-5 mb-5 mt-3">
+              <div class="mx-3">
+                <label class="fw-bold px-2 mx-5">From</label>
+                <input type="date" id="fromDate" value="<%= DaysAgo %>" class="form-control mx-5"> <br>
+              </div>
+              <div class="mx-3">
+                <label class="fw-bold px-2 mx-5">To</label>
+                <input type="date" id="toDate" value="<%= todayDate %>" class="form-control mx-5"> <br>
+              </div>
+              <div>
+                 <label class="fw-bold px-2 mx-5">Filter by</label>
+                <select class="form-select mx-5" id="filterId">
+                  <option selected value="%d-%m-%Y">Daily</option>
+                  <option value="%m-%Y">Monthly</option>
+                   <option value="%Y">Yearly</option>
+                </select>
+              </div>
+              <div class="mx-3">
+                <br>
+                <button onclick="dateChange()" class="btn btn-outline-primary pt-2 mt-2 ml-5">Apply</button>
+              </div>
+            </div>
+
             <div class="app-card app-card-orders-table shadow-sm mb-5">
               <div class="app-card-body">
                 <div class="table-responsive">
-                  <table id="example" class="items-center justify-center w-full mb-0 ml-5 align-top border-collapse dark:border-white/40 text-slate-500 display nowrap" style="width:100%;padding-bottom:25vh;">
+                  <table id="example" class="items-center justify-center w-full mb-0 ml-5 align-top border-collapse dark:border-white/40 text-slate-500 display nowrap" style="width:96%;padding-bottom:25vh;">
                     <thead class="align-bottom">
                       <tr>
                         <th class="px-6 py-3 font-semibold capitalize align-middle bg-transparent border-b border-solid shadow-none dark:border-white/40 dark:text-white tracking-none whitespace-nowrap">
@@ -39,7 +57,7 @@
                           Order Count</th>
                       </tr>
                     </thead>
-                    <tbody class="border-t ">
+                    <tbody class="border-t " id="tbodyId">
                       <% saleReport.forEach(report=> { %>
                       <tr>
                         <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
@@ -112,4 +130,53 @@
       ]
     });
   });
+
+
+
+  dateChange = () => {
+    let from = document.getElementById('fromDate').value
+    let to = document.getElementById('toDate').value
+    let filter = document.getElementById('filterId').value
+    axios.get('/admin/salesProject', {
+      params: {
+        from: from,
+        to: to,
+        filter: filter
+      }
+    }).then((e) => {
+      if (e.data.response === "login") location.href = "/admin/login"
+      else if (e.data.error) {
+
+      } else {
+        let html = '';
+        let saleReport = e.data.saleReport
+        saleReport.forEach(saleReport => {
+          html += `
+           <tr>
+             <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
+               <h6 class="mb-0 text-sm leading-normal dark:text-white">
+                ${saleReport._id}
+               </h6>
+             </td>
+             <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
+               <p class="mb-0 text-sm font-semibold leading-normal dark:text-white dark:opacity-60">
+                 ${saleReport.totalPrice}
+               </p>
+             </td>
+             <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
+               <p class="mb-0 text-sm font-semibold leading-normal dark:text-white dark:opacity-60">
+                 ₹  ${parseFloat(saleReport.totalPrice*5/100).toFixed(1)}
+               </p>
+             </td>
+             <td class="p-2 align-middle  border-b  whitespace-nowrap shadow-transparent">
+               <span class="text-xs font-semibold  dark:text-white dark:opacity-60">
+                ${saleReport.count}
+               </span>
+             </td>
+           </tr>`
+        });
+        document.getElementById('tbodyId').innerHTML = html
+      }
+    })
+  }
 </script>

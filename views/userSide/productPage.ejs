@@ -34,7 +34,7 @@
                             </h4>
                             <span>₹<%= Products[i].shopPrice %>.00</span>
                             <ul class="stars">
-                                <% for( let j = 0; j < Products[i].rating/20; j++ ) { %>
+                                <% for( let j = 0; j < (Products[i].rating/Products[i].review)/20; j++ ) { %>
                                 <li><i class="fa fa-star"></i></li>
                                 <% } %>
                             </ul>

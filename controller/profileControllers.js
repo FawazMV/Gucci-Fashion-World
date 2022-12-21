@@ -29,7 +29,7 @@ exports.addAddress = (req, res, next) => {
         let response = null
         usermodel.findByIdAndUpdate(userId, { $push: { address: req.body } }).then(() => {
             usermodel.findById(userId, { address: 1 }).then(result => {
-                res.json({ response: false, address: result.address })
+                res.json({ response: false })
             })
         }).catch(error => res.json({ response: error.message }))
     } catch (error) {
@@ -39,17 +39,17 @@ exports.addAddress = (req, res, next) => {
 exports.getAddress = (req, res, next) => {
     try {
         let userId = req.session.user._id
-        let response = null
         usermodel.aggregate([
             { $match: { _id: mongoose.Types.ObjectId(userId) } },
             {
                 $project:
-                    { _id: 0, address: { $sortArray: { input: "$address", sortBy: { default: -1 } } } }
+                    { _id: 0, address: 1 }
             }
         ]).then(result => {
-            if (result[0].address[0]) res.json({ response: false, address: result[0].address })
-            else res.json({ response: "Please add your address" })
-        }).catch(error => res.json({ response: error.message }))
+            console.log(result)
+            if (result[0].address[0]) res.json({ response: false, address: result[0].address, succ: true })
+            else res.json({ succ: false, response: "Please add your address" })
+        }).catch((error) => next(error))
     } catch (error) {
         next(error)
     }

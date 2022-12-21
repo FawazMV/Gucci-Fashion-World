@@ -64,7 +64,7 @@
 
                     <div class="ratings-container">
                       <div class="ratings">
-                        <div class="ratings-val" style="width:<%= product.rating %>%;"></div>
+                        <div class="ratings-val" style="width:<%= product.rating/product.review %>%;"></div>
                         <!-- End .ratings-val -->
                       </div><!-- End .ratings -->
                       <a class="ratings-text" href="#product-review-link" id="review-link">( <%= product.review %> Reviews )</a>
@@ -119,7 +119,7 @@
                       </div>
 
                     </div> -->
-                                    <div class="product-details-action">
+                    <div class="product-details-action">
                       <a onclick="addtocart('<%= product._id %>')" class="btn-product btn-cart"><span>add to cart</span></a>
 
                       <div class="details-action-wrapper">
@@ -312,14 +312,14 @@
                   </div><!-- End .product-price -->
                   <div class="ratings-container">
                     <div class="ratings">
-                      <div class="ratings-val" style="width: <%= similiar[i].rating %>%;"></div>
+                      <div class="ratings-val" style="width: <%= similiar[i].rating/similiar[i].review %>%;"></div>
                       <!-- End .ratings-val -->
                     </div><!-- End .ratings -->
                     <span class="ratings-text">( <%= similiar[i].review %> Reviews )</span>
                   </div><!-- End .rating-container -->
                   <div class="product-nav product-nav-thums">
                     <% for( let k = 0; k < similiar[i].imagesDetails.length; k++ ) { %>
-                    <a   class="active">
+                    <a class="active">
                       <img class="p-2" style="max-height:70px;" src="<%= similiar[i].imagesDetails[k].Location %> " alt="product desc">
                     </a>
                     <% } %>

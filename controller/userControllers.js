@@ -52,7 +52,7 @@ exports.home = async (req, res, next) => {
         let Products = []
         genderModel.find({}).lean().then(async (catagories) => {
             for (let i = 0; i < 3; i++) {
-                let products = await productModel.find({ deleteProduct: false, gender: catagories[i]._id, quantity: { $gt: 1 } }, { imagesDetails: 1, brandName: 1, gender: 1, shopPrice: 1, rating: 1 })
+                let products = await productModel.find({ deleteProduct: false, gender: catagories[i]._id, quantity: { $gt: 1 } }, { imagesDetails: 1, brandName: 1, gender: 1, shopPrice: 1, rating: 1, review: 1 })
                     .populate('brandName').populate('gender').lean()
                 Products.push(products)
             }
@@ -119,22 +119,13 @@ exports.checkout = (req, res, next) => {
         next(error)
     }
 }
-exports.product = (req, res, next) => {
+exports.product = async (req, res, next) => {
     try {
         let type = req.params.name
-        if (type == "Men") {
-            productModel.find({ deleteProduct: false, gender: "63715c17b25596686e476c80" }).populate('brandName').then(Products => {
-                res.render('userSide/productPage', { Products, gender: "Men's", user })
-            }).catch(error => next(error))
-        }
-        else if (type == "Women") {
-            productModel.find({ deleteProduct: false, gender: "637152ce800cd5eacd462106" }).populate('brandName').then(Products => {
-                res.render('userSide/productPage', { Products, gender: "Women's", user })
-            }).catch(error => next(error))
-        }
-        else if (type == "Kid") {
-            productModel.find({ deleteProduct: false, gender: "6371ae2419e01e8eec6e14c5" }).populate('brandName').then(Products => {
-                res.render('userSide/productPage', { Products, gender: "Kid's", user })
+        let { id } = await genderModel.findOne({ gender: type }, { _id: 1 }).catch(error => next(error))
+        if (id) {
+            productModel.find({ deleteProduct: false, gender: id }).populate('brandName').then(Products => {
+                res.render('userSide/productPage', { Products, gender: `${type}'S`, user })
             }).catch(error => next(error))
         }
         else next()
@@ -372,17 +363,23 @@ exports.review = (req, res, next) => {
         reviews.user = userId
         reviews.review = review
         reviews.title = title
-        review_model.create(reviews).then(async () => {
-            let rat = {} = await productModel.findById(id, { _id: 0, rating: 1 })
-            if (rat.rating) rating = (rating + rat.rating) / 2
-            await productModel.findByIdAndUpdate(id, { $inc: { review: 1, }, $set: { rating: rating } })
-            res.json()
+        review_model.findOneAndReplace({ product: id, user: userId }, reviews).then(async rev => {
+            if (rev) {
+                let rat = {} = await productModel.findById(id, { _id: 0, rating: 1, review: 1 })
+                rating = (rat.rating + rating - rev.rating) / rat.review
+                await productModel.findByIdAndUpdate(id, { $set: { rating: rating } })
+                res.json()
+            }
+            else {
+                review_model.create(reviews).then(async () => {
+                    await productModel.findByIdAndUpdate(id, { $inc: { review: 1, rating: rating } })
+                    res.json()
+                }).catch(error => next(error))
+            }
         }).catch(error => next(error))
+
     } catch (error) {
         next(error)
 
     }
 }
-// productModel.updateMany({}, { $set: { discount: 0, review: 0 } }).then((e)=>{
-//     console.log(e)
-// })

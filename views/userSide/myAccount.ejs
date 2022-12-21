@@ -134,8 +134,8 @@
                             <div class="card card-dashboard">
                               <div class="card-body">
                                 <h3 class="card-title">Add Address</h3>
-                                <p>You have not added any default address yet<br>
-                                  <a class="" onclick="modalOpen()" href="" data-toggle="modal"> <i class="icon-plus"> Add</i></a>
+                                <p id="defaultAddressId">You have not added any default address yet<br>
+                                  <a class="" onclick="changeaddress()" href="#"> <i class="icon-plus"> Add</i></a>
                                 </p>
                               </div>
                             </div>
@@ -619,9 +619,10 @@
   function changeaddress() {
     try {
       axios.get('/getAddress').then(e => {
-        if (e.data.response) {
+        if (!e.data.succ && e.data.response) {
           document.getElementById('addressshow').innerHTML = e.data.response
-        } else {
+           $('#addressShowmodal').modal('show')
+        } else if (e.data.succ && !e.data.response) {
           let address = e.data.address
           let div = ``
           for (let i = 0; i < address.length; i++) {

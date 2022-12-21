@@ -19,7 +19,7 @@ module.exports = {
 
     dashboard: async (req, res, next) => {
         try {
-            let users = await usermodel.find({}).count()
+            let users = await usermodel.find({}).count().catch((error) => next(error))
             heading = "Overview"
             res.render('admin/dashboard', { admin: true, users, Overview: "active", heading })
         } catch (error) {
@@ -36,7 +36,7 @@ module.exports = {
     adminloginPost: async (req, res, next) => {
         try {
             let response = null
-            let user = await adminModel.findOne({ email: req.body.email })
+            let user = await adminModel.findOne({ email: req.body.email }).catch((error) => next(error))
             if (user) {
                 if (req.body.password == user.password) {
                     req.session.admin = true
@@ -59,15 +59,15 @@ module.exports = {
     },
     userview: async (req, res, next) => {
         try {
-            let users = await usermodel.find({})
+            let users = await usermodel.find({}).catch((error) => next(error))
             res.render('admin/userview', { admin: true, users, Clients: "active", heading: "Users" })
         } catch (error) {
             next(error)
         }
     }, salesReport: async (req, res, next) => {
         let saleReport = []
-        const todayDate = new Date();
-        const DaysAgo = new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000);
+        let todayDate = new Date();
+        let DaysAgo = new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000);
         saleReport = await orders_Model.aggregate([
             {
                 $match: { createdAt: { $gte: DaysAgo } },
@@ -78,13 +78,17 @@ module.exports = {
                     totalPrice: { $sum: "$TotalPrice" },
                     count: { $sum: 1 },
                 },
-            },
-        ]);
-        res.render('admin/salesReport', { saleReport, admin: true, heading: "Sales Report" })
+            }, {
+                $sort: { _id: 1 }
+            }
+        ]).catch((error) => next(error))
+        todayDate = moment(todayDate).format('YYYY-MM-DD')
+        DaysAgo = moment(DaysAgo).format('YYYY-MM-DD')
+        res.render('admin/salesReport', { saleReport, admin: true, heading: "Sales Report", todayDate, DaysAgo })
     },
     blockUser: async (req, res, next) => {
         try {
-            await usermodel.findByIdAndUpdate(req.params.id, { isBanned: true }, { new: true })
+            await usermodel.findByIdAndUpdate(req.params.id, { isBanned: true }, { new: true }).catch((error) => next(error))
             res.redirect('/admin/users')
         } catch (error) {
             next(error)
@@ -92,7 +96,7 @@ module.exports = {
     },
     unblockUser: async (req, res, next) => {
         try {
-            await usermodel.findByIdAndUpdate(req.params.id, { isBanned: false }, { new: true })
+            await usermodel.findByIdAndUpdate(req.params.id, { isBanned: false }, { new: true }).catch((error) => next(error))
             res.redirect('/admin/users')
         } catch (error) {
             next(error)
@@ -100,7 +104,7 @@ module.exports = {
     },
     productsView: async (req, res, next) => {
         try {
-            let products = await productModel.find({ deleteProduct: false }).populate('brandName').populate('gender').lean()
+            let products = await productModel.find({ deleteProduct: false }).populate('brandName').populate('gender').lean().catch((error) => next(error))
             res.render('admin/products', { admin: true, products, Products: "active", heading: "Products" })
         } catch (error) {
             next(error)
@@ -108,8 +112,8 @@ module.exports = {
     },
     addProduct: async (req, res, next) => {
         try {
-            let brandName = await brandModel.find({}).lean()
-            let gender = await genderModel.find({}).lean()
+            let brandName = await brandModel.find({}).lean().catch((error) => next(error))
+            let gender = await genderModel.find({}).lean().catch((error) => next(error))
             res.render('admin/addProduct', { admin: true, heading: "Add Product", brandName, gender, msg, add: "active" })
             msg = false
         } catch (error) {
@@ -121,7 +125,7 @@ module.exports = {
             const results = await s3Uploadv3(req.files);
             let product = req.body
             product.imagesDetails = results
-            let { discount } = await genderModel.findById(product.gender, { _id: 0, discount: 1 })
+            let { discount } = await genderModel.findById(product.gender, { _id: 0, discount: 1 }).catch((error) => next(error))
             if (product.discount > discount) discount = product.discount
             product.shopPrice = OfferPrice(discount, product.retailPrice)
             productModel.create(product).then(() => {
@@ -133,7 +137,7 @@ module.exports = {
     },
     addBrandName: async (req, res, next) => {
         try {
-            let brandName = await brandModel.find({})
+            let brandName = await brandModel.find({}).catch((error) => next(error))
             res.render('admin/BrandName', { admin: true, heading: "Brand Names", brandName })
         } catch (error) {
             next(error)
@@ -156,7 +160,7 @@ module.exports = {
         try {
             let id = req.body.id
             let response;
-            let brand = await productModel.findOne({ brandName: id })
+            let brand = await productModel.findOne({ brandName: id }).catch((error) => next(error))
             if (brand) res.json({ response: false })
             else {
                 brandModel.findByIdAndDelete(id).then(() => {
@@ -181,7 +185,7 @@ module.exports = {
     ,
     deleteProduct: async (req, res, next) => {
         try {
-            await productModel.findByIdAndUpdate(req.params.id, { deleteProduct: true }, { new: true })
+            await productModel.findByIdAndUpdate(req.params.id, { deleteProduct: true }, { new: true }).catch((error) => next(error))
             res.redirect('/admin/Products')
         } catch (error) {
             next(error)
@@ -190,9 +194,9 @@ module.exports = {
     editPage: async (req, res, next) => {
         try {
             product_id = req.params.id
-            let gender = await genderModel.find({}).lean()
+            let gender = await genderModel.find({}).lean().catch((error) => next(error))
             product = await productModel.findById(product_id).populate('brandName').populate('gender').lean()
-            let brandName = await brandModel.find({})
+            let brandName = await brandModel.find({}).catch((error) => next(error))
             res.render('admin/editProduct', { admin: true, heading: "Edit Product", brandName, product, gender })
         } catch (error) {
             next(error)
@@ -202,10 +206,10 @@ module.exports = {
         try {
             let product = req.body
             if (req.files.length) {
-                productModel.findById(product_id).then((product) => {
+                await productModel.findById(product_id).then((product) => {
                     const image = product.imagesDetails
                     s3delte3(image)
-                })
+                }).catch((error) => next(error))
                 const results = await s3Uploadv3(req.files);
                 product.imagesDetails = results
             }
@@ -224,7 +228,7 @@ module.exports = {
     },
     genderType: async (req, res, next) => {
         try {
-            let gender = await genderModel.find({})
+            let gender = await genderModel.find({}).catch((error) => next(error))
             res.render('admin/gender', { admin: true, heading: "Gender Types", gender })
         } catch (error) {
             next(error)
@@ -260,7 +264,6 @@ module.exports = {
                         res.json({ response: true })
                     }).catch(error => {
                         next(error)
-                        res.redirect('/admin/genderType')
                     })
                 })
             }
@@ -275,10 +278,10 @@ module.exports = {
             let category = { gender: gender }
             id = req.body.id
             if (req.files.length) {
-                genderModel.findById(id).then((product) => {
+                await genderModel.findById(id).then((product) => {
                     const image = product.image[0]
                     s3delte2(image)
-                })
+                }).catch((error) => next(error))
                 const file = req.files[0];
                 const result = await s3Uploadv2(file);
                 category.image = result
@@ -288,12 +291,11 @@ module.exports = {
             await productModel.updateMany(
                 { gender: id, discount: { $lt: disc } },
                 [{ "$set": { "shopPrice": { $round: [{ $sum: [{ $divide: [{ $multiply: ["$retailPrice", -disc] }, 100] }, "$retailPrice"] }, 0] } } }]
-            )
+            ).catch((error) => next(error))
             await productModel.updateMany(
-                { gender: id, discount: { $gt: disc } },
+                { gender: id, discount: { $gte: disc } },
                 [{ "$set": { "shopPrice": { $round: [{ $subtract: ["$retailPrice", { $divide: [{ $multiply: ["$retailPrice", '$discount'] }, 100] }] }, 0] } } }]
-            )
-                .catch(error => next(error))
+            ).catch(error => next(error))
             genderModel.findByIdAndUpdate(id, category).then(() => {
                 res.json({ succe: true })
             }).catch(error => next(error))
@@ -305,16 +307,15 @@ module.exports = {
         try {
             id = req.params.id
             productModel.findById(id).populate('brandName').populate('gender').then((product) => {
-                //   console.log(product)
                 res.render('admin/viewSingle', { admin: true, product })
-            })
+            }).catch((error) => next(error))
         } catch (error) {
             next(error)
         }
     },
     orders: async (req, res, next) => {
         try {
-            let order = await orders_Model.find().populate('User', "email").sort({ createdAt: -1 })
+            let order = await orders_Model.find().populate('User', "email").sort({ createdAt: -1 }).catch((error) => next(error))
             let heading = 'Orders'
             res.render('admin/orders', { admin: true, Orders: "active", heading, order })
         } catch (error) {
@@ -326,16 +327,16 @@ module.exports = {
             let status = req.body.value
             let date = moment(Date.now()).format('DD-MM-YYYY')
             if (status === "Shipped") {
-                await orders_Model.findByIdAndUpdate(req.body.id, { $set: { Delivery_status: status, Shipped_Date: date } })
+                await orders_Model.findByIdAndUpdate(req.body.id, { $set: { Delivery_status: status, Shipped_Date: date } }).catch((error) => next(error))
             }
             if (status === "Out_for_Delivery") {
-                await orders_Model.findByIdAndUpdate(req.body.id, { $set: { Delivery_status: status, Out_for_delivery_date: date, Delivery_Expected_date: date } })
+                await orders_Model.findByIdAndUpdate(req.body.id, { $set: { Delivery_status: status, Out_for_delivery_date: date, Delivery_Expected_date: date } }).catch((error) => next(error))
             }
             if (status === "Delivered") {
-                await orders_Model.findByIdAndUpdate(req.body.id, { $set: { Delivery_status: status, Delivery_Expected_date: date } })
+                await orders_Model.findByIdAndUpdate(req.body.id, { $set: { Delivery_status: status, Delivery_Expected_date: date } }).catch((error) => next(error))
                 await orders_Model.updateMany({ _id: req.body.id, "OrderDetails.Order_Status": 'Pending' },
                     { $set: { "OrderDetails.$[elem].Order_Status": 'Delivered' } },
-                    { arrayFilters: [{ "elem.Order_Status": 'Pending' }], multi: true });
+                    { arrayFilters: [{ "elem.Order_Status": 'Pending' }], multi: true }).catch((error) => next(error))
             }
             if (status === "Cancelled") {
                 let OrderDetails = await orders_Model.aggregate([
@@ -353,7 +354,7 @@ module.exports = {
                             }
                         }
                     }
-                ])
+                ]).catch((error) => next(error))
                 let FinalPrice = OrderDetails[0].finalPrice
                 let OrderId = OrderDetails[0].OrderId
                 let Payment = OrderDetails[0].Payment
@@ -361,19 +362,17 @@ module.exports = {
                 for (let i = 0; i < OrderDetails.length; i++) {
                     let id = OrderDetails[i].product_id
                     let qty = OrderDetails[i].quantity
-                    await inventory(id, -qty)
+                    await inventory(id, -qty).catch((error) => next(error))
                 }
-                let { coupenapplied, cartDiscout, User } = await orders_Model.findById(req.body.id, { coupenapplied: 1, cartDiscout: 1, User: 1, _id: 0 })
+                let { coupenapplied, cartDiscout, User } = await orders_Model.findById(req.body.id, { coupenapplied: 1, cartDiscout: 1, User: 1, _id: 0 }).catch((error) => next(error))
                 if (coupenapplied) {
-                    // console.log(User)
                     await coupn_Model.updateOne({ coupenCode: cartDiscout }, { $pull: { users: { user: User } } }, { safe: true }).then(e => {
-                        //  console.log(e)
-                    })
+                    }).catch((error) => next(error))
                 }
                 if (Payment !== "COD" && FinalPrice) walletAdd(User, OrderId, FinalPrice, "Refund")
-                await orders_Model.findByIdAndUpdate(req.body.id, { $set: { Delivery_status: status, Delivery_Expected_date: date, TotalPrice: 0, finalPrice: 0, discountPrice: 0, coupenapplied: false } })
+                await orders_Model.findByIdAndUpdate(req.body.id, { $set: { Delivery_status: status, Delivery_Expected_date: date, TotalPrice: 0, finalPrice: 0, discountPrice: 0, coupenapplied: false } }).catch((error) => next(error))
                 await orders_Model.updateMany({ _id: req.body.id }, { $set: { "OrderDetails.$[elem].Order_Status": 'Cancelled', 'OrderDetails.$[elem].Canceled_date': date } },
-                    { arrayFilters: [{ "elem.Order_Status": 'Pending' }], multi: true });
+                    { arrayFilters: [{ "elem.Order_Status": 'Pending' }], multi: true }).catch((error) => next(error))
             }
             res.json()
         } catch (error) {
@@ -384,7 +383,7 @@ module.exports = {
         try {
             heading = "Coupens"
             let coupenss = []
-            coupenss = await coupn_Model.find()
+            coupenss = await coupn_Model.find().catch((error) => next(error))
             res.render('admin/coupen', { admin: true, Coupens: "active", heading, coupenss })
         } catch (error) {
             next(error)
@@ -400,19 +399,17 @@ module.exports = {
     coupenStatus: (req, res, next) => {
         try {
             coupn_Model.findByIdAndUpdate(req.body.id, { $set: { coupen_status: req.body.value } })
-                .then(() => res.json())
+                .then(() => res.json()).catch((error) => next(error))
         } catch (error) {
             next(error)
         }
     },
     orderDetail: (req, res, next) => {
         try {
-            //  console.log(req.query.id)
             orders_Model.findById(req.query.id).populate({ path: 'OrderDetails.product_id', model: 'Products', populate: { path: 'brandName', model: 'brandName' } }).populate('User', 'email')
                 .then(orderDetail => {
-                    //  console.log(orderDetail)
                     res.json(orderDetail)
-                })
+                }).catch((error) => next(error))
         } catch (error) {
             next(error)
         }
@@ -438,8 +435,8 @@ module.exports = {
                             count: { $sum: 1 },
                         },
                     },
-                ]);
-                let users = await usermodel.find({ createdAt: { $gt: firstDay } }).count()
+                ]).catch((error) => next(error))
+                let users = await usermodel.find({ createdAt: { $gt: firstDay } }).count().catch((error) => next(error))
                 for (let i = 1; i <= 5; i++) {
                     let abc = {}
                     let saleReport = await orders_Model.aggregate([
@@ -451,7 +448,7 @@ module.exports = {
                                 count: { $sum: 1 }
                             },
                         },
-                    ]);
+                    ]).catch((error) => next(error))
                     if (saleReport.length) {
                         sales.push(saleReport[0])
                     } else {
@@ -481,7 +478,7 @@ module.exports = {
                             count: { $sum: 1 },
                         },
                     },
-                ]);
+                ]).catch((error) => next(error))
                 let prevsales = []
                 for (let i = 1; i <= 5; i++) {
                     let abc = {}
@@ -494,7 +491,7 @@ module.exports = {
                                 count: { $sum: 1 }
                             }
                         },
-                    ]);
+                    ]).catch((error) => next(error))
                     if (saleReport.length) {
                         prevsales.push(saleReport[0])
                     } else {
@@ -519,7 +516,6 @@ module.exports = {
                 let perfomance
                 y = date.getFullYear()
                 var firstDay = new Date(y, 0, 1);
-                console.log(moment(firstDay).format('DD-MM-YYYY'))
                 let saleFull = await orders_Model.aggregate([
                     {
                         $match: { createdAt: { $gte: firstDay } },
@@ -531,7 +527,7 @@ module.exports = {
                             count: { $sum: 1 },
                         },
                     },
-                ]);
+                ]).catch((error) => next(error))
                 let users = await usermodel.find({ createdAt: { $gt: firstDay } }).count()
                 let saleReport = await orders_Model.aggregate([
                     {
@@ -544,7 +540,7 @@ module.exports = {
                             count: { $sum: 1 },
                         },
                     }, { $sort: { _id: 1 } }
-                ]);
+                ]).catch((error) => next(error))
                 let sales = []
                 for (let i = 1; i <= 12; i++) {
                     let aaa = true
@@ -570,7 +566,7 @@ module.exports = {
                             count: { $sum: 1 },
                         },
                     },
-                ]);
+                ]).catch((error) => next(error))
                 let PreveReport = await orders_Model.aggregate([
                     { $match: { createdAt: { $gte: firstDay, $lt: lastDay } } },
                     {
@@ -580,7 +576,7 @@ module.exports = {
                             count: { $sum: 1 },
                         },
                     }, { $sort: { _id: 1 } }
-                ]);
+                ]).catch((error) => next(error))
                 let prevsales = []
                 for (let i = 1; i <= 12; i++) {
                     let aaa = true
@@ -619,7 +615,7 @@ module.exports = {
                                 count: { $sum: 1 },
                             },
                         },
-                    ]);
+                    ]).catch((error) => next(error))
                     if (saleReport.length) {
                         sales.push(saleReport[0])
                     } else {
@@ -660,7 +656,7 @@ module.exports = {
                                 count: { $sum: 1 },
                             },
                         },
-                    ]);
+                    ]).catch((error) => next(error))
                     if (saleReport.length) {
                         prevsales.push(saleReport[0])
                     } else {
@@ -684,7 +680,7 @@ module.exports = {
                             count: { $sum: 1 },
                         },
                     },
-                ]);
+                ]).catch((error) => next(error))
                 if (saleFull.length && PrevFull.length) {
                     let sum = (saleFull[0].totalPrice - PrevFull[0].totalPrice) / 100
                     perfomance = Math.round(sum)
@@ -692,14 +688,30 @@ module.exports = {
                 res.json({ sales: sales, prevsales: prevsales, saleFull, perfomance, users })
             }
         }
-
         catch (error) {
             next(error)
         }
-
+    },
+    salesProject: async (req, res, next) => {
+        try {
+            let start = new Date(req.query.from)
+            let end = new Date(req.query.to)
+            let filter = req.query.filter
+            let abc = { $dateToString: { format: filter, date: "$createdAt" } }
+            saleReport = await orders_Model.aggregate([
+                { $match: { createdAt: { $gte: start, $lte: end } } },
+                {
+                    $group: {
+                        _id: abc,
+                        totalPrice: { $sum: "$TotalPrice" },
+                        count: { $sum: 1 },
+                    },
+                }, { $sort: { _id: 1 } }
+            ]).catch((error) => next(error))
+            res.json({ saleReport: saleReport })
+        } catch (error) {
+            next(error)
+        }
     }
 }
-// var date = new Date(), y = date.getFullYear(), m = date.getMonth();
-// let firstDay = new Date(date.getFullYear(), date.getMonth() - 1, 30)
-// console.log(moment(firstDay).format('DD-MM-YYYY'))
-// moment(firstDay).format('DD-MM-YYYY')
+

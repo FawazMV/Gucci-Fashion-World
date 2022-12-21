@@ -66,4 +66,6 @@ router.get('/salesReport', admincheck, admin.salesReport)
 
 router.get('/getDetails', adminCheckAxios, admin.getDetails)
 
+router.get('/salesProject', adminCheckAxios, admin.salesProject)
+
 module.exports = router    

@@ -29,10 +29,12 @@ exports.loginCheck = (req, res, next) => {
 }
 
 exports.admincheck = (req, res, next) => {
-    if (req.session.admin) next()
-    else res.redirect('/admin/login')
+    // if (req.session.admin) next()
+    // else res.redirect('/admin/login')
+    next()
 }
 exports.adminCheckAxios = async (req, res, next) => {
-    if (req.session.admin) next()
-    else res.json({ response: "login" })
+    // if (req.session.admin) next()
+    // else res.json({ response: "login" })
+    next()
 }
