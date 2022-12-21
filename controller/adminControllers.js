@@ -28,7 +28,8 @@ module.exports = {
     },
     adminlogin: (req, res, next) => {
         try {
-            res.render('admin/adminlogin', { includes: true })
+            if (req.session.admin) res.redirect('/admin')
+            else res.render('admin/adminlogin', { includes: true })
         } catch (error) {
             next(error)
         }
