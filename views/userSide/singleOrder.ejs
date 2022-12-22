@@ -139,7 +139,7 @@
                       <button onclick="Cancel('<%= order.OrderDetails[i]._id %>')" class="btn btn-danger">Cancel</button>
                       <% } else if (order.OrderDetails[i].Order_Status==="Delivered" )   { %>
 
-                      <button class="btn btn-outline-primary" data-toggle="modal" onclick="reviewIdd('<%= order.OrderDetails[i].product_id._id %>')" data-target="#exampleModalreview">Review</button>
+                      <button class="btn btn-outline-primary"  onclick="reviewIdd('<%= order.OrderDetails[i].product_id._id %>')" >Review</button>
 
                       <% } else if(order.OrderDetails[i].Order_Status==="Cancelled" ) { %>
                       <!-- <button onclick="reOrder('<%= order.OrderDetails[i]._id %>')" class="btn btn-primary">Re-order</button> -->
@@ -299,7 +299,7 @@
         </button>
       </div>
       <div class="modal-body mx-2" style="width:350px;">
-        <form action="#" onsubmit="reviewww()">
+        <form id="reviwId" onsubmit="reviewww()">
 
           <label for="" class="text-primary mb-0 fw-bold">Rate the product</label>
           <div class="star-rating mt-0 mb-0 d-flex justify-content-between" onclick="removewarning()" style="width:200px;">
@@ -364,6 +364,7 @@
 
   let iddd;
   reviewIdd = (id) => {
+    $('#exampleModalreview').modal('show')
     iddd = id
   }
 
@@ -396,7 +397,8 @@
             icon: 'success',
             title: 'Your review added successfully'
           })
-          location.reload()
+          document.getElementById('reviwId').reset()
+           $('#exampleModalreview').modal('hide')
         }
       })
     } else {

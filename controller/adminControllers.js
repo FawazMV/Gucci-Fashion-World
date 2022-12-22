@@ -11,6 +11,7 @@ const moment = require('moment');
 const { inventory, walletAdd } = require('../helpers/order_Helpers');
 const coupn_Model = require('../models/coupen_schema');
 const { OfferPrice } = require('../helpers/product_helper');
+const { salesReportFunction, salefullFunction } = require('../helpers/admin_helpers');
 let msg, product_id;
 
 
@@ -425,36 +426,17 @@ module.exports = {
             let sales = []
             if (value == 30) {
                 let perfomance
-                let saleFull = await orders_Model.aggregate([
-                    {
-                        $match: { createdAt: { $gte: firstDay } },
-                    },
-                    {
-                        $group: {
-                            _id: { $dateToString: { format: "%m", date: "$createdAt" } },
-                            totalPrice: { $sum: "$TotalPrice" },
-                            count: { $sum: 1 },
-                        },
-                    },
-                ]).catch((error) => next(error))
+                let saleFull = await salefullFunction(firstDay, { $dateToString: { format: "%m", date: "$createdAt" } })
+                    .catch((error) => next(error))
                 let users = await usermodel.find({ createdAt: { $gt: firstDay } }).count().catch((error) => next(error))
                 for (let i = 1; i <= 5; i++) {
                     let abc = {}
-                    let saleReport = await orders_Model.aggregate([
-                        { $match: { createdAt: { $gte: firstDay, $lt: secondDate } } },
-                        {
-                            $group: {
-                                _id: moment(firstDay).format('DD-MM-YYYY'),
-                                totalPrice: { $sum: "$TotalPrice" },
-                                count: { $sum: 1 }
-                            },
-                        },
-                    ]).catch((error) => next(error))
-                    if (saleReport.length) {
-                        sales.push(saleReport[0])
-                    } else {
-                        abc._id = moment(firstDay).format('DD-MM-YYYY'),
-                            abc.totalPrice = 0
+                    let saleReport = await salesReportFunction(firstDay, secondDate, moment(firstDay).format('DD - MM - YYYY'))
+                        .catch((error) => next(error))
+                    if (saleReport.length) sales.push(saleReport[0])
+                    else {
+                        abc._id = moment(firstDay).format('DD-MM-YYYY')
+                        abc.totalPrice = 0
                         abc.count = 0
                         sales.push(abc)
                     }
@@ -483,19 +465,9 @@ module.exports = {
                 let prevsales = []
                 for (let i = 1; i <= 5; i++) {
                     let abc = {}
-                    let saleReport = await orders_Model.aggregate([
-                        { $match: { createdAt: { $gte: firstDay, $lt: secondDate } } },
-                        {
-                            $group: {
-                                _id: moment(firstDay).format('DD-MM-YYYY'),
-                                totalPrice: { $sum: "$TotalPrice" },
-                                count: { $sum: 1 }
-                            }
-                        },
-                    ]).catch((error) => next(error))
-                    if (saleReport.length) {
-                        prevsales.push(saleReport[0])
-                    } else {
+                    let saleReport = await salesReportFunction(firstDay, secondDate, moment(firstDay).format('DD - MM - YYYY')).catch((error) => next(error))
+                    if (saleReport.length) prevsales.push(saleReport[0])
+                    else {
                         abc._id = moment(firstDay).format('DD-MM-YYYY')
                         abc.totalPrice = 0
                         abc.count = 0
@@ -517,18 +489,7 @@ module.exports = {
                 let perfomance
                 y = date.getFullYear()
                 var firstDay = new Date(y, 0, 1);
-                let saleFull = await orders_Model.aggregate([
-                    {
-                        $match: { createdAt: { $gte: firstDay } },
-                    },
-                    {
-                        $group: {
-                            _id: moment(firstDay).format('YYYY'),
-                            totalPrice: { $sum: "$TotalPrice" },
-                            count: { $sum: 1 },
-                        },
-                    },
-                ]).catch((error) => next(error))
+                let saleFull = await salefullFunction(firstDay, moment(firstDay).format('YYYY')).catch((error) => next(error))
                 let users = await usermodel.find({ createdAt: { $gt: firstDay } }).count()
                 let saleReport = await orders_Model.aggregate([
                     {
@@ -556,18 +517,8 @@ module.exports = {
                 }
                 firstDay = new Date(y - 1, 0, 1);
                 let lastDay = new Date(y, 0, 0);
-                let PrevFull = await orders_Model.aggregate([
-                    {
-                        $match: { createdAt: { $gte: firstDay, $lt: lastDay } },
-                    },
-                    {
-                        $group: {
-                            _id: moment(firstDay).format('YYYY'),
-                            totalPrice: { $sum: "$TotalPrice" },
-                            count: { $sum: 1 },
-                        },
-                    },
-                ]).catch((error) => next(error))
+                let PrevFull = await salesReportFunction(firstDay, lastDay, moment(firstDay).format('YYYY'))
+                    .catch((error) => next(error))
                 let PreveReport = await orders_Model.aggregate([
                     { $match: { createdAt: { $gte: firstDay, $lt: lastDay } } },
                     {
@@ -597,26 +548,14 @@ module.exports = {
                 res.json({ saleFull, sales, prevsales, perfomance, users })
             }
             else if (value == 7) {
-
                 let todayDate = new Date();
-                let DaysAgo = new Date(new Date().getTime() - 1 * 24 * 60 * 60 * 1000);
+                todayDate = new Date(todayDate.getTime() + 1 * 24 * 60 * 60 * 1000)
+                let DaysAgo = new Date(todayDate.getTime() - 1 * 24 * 60 * 60 * 1000);
                 let perfomance
-
                 let sales = []
                 for (let i = 1; i <= 7; i++) {
                     let abc = {}
-                    let saleReport = await orders_Model.aggregate([
-                        {
-                            $match: { createdAt: { $lt: todayDate, $gte: DaysAgo } },
-                        },
-                        {
-                            $group: {
-                                _id: { $dateToString: { format: "%u", date: todayDate } },
-                                totalPrice: { $sum: "$TotalPrice" },
-                                count: { $sum: 1 },
-                            },
-                        },
-                    ]).catch((error) => next(error))
+                    let saleReport = await salesReportFunction(DaysAgo, todayDate, { $dateToString: { format: "%u", date: todayDate } }).catch((error) => next(error))
                     if (saleReport.length) {
                         sales.push(saleReport[0])
                     } else {
@@ -627,40 +566,17 @@ module.exports = {
                     }
                     todayDate = DaysAgo
                     DaysAgo = new Date(new Date().getTime() - (i + 1) * 24 * 60 * 60 * 1000);
-
                 }
                 let weekPrev = todayDate
                 let users = await usermodel.find({ createdAt: { $gt: weekPrev } }).count()
-                let saleFull = await orders_Model.aggregate([
-                    {
-                        $match: { createdAt: { $gte: weekPrev } },
-                    },
-                    {
-                        $group: {
-                            _id: 1,
-                            totalPrice: { $sum: "$TotalPrice" },
-                            count: { $sum: 1 },
-                        },
-                    },
-                ]);
+                let saleFull = await salefullFunction(weekPrev, 1)
                 let prevsales = []
                 for (let i = 1; i <= 7; i++) {
                     let abc = {}
-                    let saleReport = await orders_Model.aggregate([
-                        {
-                            $match: { createdAt: { $lt: todayDate, $gte: DaysAgo } },
-                        },
-                        {
-                            $group: {
-                                _id: { $dateToString: { format: "%u", date: todayDate } },
-                                totalPrice: { $sum: "$TotalPrice" },
-                                count: { $sum: 1 },
-                            },
-                        },
-                    ]).catch((error) => next(error))
-                    if (saleReport.length) {
-                        prevsales.push(saleReport[0])
-                    } else {
+                    let saleReport = await salesReportFunction(DaysAgo, todayDate, { $dateToString: { format: "%u", date: todayDate } })
+                        .catch((error) => next(error))
+                    if (saleReport.length) prevsales.push(saleReport[0])
+                    else {
                         abc._id = todayDate.getDay() + 1
                         abc.totalPrice = 0
                         abc.count = 0
@@ -669,19 +585,8 @@ module.exports = {
                     todayDate = DaysAgo
                     DaysAgo = new Date(new Date().getTime() - (i + 7) * 24 * 60 * 60 * 1000);
                 }
-
-                let PrevFull = await orders_Model.aggregate([
-                    {
-                        $match: { createdAt: { $gte: DaysAgo, $lt: weekPrev } },
-                    },
-                    {
-                        $group: {
-                            _id: { $dateToString: { format: "%m", date: "$createdAt" } },
-                            totalPrice: { $sum: "$TotalPrice" },
-                            count: { $sum: 1 },
-                        },
-                    },
-                ]).catch((error) => next(error))
+                let PrevFull = await salesReportFunction(DaysAgo, todayDate, { $dateToString: { format: "%m", date: "$createdAt" } })
+                    .catch((error) => next(error))
                 if (saleFull.length && PrevFull.length) {
                     let sum = (saleFull[0].totalPrice - PrevFull[0].totalPrice) / 100
                     perfomance = Math.round(sum)
